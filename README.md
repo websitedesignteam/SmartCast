@@ -1,5 +1,5 @@
 # SmartCast
-Final Project for CS 47300 Website Design
+Final Project for CS 47300 Website Design.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
