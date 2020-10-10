@@ -28,6 +28,7 @@ class Episode:
     
     '''STATIC VARIABLES'''
     _tableName = "PodcastTable_DEV"
+    _tableNameGenres = "Podcast_Genres"
     
     
     '''INSTANCE METHODS'''
@@ -84,9 +85,39 @@ class Episode:
     '''CLASS METHODS'''
     
     @classmethod
+    def getAllGenres(cls):
+        
+        dynamoDB = boto3.resource('dynamodb')
+        table = dynamoDB.Table(cls._tableNameGenres)
+        
+        genres = []
+        try:
+            items = table.scan()["Items"]
+            for item in items:
+                if item["id"]:
+                    item["id"] = int(str(item["id"]))
+                if item["parent_id"]:
+                    item["parent_id"] = int(str(item["parent_id"]))
+                genres.append(item)
+                
+            return {
+                "Data": genres
+            }
+        
+        except Exception as e:
+            print(str(e))
+            return {
+                "Data": []
+            }
+            
+        
+        
+        
+    
+    @classmethod
     def getEpisode(cls,podcastTitle,episodeNumber):
         
-        dynamoDB = boto3.resource('dynamoDB')
+        dynamoDB = boto3.resource('dynamodb')
         table = dynamoDB.Table(cls._tableName)
         
         try:
@@ -108,8 +139,9 @@ class Episode:
                     "Data": data
                 }
         except Exception as e:
-            print(e)
+            print(str(e))
             #LOG TO CLOUDWATCH HERE OR SET SOME KIND OF ALERT
             return {
                 "Data" : {}
             }
+            
