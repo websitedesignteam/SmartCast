@@ -10,16 +10,14 @@ Table Podcast Dev Schema
 
     Table Name: PodcastTable_DEV
     Table Composite Key:{
-        ParitionKey: <string> Podcast Title </string>
-        Sort Key : <integer> Episode Number </integer>
+        ParitionKey: <string> podcastID </string>
+        Sort Key : <integer> episodeID </integer>
     }
     
     Attributes:{
-        "episodeTitle": </string>,
-        "Tags": </List>,
-        "Genre": </string>,
-        "mp3FileLocation": </string>,
-        "transcribedText": </string>,
+        "transcribedText" : </string>,
+        "tags" : </string>,
+        "genreIDs": []
         "visitedCount": </integer>
     }
 '''
@@ -81,41 +79,127 @@ class Episode:
                         #need to test with mp3 files now
                         pass
     
+
     
-    '''CLASS METHODS'''
-    
-    @classmethod
-    def getAllGenres(cls):
+    @staticmethod
+    def getAllGenres():
         
-        dynamoDB = boto3.resource('dynamodb')
-        table = dynamoDB.Table(cls._tableNameGenres)
-        
-        genres = []
         try:
-            items = table.scan()["Items"]
-            for item in items:
-                if item["id"]:
-                    item["id"] = int(str(item["id"]))
-                if item["parent_id"]:
-                    item["parent_id"] = int(str(item["parent_id"]))
-                genres.append(item)
-                
-            return {
-                "Data": genres
+            #Listennotes API CALL - GET /genres
+            url = 'https://listen-api.listennotes.com/api/v2/genres?top_level_only=0'
+            headers = {
+              'X-ListenAPI-Key': os.environ.get("APIKEY"),
             }
-        
+            response = requests.request('GET', url, headers=headers)
+            data = response.json()
+            genres = data["genres"]
+            
+            hash_genres = {}
+            for genre in genres:
+                hash_genres[genre["name"]] = genre["id"]
+                
+            
+            return {
+                "Data": hash_genres
+            }
         except Exception as e:
             print(str(e))
             return {
-                "Data": []
+                "Data": {}
             }
-            
+    
+    @staticmethod
+    def getBestPodCastByGenre(genreID = None,page = None):
         
+        returnData = {}
+        
+        if genreID is None:
+            genreID = "260"
+        else:
+            genreID = int(genreID)
+        if page is None:
+            page = "1"
+        else:
+            page = int(page)
+    
+        url = 'https://listen-api.listennotes.com/api/v2/best_podcasts?genre_id='+genreID+'&page=0&region=us&safe_mode='+ page
+        headers = {
+          'X-ListenAPI-Key': os.environ.get("APIKEY"),
+        }
+        response = requests.request('GET', url, headers=headers)
+        
+        data = response.json()
+        podcasts = data["podcasts"]
+        
+        returnData["genreID"] = data["id"]
+        returnData["genre"] = data["name"]
+        returnData["page_number"] = data["page_number"]
+        returnData["previous_page_number"] = data["previous_page_number"]
+        returnData["next_page_number"] = data["next_page_number"]
+        
+        returnData["podCasts"] = []
+        for pod in podcasts:
+            obj = {}
+            obj["id"] = pod["id"]
+            obj["image"] = pod["image"]
+            obj["title"] = pod["title"]
+            obj["thumbnail"] = pod["thumbnail"]
+            obj["description"] = pod["description"]
+            obj["total_episodes"] = pod["total_episodes"]
+            returnData["podCasts"].append(obj)
+        
+        return returnData
+    # @classmethod
+    # def getAllTranscribedEpisodesByGenre(cls,genreID):
+        
+    #     dynamoDB = boto3.resource('dynamodb')
+    #     table = dynamoDB.Table(cls._tableNameGenres)
+        
+
+
+    #     collection = []
+    #     try:
+    #         items = table.scan()["Items"]
+    #         for item in items:
+    #             genreID = int(str(item["id"])
+                
+    #             obj = {
+    #                 hash_genres[genreID] = {}
+    #             }
+                
+    #             for episodeID in item["episodes"]:
+    #                 #Listennotes API CALL - GET /episodes/{id}
+
+    #                 url = 'https://listen-api.listennotes.com/api/v2/episodes/' + episodeID
+    #                 headers = {
+    #                   'X-ListenAPI-Key': os.environ.get("APIKEY"),
+    #                 }
+    #                 episodeObj = 
+    #                 response = requests.request('GET', url, headers=headers)
+    #                 print(response.json())
+
+                    
+                
+    #             collection.append({
+    #                 hash_genres[genreID] = item["episodes"]
+    #             })
+                
+    #         return {
+    #             "Data": genres
+    #         }
+        
+    #     except Exception as e:
+    #         print(str(e))
+    #         return {
+    #             "Data": []
+    #         }
+            
+    
         
         
     
     @classmethod
-    def getEpisode(cls,podcastTitle,episodeNumber):
+    def getEpisode(cls,podcastID,episodeID):
         
         dynamoDB = boto3.resource('dynamodb')
         table = dynamoDB.Table(cls._tableName)
@@ -123,8 +207,8 @@ class Episode:
         try:
             response = table.get_item(
                 Key = {
-                    'Podcast Title': podcastTitle,
-                    'Episode Number': episodeNumber
+                    'podcastID': podcastID,
+                    'episodeID': episodeID
                     
                 }
 
@@ -144,4 +228,10 @@ class Episode:
             return {
                 "Data" : {}
             }
-            
+ 
+print(Episode.getAllGenres())
+
+data = Episode.getAllGenres()
+data = data["Data"]
+
+print(json.dumps(data,indent = 2))

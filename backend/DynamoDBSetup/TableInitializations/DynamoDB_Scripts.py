@@ -69,7 +69,7 @@ def createCompositeTable(tableList,dynamoDB,tableObj):
             },
             {
                 'AttributeName': tableObj.sortKey,
-                'AttributeType': 'N'
+                'AttributeType': 'S'
             }
 
         ],
@@ -90,11 +90,14 @@ if __name__ == "__main__":
     tableNamePodcastDev = "PodcastTable_DEV"
     tableNameGenres = "Podcast_Genres"
     
-    podcastDevObj = CompositeTable(tableName = tableNamePodcastDev, partitionKey = "Podcast Title", sortKey = "Episode Number")
+    podcastDevObj = CompositeTable(tableName = tableNamePodcastDev, partitionKey = "podcastID", sortKey = "episodeID")
     createCompositeTable(tableList = tableList, dynamoDB = dynamoDB, tableObj = podcastDevObj)
     
-    podcastProdObj = CompositeTable(tableName = tableNamePodcast, partitionKey = "Podcast Title", sortKey = "Episode Number")
+    podcastProdObj = CompositeTable(tableName = tableNamePodcast, partitionKey = "podcastID", sortKey = "episodeID")
     createCompositeTable(tableList = tableList, dynamoDB = dynamoDB, tableObj = podcastProdObj)
     
-    podcastGenresObj = SimpleTable(tableName = tableNameGenres, partitionKey = "genre")
+    podcastGenresObj = SimpleTable(tableName = tableNameGenres, partitionKey = "genreID")
     createSimpleTable(tableList = tableList, dynamoDB = dynamoDB, tableObj = podcastGenresObj)
+    
+    
+    
