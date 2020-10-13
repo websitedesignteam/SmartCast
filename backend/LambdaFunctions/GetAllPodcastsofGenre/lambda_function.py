@@ -29,19 +29,19 @@ def lambda_handler(event, context):
         
         returnData["genreID"] = data["id"]
         returnData["genre"] = data["name"]
-        returnData["page_number"] = data["page_number"]
-        returnData["previous_page_number"] = data["previous_page_number"]
-        returnData["next_page_number"] = data["next_page_number"]
+        returnData["currentPageNumber"] = data["page_number"]
+        returnData["previousPageNumber"] = data["previous_page_number"]
+        returnData["nextPageNumber"] = data["next_page_number"]
         
         returnData["podCasts"] = []
         for pod in podcasts:
             obj = {}
-            obj["id"] = pod["id"]
-            obj["image"] = pod["image"]
-            obj["title"] = pod["title"]
-            obj["thumbnail"] = pod["thumbnail"]
-            obj["description"] = pod["description"]
-            obj["total_episodes"] = pod["total_episodes"]
+            obj["podcastID"] = pod["id"]
+            obj["podcastImage"] = pod["image"]
+            obj["podcastTitle"] = pod["title"]
+            obj["podcastThumbnail"] = pod["thumbnail"]
+            obj["podcastDescription"] = pod["description"]
+            obj["podcastTotalEpisodes"] = pod["total_episodes"]
             returnData["podCasts"].append(obj)
         
         print(returnData)
