@@ -12,12 +12,12 @@ def lambda_handler(event, context):
     podcastID =str(body["podcastID"])
     
     if "sortBy" in body:
-        sortBy = body["sortBy"]
+        sortBy = str(body["sortBy"])
     else:
-        sort = None
+        sortBy = None
     
     if "nextPage" in body:
-        nextPage = body["nextPage"]
+        nextPage = str(body["nextPage"])
     else:
         nextPage = None
     
@@ -39,8 +39,9 @@ def lambda_handler(event, context):
         response = requests.request('GET', url, headers=headers)
         
         data = response.json()
-        
+        print(data)
         returnData["podcastID"] = data["id"]
+        returnData["podcastTitle"] = data["title"]
         returnData["podcastPublisher"] = data["publisher"]
         returnData["podcastImage"] = data["image"]
         returnData["podcastThumbnail"] = data["thumbnail"]

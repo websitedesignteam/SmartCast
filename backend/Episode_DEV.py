@@ -166,8 +166,9 @@ class Episode:
         response = requests.request('GET', url, headers=headers)
         
         data = response.json()
-        
+        print(data)
         returnData["podcastID"] = data["id"]
+        returnData["podcastTitle"] = data["title"]
         returnData["podcastPublisher"] = data["publisher"]
         returnData["podcastImage"] = data["image"]
         returnData["podcastThumbnail"] = data["thumbnail"]
