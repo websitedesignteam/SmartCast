@@ -15,9 +15,10 @@ Table Podcast Dev Schema
     }
     
     Attributes:{
+        "transcribedStatus" : </string>,
         "transcribedText" : </string>,
         "tags" : </string>,
-        "genreIDs": []
+        "genreIDs": [],
         "visitedCount": </integer>
     }
 '''
@@ -109,7 +110,6 @@ class Episode:
             }
     
     @staticmethod
-    
     def getBestPodCastByGenre(genreID,page = None):
     
         returnData = {}
@@ -141,6 +141,50 @@ class Episode:
             obj["description"] = pod["description"]
             obj["total_episodes"] = pod["total_episodes"]
             returnData["podCasts"].append(obj)
+        
+        print(returnData)
+        return {
+            "Data": returnData
+        }
+        
+        
+    @staticmethod
+    def getAllEpisodes(podcastID,sortBy = None,nextPage = None):
+        if sortBy is None:
+            sortBy = "recent_first"
+        
+        returnData = {}
+        if nextPage is not None:
+            nextPub = "next_episode_pub_date=" + str(nextPage) + "&"
+        else:
+            nextPub = ""
+            
+        url = 'https://listen-api.listennotes.com/api/v2/podcasts/'+podcastID+'?' + nextPub+ 'sort='+sortBy
+        headers = {
+          'X-ListenAPI-Key': os.environ.get("APIKEY"),
+        }
+        response = requests.request('GET', url, headers=headers)
+        
+        data = response.json()
+        
+        returnData["podcastID"] = data["id"]
+        returnData["podcastPublisher"] = data["publisher"]
+        returnData["podcastImage"] = data["image"]
+        returnData["podcastThumbnail"] = data["thumbnail"]
+        returnData["podcastTotalEpisdoes"] = data["total_episodes"]
+        returnData["podcastDescription"] = data["description"]
+        returnData["genreIDs"] = data["genre_ids"]
+        returnData["nextPageNumber"] = data["next_episode_pub_date"]
+        returnData["episodes"] = []
+        podcasts = data["episodes"]
+        for pod in podcasts:
+            obj = {}
+            obj["episodeID"] = pod["id"]
+            obj["episodeTitle"] = pod["title"]
+            obj["episodeImage"] = pod["image"]
+            obj["episodeThumbnail"] = pod["thumbnail"]
+            obj["episodeLengthSeconds"] = pod["audio_length_sec"]
+            returnData["episodes"].append(obj)
         
         print(returnData)
         return {
