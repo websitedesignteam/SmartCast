@@ -3,15 +3,19 @@ import os
 import requests
 
 def lambda_handler(event, context):
+    
+    #Extract the body from event
     body = event["body"]
-    print(body)
     body = json.loads(body)
+    
+    #Extract values from GET request and initialize vars for function call
     genreID = str(body["genreID"])
     if "page" in body:
         page = str(body["page"])
     else:
         page = None
     
+    #Main function call
     def getBestPodCastByGenre(genreID,page = None):
     
         returnData = {}

@@ -4,6 +4,7 @@ import requests
 
 def lambda_handler(event, context):
     
+    #Main function call
     def getAllGenres():
         try:
             #Listennotes API CALL - GET /genres
