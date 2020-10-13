@@ -109,20 +109,14 @@ class Episode:
             }
     
     @staticmethod
-    def getBestPodCastByGenre(genreID = None,page = None):
-        
+    
+    def getBestPodCastByGenre(genreID,page = None):
+    
         returnData = {}
-        
-        if genreID is None:
-            genreID = "260"
-        else:
-            genreID = int(genreID)
         if page is None:
             page = "1"
-        else:
-            page = int(page)
-    
-        url = 'https://listen-api.listennotes.com/api/v2/best_podcasts?genre_id='+genreID+'&page=0&region=us&safe_mode='+ page
+
+        url = 'https://listen-api.listennotes.com/api/v2/best_podcasts?genre_id='+genreID+'&page='+page+'&region=us&safe_mode=0'
         headers = {
           'X-ListenAPI-Key': os.environ.get("APIKEY"),
         }
@@ -148,7 +142,10 @@ class Episode:
             obj["total_episodes"] = pod["total_episodes"]
             returnData["podCasts"].append(obj)
         
-        return returnData
+        print(returnData)
+        return {
+            "Data": returnData
+        }
     # @classmethod
     # def getAllTranscribedEpisodesByGenre(cls,genreID):
         
