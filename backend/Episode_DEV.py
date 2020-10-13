@@ -83,7 +83,6 @@ class Episode:
     
     @staticmethod
     def getAllGenres():
-        
         try:
             #Listennotes API CALL - GET /genres
             url = 'https://listen-api.listennotes.com/api/v2/genres?top_level_only=0'
@@ -99,6 +98,7 @@ class Episode:
                 hash_genres[genre["name"]] = genre["id"]
                 
             
+            print(hash_genres)
             return {
                 "Data": hash_genres
             }

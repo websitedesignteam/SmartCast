@@ -20,6 +20,7 @@ def lambda_handler(event, context):
                 hash_genres[genre["name"]] = genre["id"]
                 
             
+            print(hash_genres)
             return {
                 "Data": hash_genres
             }
@@ -29,4 +30,8 @@ def lambda_handler(event, context):
                 "Data": {}
             }
     # TODO implement
-    return getAllGenres()
+    return {
+        'statusCode': 200,
+        'headers': {'Content-Type': 'application/json'},
+        'body': json.dumps(getAllGenres())
+    }
