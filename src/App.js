@@ -1,5 +1,5 @@
 import React from 'react';
-import css from './App.scss';
+import './App.css';
 import Podcast from './page/Podcast/podcast';
 import Episode from './page/Episode/episode';
 import {
@@ -10,14 +10,6 @@ import {
 function App() {
   return (
     <Router>
-      <div className={css["app"]}>
-          FLORENCE BRANCH
-      </div>
-      
-      {/* <Route path="/genre/:genreId">
-        <GenreList />
-      </Route> */}
-
       <Route path="/podcast/:podcastId">
         <Podcast />
       </Route>
