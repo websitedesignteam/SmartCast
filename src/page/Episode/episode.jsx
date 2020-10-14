@@ -23,19 +23,20 @@ function Episode(props) {
     //states
     const [currentEpisode, setCurrentEpisode] = useState(episodeDummyData);
 
-    useEffect(() => {
-        const getEpisodeAPI = () => {
-            getEpisode(episodeId)
-            .then((response) => {
-                const episodeData = response.data;
-                setCurrentEpisode(episodeData);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-        };
-        getEpisodeAPI();
-    }, []);
+    //api call to be confirmed
+    // useEffect(() => {
+    //     const getEpisodeAPI = () => {
+    //         getEpisode(episodeId)
+    //         .then((response) => {
+    //             const episodeData = response.data;
+    //             setCurrentEpisode(episodeData);
+    //         })
+    //         .catch((error) => {
+    //             console.log(error);
+    //         });
+    //     };
+    //     getEpisodeAPI();
+    // }, []);
 
     return (
         <div className={css["episode-container"]}>

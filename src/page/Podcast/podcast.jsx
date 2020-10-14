@@ -30,19 +30,20 @@ function Podcast(props) {
 	//states
 	const [currentPodcast, setCurrentPodcast] = useState(podcastDummyData);
 
-	useEffect(() => {
-		const getPodcastAPI = () => {
-			getPodcast(podcastId)
-			.then((response) => {
-				const podcastData = response.data;
-				setCurrentPodcast(podcastData);
-			})
-			.catch((error) => {
-				console.log(error);
-			});
-		};
-		getPodcastAPI();
-	}, [podcastId]);
+	//api call to be confirmed
+	// useEffect(() => {
+	// 	const getPodcastAPI = () => {
+	// 		getPodcast(podcastId)
+	// 		.then((response) => {
+	// 			const podcastData = response.data;
+	// 			setCurrentPodcast(podcastData);
+	// 		})
+	// 		.catch((error) => {
+	// 			console.log(error);
+	// 		});
+	// 	};
+	// 	getPodcastAPI();
+	// }, [podcastId]);
 
 	return (
 		<div className={css["podcast-container"]}>
