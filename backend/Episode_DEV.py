@@ -17,8 +17,8 @@ Table Podcast Dev Schema
     Attributes:{
         "transcribedStatus" : </string>,
         "transcribedText" : </string>,
-        "tags" : </string>,
-        "genreIDs": [],
+        "tags" : </List>,
+        "genreIDs": </List>,
         "visitedCount": </integer>
     }
 '''
@@ -237,7 +237,30 @@ class Episode:
     #         }
             
     
-        
+    @classmethod
+    def putEpisode(cls,podcastID,episodeID, transcribedStatus = None,transcribedText = None,tags = None, genreIDs = None, visitedCount = None):
+    
+        dynamoDB = boto3.resource('dynamodb')
+        table = dynamoDB.Table(cls._tableName)
+    
+        if transcribedText is None:
+            transcribedText = ""
+    
+        #do the same for tags,genreIDs,visitedCount
+        #note visited count default is 0
+    
+        table.put_item(
+           Item={
+                'podcastID': podcastID,
+                'episodeID': episodeID,
+                'transcribedStatus': transcribedStatus,
+                'transcribedText': transcribedText,
+                'tags' : tags,
+                'genreIDs': genreIDs,
+                'visitedCount': visitedCount
+            }
+        )
+        return response
         
     
     @classmethod
