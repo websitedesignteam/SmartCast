@@ -279,24 +279,58 @@ class Episode:
 
             )
             if "Item" not in response:
-                return{
-                    "Data": {}
+                data = { "Data": {}
                 }
             else:
                 data = response["Item"]
-                return{
+                data = {
                     "Data": data
                 }
         except Exception as e:
             print(str(e))
             #LOG TO CLOUDWATCH HERE OR SET SOME KIND OF ALERT
-            return {
+            data =  {
                 "Data" : {}
             }
+        
+
+        url = 'https://listen-api.listennotes.com/api/v2/episodes/' + episodeID
+        headers = {
+          'X-ListenAPI-Key': os.environ.get("APIKEY"),
+        }
+        response = requests.request('GET', url, headers=headers)
+        listenNotesData = response.json()
+        
+        returnData = {}
+        returnData["episodeID"] = episodeID
+        returnData["episodeAudioLink"] = listenNotesData["audio"]
+        returnData["episodeImage"] = listenNotesData["image"]
+        returnData["episodeThumbnail"] = listenNotesData["thumbnail"]
+        returnData["episodeTitle"] = listenNotesData["title"]
+        returnData["episodeDescription"] = listenNotesData["description"]
+        returnData["episodeAudioLength"] = listenNotesData["audio_length_sec"]
+        returnData["podcastID"] = podcastID
+        data = data["data"]
+        if len(data) == 0:
+            returnData["transcribedStatus"] = "NOT TRANSCRIBED"
+            returnData["transcribedText"] = ""
+            returnData["tags"] = []
+            returnData["genreIDs"] = []
+            returnData["visitedCount"] = 0
+        else:
+            returnData["transcribedStatus"] = data["transcribedStatus"]
+            returnData["transcribedText"] = data["transcribedText"]
+            returnData["tags"] = data["tags"]
+            returnData["genreIDs"] = data["genreIDs"]
+            returnData["visitedCount"] = data["visitedCount"]
+            
+        
+        
+
  
-print(Episode.getAllGenres())
+# print(Episode.getAllGenres())
 
-data = Episode.getAllGenres()
-data = data["Data"]
+# data = Episode.getAllGenres()
+# data = data["Data"]
 
-print(json.dumps(data,indent = 2))
+# print(json.dumps(data,indent = 2))
