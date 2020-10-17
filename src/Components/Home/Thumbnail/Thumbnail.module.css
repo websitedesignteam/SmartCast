@@ -1,0 +1,14 @@
+.mainThumbnailContainer{
+       display: inline-block;
+       border: 1px solid black;
+       border-radius: 10px;
+       width: auto;
+       min-height: 120px;
+       min-width: 180px;
+}
+
+.thumbnailWrapper{
+       display: inline-block;
+       margin: 20px;
+       text-align: center;
+}
