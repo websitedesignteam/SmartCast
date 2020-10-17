@@ -1,17 +1,35 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
+import Home from './Pages/Home/Home.js'
+import Genres from './Pages/Genres/Genres.js'
+import styles from './App.module.css'
+import Navbar from './Components/Navbar/Navbar'
+import Main from './Components/Main/Main'
+// import Navbar from './Components/Navbar/Navbar'
+import {
+       BrowserRouter as Router,
+       Switch,
+       Route,
+       Link
+     } from "react-router-dom";
+     
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          ALI BRANCH
-        </p>
-      </header>
-    </div>
+         <Router>
+              <div className={styles.rootAppContainer}>
+                    <Navbar />
+                    <Switch>
+                           <Route exact path ="/">
+                                  <Home/>
+                           </Route>
+                           <Route path ="/main">
+                                  <Main/>
+                           </Route>
+                           <Route path ="/genres">
+                                  <Genres/>
+                           </Route>
+                    </Switch>
+              </div>
+       </Router>
   );
 }
 
