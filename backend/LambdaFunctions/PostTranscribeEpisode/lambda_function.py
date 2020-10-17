@@ -9,11 +9,20 @@ def putEpisode(podcastID,episodeID, transcribedStatus = None,transcribedText = N
     dynamoDB = boto3.resource('dynamodb')
     table = dynamoDB.Table(tableName)
 
+    if transcribedStatus is None:
+        transcribedStatus = ""
+
     if transcribedText is None:
         transcribedText = ""
+    
+    if tags is None:
+        tags = []
 
-    #do the same for tags,genreIDs,visitedCount
-    #note visited count default is 0
+    if genreIDs is None:
+        genreIDs = []
+
+    if visitedCount is None:
+        visitedCount = 0
     
     try: 
         table.put_item(
