@@ -1,7 +1,7 @@
 import json
 import requests
 import os
-
+import boto3
 
 def putEpisode(podcastID,episodeID, transcribedStatus = None,transcribedText = None,tags = None, genreIDs = None, visitedCount = None):
     
@@ -67,7 +67,7 @@ def lambda_handler(event, context):
             }
             
             client.invoke(
-                Functionname = 'PUT ARN HERE',
+                Functionname = 'PUT ARN HERE', #TODO: put your ARN over here
                 InvocationType = 'Event',
                 Paylaod = json.dumps(event)
                 )
