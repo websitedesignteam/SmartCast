@@ -26,18 +26,23 @@ def putEpisode(podcastID,episodeID, transcribedStatus = None,transcribedText = N
     if visitedCount is None:
         visitedCount = 0
 
-    table.put_item(
-       Item={
-            'podcastID': podcastID,
-            'episodeID': episodeID,
-            'transcribedStatus': transcribedStatus,
-            'transcribedText': transcribedText,
-            'tags' : tags,
-            'genreIDs': genreIDs,
-            'visitedCount': visitedCount
-        }
-    )
-    return response
+    try: 
+        table.put_item(
+           Item={
+                'podcastID': podcastID,
+                'episodeID': episodeID,
+                'transcribedStatus': transcribedStatus,
+                'transcribedText': transcribedText,
+                'tags' : tags,
+                'genreIDs': genreIDs,
+                'visitedCount': visitedCount
+            }
+        )
+        return 'Success'
+        
+    except Exception as e:
+        print(str(e))
+        return 'Error'
 
 def getEpisode(cls,podcastID,episodeID):
     
