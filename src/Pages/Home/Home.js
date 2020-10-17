@@ -4,7 +4,7 @@ import styles from '../Home/Home.module.css'
 import Thumbnail from '../../Components/Home/Thumbnail/Thumbnail'
 import axios from 'axios';
 import Axios from 'axios';
-
+import {Link} from 'react-router-dom'
 function Home() {
 
        const [genres, setGenres] = useState({});
@@ -38,7 +38,7 @@ function Home() {
                      </div>
                      <div className={styles.thumbnailContainer}>
                      {Object.keys(genres).map(function (key){
-                            return <Thumbnail title={key}/>
+                            return <Link to={`/genre/${key}`}><Thumbnail title={key}/></Link>
                      })}
                      </div>
               </div>
