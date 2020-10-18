@@ -9,9 +9,9 @@ function Podcast(props) {
 	const podcastDummyData = {
 		"podcastId": 21367687,
 		"podcastTitle": "Podcast Title",
-		"image": "/assets/playlist-placeholder.png",
-		"thumbnail": "/assets/playlist-placeholder.png",
-		"publisher": "Publisher Name",
+		"podcastImage": `${process.env.PUBLIC_URL}/assets/playlist-placeholder.png`,
+		"podcastThumbnail": `${process.env.PUBLIC_URL}/assets/playlist-placeholder.png`,
+		"podcastPublisher": "podcastPublisher Name",
 		"episodes": [{
 			"episodeId": 1,
 			"episodeTitle": "Episode 1"
@@ -31,38 +31,46 @@ function Podcast(props) {
 	const [currentPodcast, setCurrentPodcast] = useState(podcastDummyData);
 
 	//api call to be confirmed
-	// useEffect(() => {
-	// 	const getPodcastAPI = () => {
-	// 		getPodcast(podcastId)
-	// 		.then((response) => {
-	// 			const podcastData = response.data;
-	// 			setCurrentPodcast(podcastData);
-	// 		})
-	// 		.catch((error) => {
-	// 			console.log(error);
-	// 		});
-	// 	};
-	// 	getPodcastAPI();
-	// }, [podcastId]);
+	useEffect(() => {
+		// const headers = {
+		// 	'X-API-KEY': API_KEY,
+		// 	'Authorization': API_KEY,
+		// }
+		const data = {
+			"podcastID": podcastId,
+		}
+		const getPodcastAPI = () => {
+			getPodcast(data)
+			.then((response) => {
+				const podcastData = response.data.Data;
+				setCurrentPodcast(podcastData);
+				console.log(podcastData);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+		};
+		getPodcastAPI();
+	}, [podcastId]);
 
 	return (
 		<div className={css["podcast-container"]}>
 				{ (currentPodcast) 
 				? <> 
-					<img src={process.env.PUBLIC_URL + currentPodcast.image} alt="Podcast" />
+					<img src={currentPodcast.podcastImage} alt="Podcast" />
 					<span className={css["podcast-title"]}>
-						{currentPodcast.podcastTitle}
+						Title: {currentPodcast.podcastTitle}
 					</span> 
-					<span className={css["podcast-publisher"]}>
-						{currentPodcast.publisher}
+					<span className={css["podcast-podcastPublisher"]}>
+					 	Publisher: {currentPodcast.podcastPublisher}
 					</span> 
 					<span className={css["podcast-description"]}>
-						{currentPodcast.description}
+						Description: {currentPodcast.podcastDescription}
 					</span> 
 					<ul className={css["episode-list"]}>
-					{ currentPodcast.episodes.map((episode) => 
-						<li key={episode} className={css["episode-link"]}>
-							<Link to={`/episode/${episode.episodeId}`}>{episode.episodeTitle}</Link>
+						Episodes: { currentPodcast.episodes.map((episode, index) => 
+						<li key={index} className={css["episode-link"]}>
+							<Link to={`/episode/${episode.episodeID}`}>{episode.episodeTitle}</Link>
 						</li>
 					)}
 					</ul>
