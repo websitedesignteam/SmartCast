@@ -32,10 +32,6 @@ function Podcast(props) {
 
 	//api call to be confirmed
 	useEffect(() => {
-		// const headers = {
-		// 	'X-API-KEY': API_KEY,
-		// 	'Authorization': API_KEY,
-		// }
 		const data = {
 			"podcastID": podcastId,
 		}
@@ -44,7 +40,6 @@ function Podcast(props) {
 			.then((response) => {
 				const podcastData = response.data.Data;
 				setCurrentPodcast(podcastData);
-				console.log(podcastData);
 			})
 			.catch((error) => {
 				console.log(error);
