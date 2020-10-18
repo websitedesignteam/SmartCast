@@ -4,7 +4,7 @@ const { getAPI, postAPI } = require("./axios");
 const getGenres = () => getAPI(`/getallgenres`); //all genres
 
 //podcast results (search, genre)
-const getGenrePodcasts = (headers) => getAPI(`/getallpodcastsofgenre`, {headers}); //get podcasts of specific genre
+const getGenrePodcasts = () => getAPI(`/getallpodcastsofgenre`); //get podcasts of specific genre
 
 // TODO : search
 // const postSearch = (data) => postAPI(`search/`, data); 
