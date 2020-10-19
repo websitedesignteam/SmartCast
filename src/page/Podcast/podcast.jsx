@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from "react-router-dom";
 import { getPodcast } from '../../utils/api';
-import css from "./podcast.scss";
+import styles from "./Podcast.module.css";
 
 function Podcast(props) {
 	//vars
@@ -29,28 +29,28 @@ function Podcast(props) {
 	}, [podcastId]);
 
 	return (
-		<div className="podcast-container">
+		<div className={styles.podcastContainer}>
 			{ (currentPodcast) 
 			? <> 
 				<img src={currentPodcast.podcastImage} alt="podcast cover" />
 				<div className="podcast-title">
 					<strong>{currentPodcast.podcastTitle}</strong>
 				</div> 
-				<div className="podcast-podcastPublisher">
+				<div className={styles.podcastPodcastPublisher}>
 					<strong>Publisher</strong>
 					<br/>
 					{currentPodcast.podcastPublisher}
 				</div> 
-				<div className="podcast-description">
+				<div className={styles.podcastDescription}>
 					<strong>Description</strong> 
 					<br/>
 					{currentPodcast.podcastDescription}
 				</div> 
-				<ul className="episode-list">
+				<ul className={styles.episodeList}>
 					<strong>Episodes</strong> 
 					<br/>
 					{ currentPodcast.episodes.map((episode, index) => 
-					<li key={index} className={css["episode-link"]}>
+					<li key={index} className={styles.episodeLink}>
 						<Link to={`/episode/${episode.episodeID}`}>{episode.episodeTitle}</Link>
 					</li>
 				)}
