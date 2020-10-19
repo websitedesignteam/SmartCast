@@ -157,11 +157,11 @@ def lambda_handler(event, context):
     #MAKE SURE YOU GET THE KEYSTRING FOR S3
     #keystring is the object path in s3
     #TODO: one this api is tested go back and define these variables early-on and use instead of hardcoding
-    bucketName = 'transcribe-bucket-for-mp3'
-    filename = 'downloadedfile.mp3'
+    transcribedBucketName = 'files-after-transcribing'
+    transcribedFilename = 'transcribed.json'
     
     #keystring is an S3 PATH, think of it like a unix path
-    keyString = 'https://' + bucketName + '.s3.amazonaws.com/' + filename
+    keyString = 'https://' + transcribedBucketName + '.s3.amazonaws.com/' + transcribedFilename
     
     #Get past information of data you DO NOT WANT TO OVERWRITE
     data = getEpisode(podcastID = podcastID, episodeID = episodeID)
