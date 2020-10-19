@@ -120,7 +120,7 @@ def lambda_handler(event, context):
         LanguageCode='en-US'
     )
     
-    
+    #while the transcription job is not complete yet, print status on the console
     while True:
         status = transcribe.get_transcription_job(TranscriptionJobName=job_name)
         if status['TranscriptionJob']['TranscriptionJobStatus'] in ['COMPLETED', 'FAILED']:
@@ -130,31 +130,38 @@ def lambda_handler(event, context):
         
     print(status)
     
+    #once the transcription job is completed, delete the mp3 file from s3 bucket
+    s3.Object('transcribe-bucket-for-mp3', 'downloadedfile.mp3').delete()
+    
     #get the info for transcribed job once it is finished
     info = transcribe.get_transcription_job(TranscriptionJobName=job_name)
     
     #get the transcribed file and download it
     transcribedJsonFile = info['TranscriptionJob']['Transcript']['TranscriptFileUri']
     downloadableJsonFile = urllib.request.urlretrieve(transcribedJsonFile,f"transcribed.json")
-    jsonName = downloadableJsonFile[0]
+    jsonName = downloadableJsonFile[0] #store the transcribed json file's name
     
+    #Write the logic to STORE that transcribed into S3
     #upload that json to s3
     s3.upload_file(jsonName, 'files-after-transcribing', 'transcribed.json')
     
-    #maybe before deleting local json, read the file and extract only the string
+    #TODO: maybe before deleting local json, read the file and extract only the string
+    #with this logic, transcribedtext variable does not contain the transcribed text, but it just contains the json downloadable link
+    #this logic can be changed by using python files to extract the transcribed text
+    transcribedText = info['TranscriptionJob']['Transcript']['TranscriptFileUri']
+    
     #remove the json from local directory
     os.removed(jsonName)
     
-    transcribedText = info['TranscriptionJob']['Transcript']['TranscriptFileUri']
-    
-    #Write the logic to STORE that transcribed into S3
     
     #MAKE SURE YOU GET THE KEYSTRING FOR S3
-    
-    #Use transcribedText variable 
+    #keystring is the object path in s3
+    #TODO: one this api is tested go back and define these variables early-on and use instead of hardcoding
+    bucketName = 'transcribe-bucket-for-mp3'
+    filename = 'downloadedfile.mp3'
     
     #keystring is an S3 PATH, think of it like a unix path
-    keyString = info['TranscriptionJob']['Transcript']['TranscriptFileUri'] #MAKE SURE YOU GET THE KEYSTRING BACK!!!!
+    keyString = 'https://' + bucketName + '.s3.amazonaws.com/' + filename
     
     #Get past information of data you DO NOT WANT TO OVERWRITE
     data = getEpisode(podcastID = podcastID, episodeID = episodeID)
