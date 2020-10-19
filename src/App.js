@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
-import Podcast from './page/Podcast/podcast';
-import Episode from './page/Episode/episode';
+import Podcast from './page/Podcast/Podcast';
+import Episode from './page/Episode/Episode';
 import {
   BrowserRouter as Router,
   Route,

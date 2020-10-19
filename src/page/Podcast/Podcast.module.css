@@ -1,4 +1,4 @@
-.podcast-container {
+.podcastContainer {
   padding: 2rem;
 }
 
@@ -18,13 +18,13 @@ img {
   }
 }
 
-.episode-list {
+.episodeList {
   padding: 0;
   margin: 0;
   list-style-type: none;
-  & li {
+  /* & li {
     margin-bottom: 0.5rem;
-  }
+  } */
 }
 
 .loader {

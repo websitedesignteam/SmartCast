@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from "react-router-dom";
 import { getEpisode } from '../../utils/api';
-import css from "./episode.scss";
+import styles from "./Episode.module.css";
 
 function Episode(props) {
     //vars
@@ -39,21 +39,21 @@ function Episode(props) {
     // }, []);
 
     return (
-        <div className={css["episode-container"]}>
+        <div className={styles.episodeContainer}>
             { (currentEpisode) 
             ? <> 
                 <img src={process.env.PUBLIC_URL + currentEpisode.image} alt="Episode" />
-                <span className={css["episode-title"]}>
+                <span className={styles.episodeTitle}>
                     {currentEpisode.episodeTitle}
                 </span> 
-                <span className={css["episode-publisher"]}>
+                <span className={styles.episodePublisher}>
                     {currentEpisode.publisher}
                 </span> 
-                <span className={css["episode-description"]}>
+                <span className={styles.episodeDescription}>
                     {currentEpisode.description}
                 </span> 
             </>
-            : <div className={css["loading"]}>Loading...</div>
+            : <div className={styles.loading}>Loading...</div>
             }
         </div>
         
