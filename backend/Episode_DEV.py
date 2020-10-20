@@ -243,24 +243,38 @@ class Episode:
         dynamoDB = boto3.resource('dynamodb')
         table = dynamoDB.Table(cls._tableName)
     
+        if transcribedStatus is None:
+            transcribedStatus = ""
+
         if transcribedText is None:
             transcribedText = ""
+        
+        if tags is None:
+            tags = []
+
+        if genreIDs is None:
+            genreIDs = []
+
+        if visitedCount is None:
+            visitedCount = 0
     
-        #do the same for tags,genreIDs,visitedCount
-        #note visited count default is 0
-    
-        table.put_item(
-           Item={
-                'podcastID': podcastID,
-                'episodeID': episodeID,
-                'transcribedStatus': transcribedStatus,
-                'transcribedText': transcribedText,
-                'tags' : tags,
-                'genreIDs': genreIDs,
-                'visitedCount': visitedCount
-            }
-        )
-        return response
+        try: 
+            table.put_item(
+            Item={
+                    'podcastID': podcastID,
+                    'episodeID': episodeID,
+                    'transcribedStatus': transcribedStatus,
+                    'transcribedText': transcribedText,
+                    'tags' : tags,
+                    'genreIDs': genreIDs,
+                    'visitedCount': visitedCount
+                }
+            )
+            return 'Success'
+            
+        except Exception as e:
+            print(str(e))
+            return 'Error'
         
     
     @classmethod
