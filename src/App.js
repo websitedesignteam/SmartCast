@@ -9,16 +9,6 @@ import {
 
 function App() {
   return (
-<<<<<<< HEAD
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          ALI BRANCH
-        </p>
-      </header>
-    </div>
-=======
     <Router>
       <Route path="/podcast/:podcastId">
         <Podcast />
@@ -28,7 +18,6 @@ function App() {
         <Episode />
       </Route> 
     </Router>
->>>>>>> florence
   );
 }
 
