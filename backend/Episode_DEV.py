@@ -323,6 +323,7 @@ class Episode:
             returnData["tags"] = data["tags"]
             returnData["genreIDs"] = data["genreIDs"]
             returnData["visitedCount"] = data["visitedCount"]
+        return { "Data": returnData}
             
         
         
