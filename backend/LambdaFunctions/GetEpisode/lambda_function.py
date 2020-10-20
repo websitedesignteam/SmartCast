@@ -79,9 +79,6 @@ def lambda_handler(event, context):
     podcastID = str(body["podcastID"])
     
     
-    #Main function call
-
-        
     
     return{
         'statusCode': 200,

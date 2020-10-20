@@ -275,10 +275,40 @@ class Episode:
         except Exception as e:
             print(str(e))
             return 'Error'
-        
-    
-    @classmethod
+
+    @classmethod #GET OUR META DATA ONLY
     def getEpisode(cls,podcastID,episodeID):
+        
+        dynamoDB = boto3.resource('dynamodb')
+        table = dynamoDB.Table(cls._tableName)
+        
+        try:
+            response = table.get_item(
+                Key = {
+                    'podcastID': podcastID,
+                    'episodeID': episodeID
+                    
+                }
+    
+            )
+            if "Item" not in response:
+                return{
+                    "Data": {}
+                }
+            else:
+                data = response["Item"]
+                return{
+                    "Data": data
+                }
+        except Exception as e:
+            print(str(e))
+            #LOG TO CLOUDWATCH HERE OR SET SOME KIND OF ALERT
+            return {
+                "Data" : {}
+            }
+    
+    @classmethod #FOR API CALL WHEN WE NEED LISTENNOTES + OUR META DATA
+    def getEpisodeEndpoint(cls,podcastID,episodeID):
         
         dynamoDB = boto3.resource('dynamodb')
         table = dynamoDB.Table(cls._tableName)
