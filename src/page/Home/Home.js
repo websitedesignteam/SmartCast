@@ -1,7 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import Navbar from '../../Components/Navbar/Navbar.js'
+import Navbar from '../../component/Navbar/Navbar.js'
 import styles from '../Home/Home.module.css'
-import Thumbnail from '../../Components/Home/Thumbnail/Thumbnail'
+import Thumbnail from '../../component/Home/Thumbnail/Thumbnail'
+import Search from '../../component/Search/Search'
+import { getGenres } from '../../utils/api';
 import axios from 'axios';
 import Axios from 'axios';
 import {Link} from 'react-router-dom'
@@ -20,27 +22,34 @@ function Home() {
               'Content-Type': 'application/json',
               'Access-Control-Allow-Origin': 'http://localhost:3000',
        }
-       useEffect(()=>{
-              axios.get(PROXY_URL + URL, {headers: config})
-              .then((response) => {
-                     setGenres(response.data.Data);
-                   }, (error) => {
-                     console.log(error);
-                   });
-       })
-
+       useEffect(() => {
+		const getGenresAPI = () => {
+			getGenres()
+			.then((response) => {
+                            console.log(response)
+				const genreData = response.data;
+				setGenres(genreData);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+		};
+		getGenresAPI();
+       });
+       
   return ( 
          <div className={styles.homeContainer}>
               <p>Hi, I'm the home page</p>
+              <Search/>
               <div className={styles.genreSection}>
                      <div className={styles.genreHeading}>
                             <h5>Genres</h5>
                      </div>
-                     <div className={styles.thumbnailContainer}>
+                     {/* <div className={styles.thumbnailContainer}>
                      {Object.keys(genres).map(function (key){
                             return <Link to={`/genre/${key}`}><Thumbnail title={key}/></Link>
                      })}
-                     </div>
+                     </div> */}
               </div>
          </div>
   );

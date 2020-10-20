@@ -1,5 +1,5 @@
 import React from 'react';
-import Navbar from '../../Components/Navbar/Navbar'
+import Navbar from '../../component/Navbar/Navbar'
 import styles from '../Genres/Genres.module.css'
 function Genres() {
   return ( 

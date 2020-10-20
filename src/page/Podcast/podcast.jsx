@@ -56,7 +56,7 @@ function Podcast(props) {
 				)}
 				</ul>
 			</>
-			: <div class="loader"></div>
+			: <div className="loader"></div>
 			}
 		</div>
 	);
