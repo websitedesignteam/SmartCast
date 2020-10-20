@@ -16,14 +16,13 @@ function Home() {
        const PROXY_URL = 'https://cors-anywhere.herokuapp.com/'
        const URL ='https://g0rjpqharl.execute-api.us-east-1.amazonaws.com/test/getallgenres/'
 
-       let config = {
-              'X-API-KEY': APIKEY,
-              'Authorization': APIKEY,
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': 'http://localhost:3000',
-       }
+       // let config = {
+       //        'X-API-KEY': APIKEY,
+       //        'Authorization': APIKEY,
+       //        'Content-Type': 'application/json',
+       //        'Access-Control-Allow-Origin': 'http://localhost:3000',
+       // }
        useEffect(() => {
-		const getGenresAPI = () => {
 			getGenres()
 			.then((response) => {
                             console.log(response)
@@ -33,9 +32,7 @@ function Home() {
 			.catch((error) => {
 				console.log(error);
 			});
-		};
-		getGenresAPI();
-       });
+       }, []) 
        
   return ( 
          <div className={styles.homeContainer}>

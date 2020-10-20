@@ -11,13 +11,13 @@ const AxiosInstance = axios.create({
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
         'Authorization' : API_KEY,
-       //  'Access-Control-Allow-Origin': 'http://localhost:3000'
+        'X-API-KEY' : API_KEY,
     }
 });
 
 const PROXY_URL = 'https://cors-anywhere.herokuapp.com/'
 
-const getAPI = (apiUrl) => AxiosInstance.get(PROXY_URL + apiUrl);
+const getAPI = (apiUrl) => AxiosInstance.get(PROXY_URL + API_URL + apiUrl);
 
 const postAPI = (apiUrl, data) => AxiosInstance.post(apiUrl, data);
 
