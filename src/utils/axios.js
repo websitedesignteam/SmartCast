@@ -10,7 +10,8 @@ const AxiosInstance = axios.create({
     headers : {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
-        'Authorization' : API_KEY,
+        'Authorization': API_KEY,
+        'X-API-KEY': API_KEY,
     }
 });
 

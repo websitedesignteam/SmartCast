@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from "react-router-dom";
 import { getPodcast } from '../../utils/api';
-import styles from "./Podcast.module.css";
+import styles from "./podcast.module.scss";
 
 function Podcast(props) {
 	//vars
-	const { podcastId } = useParams();
+	const { podcastID } = useParams();
+	const errorMessageText = "Sorry! We couldn't find that podcast.";
 
 	//states
 	const [currentPodcast, setCurrentPodcast] = useState(null);
+	const [errorMessage, setErrorMessage] = useState(null);
 
 	//api call to be confirmed
 	useEffect(() => {
-		const data = {
-			"podcastID": podcastId,
-		}
+		const data = { podcastID };
+		console.log(data);
 		const getPodcastAPI = () => {
 			getPodcast(data)
 			.then((response) => {
@@ -23,17 +24,18 @@ function Podcast(props) {
 			})
 			.catch((error) => {
 				console.log(error);
+				setErrorMessage(errorMessageText);
 			});
 		};
 		getPodcastAPI();
-	}, [podcastId]);
+	}, [podcastID, errorMessage]);
 
 	return (
 		<div className={styles.podcastContainer}>
-			{ (currentPodcast) 
+			{ (currentPodcast && !errorMessage) 
 			? <> 
-				<img src={currentPodcast.podcastImage} alt="podcast cover" />
-				<div className="podcast-title">
+				<img className={styles.podcastImage} src={currentPodcast.podcastImage} alt="podcast cover" />
+				<div className={styles.podcastTitle}>
 					<strong>{currentPodcast.podcastTitle}</strong>
 				</div> 
 				<div className={styles.podcastPodcastPublisher}>
@@ -51,12 +53,14 @@ function Podcast(props) {
 					<br/>
 					{ currentPodcast.episodes.map((episode, index) => 
 					<li key={index} className={styles.episodeLink}>
-						<Link to={`/episode/${episode.episodeID}`}>{episode.episodeTitle}</Link>
+						<Link to={`/podcast/${podcastID}/episode/${episode.episodeID}`}>{episode.episodeTitle}</Link>
 					</li>
 				)}
 				</ul>
 			</>
-			: <div class="loader"></div>
+			: (errorMessage) 
+			? <div className={styles.errorMessage}>{errorMessage}</div>
+			: <div className={styles.loader}></div>
 			}
 		</div>
 	);

@@ -7,13 +7,14 @@ div {
   margin-bottom: 1rem;
 }
 
-img {
+.podcastImage {
   display: block;
   position: relative;
-  margin: 0 auto;
+  margin: 0 auto 1rem;
   width: 100%; 
+  min-width: 12rem;
   @media screen and (min-width: 768px) {
-    width: 30rem;
+    max-width: 30rem;
     margin: 0;
   }
 }
@@ -22,9 +23,9 @@ img {
   padding: 0;
   margin: 0;
   list-style-type: none;
-  /* & li {
+  & li {
     margin-bottom: 0.5rem;
-  } */
+  }
 }
 
 .loader {
