@@ -23,7 +23,7 @@ function App() {
   }
 
   return (
-    <div className="app">
+    <div className="App">
     <Router>
       {/* This route is temporarily used for episode while not using a modal popup */}
       <Route path="/podcast/:podcastID/episode/:episodeID"> 
@@ -36,6 +36,10 @@ function App() {
 
       {audioPlayerOpen && 
       <AudioFooter audioUrl={audioUrl}/>}
+
+      <Route exact>
+        <img className="logo" src={process.env.PUBLIC_URL + "/assets/logo.png"} alt="Podcast Logo"/>
+      </Route>
     </Router>
     </div>
   );
