@@ -37,7 +37,7 @@ function App() {
       {audioPlayerOpen && 
       <AudioFooter audioUrl={audioUrl}/>}
 
-      <Route exact>
+      <Route exact path="/">
         <img className="logo" src={process.env.PUBLIC_URL + "/assets/logo.png"} alt="Podcast Logo"/>
       </Route>
     </Router>
