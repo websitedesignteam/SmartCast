@@ -3,6 +3,7 @@ import requests
 import os
 import boto3
 import json
+import time
 
 
 
@@ -101,7 +102,7 @@ def lambda_handler(event, context):
     downloadedFileName = downloadmp3File[0] #fetch the mp3 file name
     
     # store the url into s3
-    s3 = boto.client('s3')
+    s3 = boto3.client('s3')
     #take downloadedFileName, upload to 'transcribe-bucket-for-mp3' as 'downloadedfile.mp3'
     s3.upload_file(downloadedFileName, 'transcribe-bucket-for-mp3', 'downloadedfile.mp3')
     os.remove(downloadedFileName) #remove the mp3 from local directory after upload to s3
@@ -112,7 +113,7 @@ def lambda_handler(event, context):
     transcribe = boto3.client('transcribe')
     
     #### This will be the naming convention for every transcribe job
-    job_name = "Transcribe-job-for-" + episodeID
+    job_name = "Transcribe-job-for-" + str(episodeID)
     #this is the s3 path from where we are fetching the mp3 file we just stored above
     job_uri = "s3://transcribe-bucket-for-mp3/downloadedfile.mp3" 
     
@@ -158,10 +159,10 @@ def lambda_handler(event, context):
     jsonObject = json.loads(data)
     
     #remove the json from local directory
-    os.removed(jsonFileName)
+    os.remove(jsonFileName)
     
     #extract the transcribedText from the json object
-    transcribedText = json_object['results']['transcripts'][0]['transcript']
+    transcribedText = jsonObject['results']['transcripts'][0]['transcript']
     
     #write the transcribedText to a textfile
     transcribedTextFile = open("transcribedtext.txt", "wt")
@@ -171,12 +172,13 @@ def lambda_handler(event, context):
     #upload the transcribedTextFile to the s3 bucket
     
     #create a unique transcribed text file name using episodeID
-    transcribedTextFileName = episodeID + '.txt'
+    transcribedTextFileName = str(episodeID) + '.txt'
     #the bucket which will contain all the transcribed text files
     transcribedBucketName = 'files-after-transcribing'
     
     #wrote the transcribed text to 'transcribedtext.txt' i.e a local file
     #store the transcribed text to s3 bucket with the name as transcribedTextFileName var
+    s3 = boto3.client('s3')
     s3.upload_file('transcribedtext.txt', transcribedBucketName, transcribedTextFileName)
     
     #finally delete the local text file
