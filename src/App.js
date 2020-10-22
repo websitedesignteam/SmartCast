@@ -8,7 +8,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
-          DEVELOP BRANCH
+          DEVELOP V1 BRANCH
         </p>
       </header>
     </div>

@@ -2,6 +2,7 @@ import json
 import requests
 import os
 import boto3
+import json
 
 
 
@@ -95,24 +96,27 @@ def lambda_handler(event, context):
     genreIDs = None
     visitedCount = None
     
-    #download the audiofile
+    #download the audiofile using audioLink variable
     downloadmp3File = urllib.request.urlretrieve(audioLink,f"downloadedAudio.mp3")
-    downloadedFileName = x[0]
+    downloadedFileName = downloadmp3File[0] #fetch the mp3 file name
     
     # store the url into s3
     s3 = boto.client('s3')
+    #take downloadedFileName, upload to 'transcribe-bucket-for-mp3' as 'downloadedfile.mp3'
     s3.upload_file(downloadedFileName, 'transcribe-bucket-for-mp3', 'downloadedfile.mp3')
-    os.remove(downloadedFileName)
+    os.remove(downloadedFileName) #remove the mp3 from local directory after upload to s3
     
     #at this point the downloadedfile.mp3 is the stored mp3 in the S3 bucket
     
     #Write the logic for transcribing the audio fetching it from s3
     transcribe = boto3.client('transcribe')
     
-    #### TODO write a unique job name everytime
-    job_name = "transcribe-episode-job"
-    job_uri = "s3://transcribe-bucket-for-mp3/downloadedfile.mp3" #this is the s3 path
+    #### This will be the naming convention for every transcribe job
+    job_name = "Transcribe-job-for-" + episodeID
+    #this is the s3 path from where we are fetching the mp3 file we just stored above
+    job_uri = "s3://transcribe-bucket-for-mp3/downloadedfile.mp3" 
     
+    #starting the transcribe job in AWS Transcribe
     transcribe.start_transcription_job(
         TranscriptionJobName=job_name,
         Media={'MediaFileUri': job_uri},
@@ -130,38 +134,56 @@ def lambda_handler(event, context):
         
     print(status)
     
-    #once the transcription job is completed, delete the mp3 file from s3 bucket
+    #we do not care about the mp3 file we stored in transcribe-bucket-for-mp3  
+    #once the transcription job is completed, delete the mp3 file from s3 'transcribe-bucket-for-mp3'  bucket
+    s3 = boto3.resource('s3')
     s3.Object('transcribe-bucket-for-mp3', 'downloadedfile.mp3').delete()
     
     #get the info for transcribed job once it is finished
     info = transcribe.get_transcription_job(TranscriptionJobName=job_name)
     
-    #get the transcribed file and download it
+    #transcribeJsonFile is the unique link to access the jsonfile containing results from transcriptionjob
     transcribedJsonFile = info['TranscriptionJob']['Transcript']['TranscriptFileUri']
+    
+    #use the link to download the file as transcribed.json in local directory
     downloadableJsonFile = urllib.request.urlretrieve(transcribedJsonFile,f"transcribed.json")
-    jsonName = downloadableJsonFile[0] #store the transcribed json file's name
+    jsonFileName = downloadableJsonFile[0] #store the transcribed json file's name
     
-    #Write the logic to STORE that transcribed into S3
-    #upload that json to s3
-    s3.upload_file(jsonName, 'files-after-transcribing', 'transcribed.json')
+    #at this point we have the JsonFile with all the results in our local directory
+    #We will read the jsonFile and extract transcribed text from it
+    with open(jsonFileName, 'r') as myfile:
+        data = myfile.read()
     
-    #TODO: maybe before deleting local json, read the file and extract only the string
-    #with this logic, transcribedtext variable does not contain the transcribed text, but it just contains the json downloadable link
-    #this logic can be changed by using python files to extract the transcribed text
-    transcribedText = info['TranscriptionJob']['Transcript']['TranscriptFileUri']
+    #after reading the file get the json object for the results
+    jsonObject = json.loads(data)
     
     #remove the json from local directory
-    os.removed(jsonName)
+    os.removed(jsonFileName)
     
+    #extract the transcribedText from the json object
+    transcribedText = json_object['results']['transcripts'][0]['transcript']
     
-    #MAKE SURE YOU GET THE KEYSTRING FOR S3
-    #keystring is the object path in s3
-    #TODO: one this api is tested go back and define these variables early-on and use instead of hardcoding
+    #write the transcribedText to a textfile
+    transcribedTextFile = open("transcribedtext.txt", "wt")
+    n = transcribedTextFile.write(transcribedText)
+    transcribedTextFile.close()
+    
+    #upload the transcribedTextFile to the s3 bucket
+    
+    #create a unique transcribed text file name using episodeID
+    transcribedTextFileName = episodeID + '.txt'
+    #the bucket which will contain all the transcribed text files
     transcribedBucketName = 'files-after-transcribing'
-    transcribedFilename = 'transcribed.json'
+    
+    #wrote the transcribed text to 'transcribedtext.txt' i.e a local file
+    #store the transcribed text to s3 bucket with the name as transcribedTextFileName var
+    s3.upload_file('transcribedtext.txt', transcribedBucketName, transcribedTextFileName)
+    
+    #finally delete the local text file
+    os.remove('transcribedtext.txt')
     
     #keystring is an S3 PATH, think of it like a unix path
-    keyString = 'https://' + transcribedBucketName + '.s3.amazonaws.com/' + transcribedFilename
+    keyString = 'https://' + transcribedBucketName + '.s3.amazonaws.com/' + transcribedTextFileName
     
     #Get past information of data you DO NOT WANT TO OVERWRITE
     data = getEpisode(podcastID = podcastID, episodeID = episodeID)
@@ -174,5 +196,9 @@ def lambda_handler(event, context):
     #Update your entry
     putEpisode(podcastID = podcastID, episodeID =episodeID, transcribedStatus = transcribedStatus, transcribedText = keyString, tags = tags, genreIDs = genreIDs, visitedCount = visitedCount)
     
-    
+    return {
+        'statusCode': 200,
+        'headers': {'Content-Type': 'application/json'},
+        'body': 'Successfully Transcribed'
+    }
     
