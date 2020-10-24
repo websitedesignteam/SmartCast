@@ -2,9 +2,8 @@ import json
 import requests
 import os
 import boto3
-import json
 import time
-
+import urllib.request
 
 
 def putEpisode(podcastID,episodeID, transcribedStatus = None,transcribedText = None,tags = None, genreIDs = None, visitedCount = None):
@@ -30,7 +29,7 @@ def putEpisode(podcastID,episodeID, transcribedStatus = None,transcribedText = N
 
     try: 
         table.put_item(
-           Item={
+            Item={
                 'podcastID': podcastID,
                 'episodeID': episodeID,
                 'transcribedStatus': transcribedStatus,
@@ -46,10 +45,11 @@ def putEpisode(podcastID,episodeID, transcribedStatus = None,transcribedText = N
         print(str(e))
         return 'Error'
 
-def getEpisode(cls,podcastID,episodeID):
+def getEpisode(podcastID,episodeID):
     
+    tableName = os.environ.get("TableName")
     dynamoDB = boto3.resource('dynamodb')
-    table = dynamoDB.Table(cls._tableName)
+    table = dynamoDB.Table(tableName)
     
     try:
         response = table.get_item(
@@ -82,13 +82,26 @@ def getEpisode(cls,podcastID,episodeID):
 def lambda_handler(event, context):
     
     #Extract the body from event
+    print("eventtype ", type(event))
+    json.dumps(event)
     body = event["body"]
-    body = json.loads(body)
+    print("body1: ",body)
+    
+    print(type(body))
+    print("============")
+    json.dumps(body)
+    print("body2: ",body)
+    print(type(body))
+    
+    # body = json.loads(body)
     
     #Extract values from GET request and initialize vars for function call
     podcastID = str(body["podcastID"])
     episodeID = str(body["episodeID"])
     audioLink = str(body["audioLink"])
+    print(podcastID)
+    print(episodeID)
+    print(audioLink)
     
     #Define variables for eventual database update
     transcribedStatus = "COMPLETED"
@@ -98,7 +111,7 @@ def lambda_handler(event, context):
     visitedCount = None
     
     #download the audiofile using audioLink variable
-    downloadmp3File = urllib.request.urlretrieve(audioLink,f"downloadedAudio.mp3")
+    downloadmp3File = urllib.request.urlretrieve(audioLink,f"/tmp/downloadedAudio.mp3")
     downloadedFileName = downloadmp3File[0] #fetch the mp3 file name
     
     # store the url into s3
@@ -113,7 +126,8 @@ def lambda_handler(event, context):
     transcribe = boto3.client('transcribe')
     
     #### This will be the naming convention for every transcribe job
-    job_name = "Transcribe-job-for-" + str(episodeID)
+    job_name = "Transcription-job-for-" + str(episodeID)
+    
     #this is the s3 path from where we are fetching the mp3 file we just stored above
     job_uri = "s3://transcribe-bucket-for-mp3/downloadedfile.mp3" 
     
@@ -147,7 +161,7 @@ def lambda_handler(event, context):
     transcribedJsonFile = info['TranscriptionJob']['Transcript']['TranscriptFileUri']
     
     #use the link to download the file as transcribed.json in local directory
-    downloadableJsonFile = urllib.request.urlretrieve(transcribedJsonFile,f"transcribed.json")
+    downloadableJsonFile = urllib.request.urlretrieve(transcribedJsonFile,f"/tmp/transcribed.json")
     jsonFileName = downloadableJsonFile[0] #store the transcribed json file's name
     
     #at this point we have the JsonFile with all the results in our local directory
@@ -165,7 +179,7 @@ def lambda_handler(event, context):
     transcribedText = jsonObject['results']['transcripts'][0]['transcript']
     
     #write the transcribedText to a textfile
-    transcribedTextFile = open("transcribedtext.txt", "wt")
+    transcribedTextFile = open("/tmp/transcribedtext.txt", "wt")
     n = transcribedTextFile.write(transcribedText)
     transcribedTextFile.close()
     
@@ -179,13 +193,13 @@ def lambda_handler(event, context):
     #wrote the transcribed text to 'transcribedtext.txt' i.e a local file
     #store the transcribed text to s3 bucket with the name as transcribedTextFileName var
     s3 = boto3.client('s3')
-    s3.upload_file('transcribedtext.txt', transcribedBucketName, transcribedTextFileName)
+    s3.upload_file('/tmp/transcribedtext.txt', transcribedBucketName, transcribedTextFileName)
     
     #finally delete the local text file
-    os.remove('transcribedtext.txt')
+    os.remove('/tmp/transcribedtext.txt')
     
     #keystring is an S3 PATH, think of it like a unix path
-    keyString = 'https://' + transcribedBucketName + '.s3.amazonaws.com/' + transcribedTextFileName
+    keyString = transcribedTextFileName
     
     #Get past information of data you DO NOT WANT TO OVERWRITE
     data = getEpisode(podcastID = podcastID, episodeID = episodeID)
@@ -194,7 +208,7 @@ def lambda_handler(event, context):
     genreIDs = data["genreIDs"]
     visitedCount = data["visitedCount"]
     
-    
+    print(transcribedText)
     #Update your entry
     putEpisode(podcastID = podcastID, episodeID =episodeID, transcribedStatus = transcribedStatus, transcribedText = keyString, tags = tags, genreIDs = genreIDs, visitedCount = visitedCount)
     
