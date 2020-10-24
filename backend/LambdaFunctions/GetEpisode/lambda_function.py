@@ -51,6 +51,7 @@ def getEpisode(podcastID,episodeID):
     returnData["episodeDescription"] = listenNotesData["description"]
     returnData["episodeAudioLength"] = listenNotesData["audio_length_sec"]
     returnData["podcastID"] = podcastID
+    returnData["podcastPublisher"] = listenNotesData["podcast"]["publisher"]
     returnData["podcastTitle"] = listenNotesData["podcast"]["title"]
     data = data["Data"]
     if len(data) == 0:
@@ -88,7 +89,12 @@ def lambda_handler(event, context):
     
     return{
         'statusCode': 200,
-        'headers' : {'Content-Type': 'application/json'},
+        'headers' : {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Credentials': True,
+            'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'},
         'body': json.dumps(getEpisode(podcastID = podcastID, episodeID = episodeID))
     }
 
