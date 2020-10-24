@@ -37,16 +37,19 @@ div {
 	flex-shrink: 0;
 	button {
 		display: inline-block;
-		border: none;
+		border: black;
 		position: relative;
-		background-color: transparent;
+		border-radius: 50%;
 		img {
 			width: 3rem; 
-		}	
+		}
+		width: 4rem;
+		height: 4rem;	
+		margin-left: 1rem;
 	}
 }
 
-.loader {
+.loader, .loaderSmall {
 	border: 16px solid #f3f3f3; /* Light grey */
 	border-top: 16px solid #3498db; /* Blue */
 	border-radius: 50%;
@@ -59,4 +62,11 @@ div {
 @keyframes spin {
 	0% { transform: rotate(0deg); }
 	100% { transform: rotate(360deg); }
+}
+
+.loaderSmall {
+	height: 2rem;
+	width: 2rem;
+	display: inline-block;
+	margin: -0.5rem 1rem;
 }

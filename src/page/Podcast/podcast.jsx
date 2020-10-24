@@ -15,7 +15,6 @@ function Podcast(props) {
 	//api call to be confirmed
 	useEffect(() => {
 		const data = { podcastID };
-		console.log(data);
 		const getPodcastAPI = () => {
 			getPodcast(data)
 			.then((response) => {
