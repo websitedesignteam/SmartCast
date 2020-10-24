@@ -3,14 +3,14 @@ import requests
 import os
 import boto3
 
+#Main function call
 def putEpisode(podcastID,episodeID, transcribedStatus = None,transcribedText = None,tags = None, genreIDs = None, visitedCount = None):
-    
     tableName = os.environ.get("TableName")
     dynamoDB = boto3.resource('dynamodb')
     table = dynamoDB.Table(tableName)
 
     if transcribedStatus is None:
-        transcribedStatus = ""
+        transcribedStatus = "IN PROGRESS"
 
     if transcribedText is None:
         transcribedText = ""
@@ -26,7 +26,7 @@ def putEpisode(podcastID,episodeID, transcribedStatus = None,transcribedText = N
     
     try: 
         table.put_item(
-           Item={
+            Item={
                 'podcastID': podcastID,
                 'episodeID': episodeID,
                 'transcribedStatus': transcribedStatus,
@@ -41,9 +41,8 @@ def putEpisode(podcastID,episodeID, transcribedStatus = None,transcribedText = N
         print(str(e))
         return 'Error'
 
-
 def lambda_handler(event, context):
-    
+
     #Extract the body from event
     body = event["body"]
     body = json.loads(body)
@@ -55,13 +54,13 @@ def lambda_handler(event, context):
     
     
     try: 
-        putResponse = putEpisode(podcastID = podcastID, episodeID =episodeID)
+        putResponse = putEpisode(podcastID, episodeID)
         if putResponse == "Error":
             return {
                 'statusCode': 404,
                 'headers': {'Content-Type': 'application/json'},
                 'body': json.dumps({
-                    "Error": "put meaningful error"
+                    "Error": "Cannot connect to the database"
                 })
             }
         #call another lambda function to ASYNCHRONOUSLY begin the transcription of audio
@@ -70,30 +69,39 @@ def lambda_handler(event, context):
             lambdaClient = boto3.client('lambda')
             
             event = {
-                "podcastID": podcastID,
-                "episodeID": episodeID,
-                "audioLink": audioLink
+                "body": {
+                    "podcastID": podcastID,
+                    "episodeID": episodeID,
+                    "audioLink": audioLink
+                }
             }
             
-            client.invoke(
-                Functionname = 'arn:aws:lambda:us-east-1:838451841239:function:TranscribeAudio', #TODO: put your ARN over here
+            lambdaClient.invoke(
+                FunctionName = 'arn:aws:lambda:us-east-1:838451841239:function:TranscribeAudio', #TODO: put your ARN over here
                 InvocationType = 'Event',
-                Paylaod = json.dumps(event)
+                Payload = json.dumps(event)
                 )
+                
+            return{
+            'statusCode': 200,
+            'headers' : {'Content-Type': 'application/json'},
+            'body': json.dumps({"Success" : "Transcription Job Started"})
+            }
         except:
             return {
                 'statusCode': 200,
                 'headers': {'Content-Type': 'application/json'},
                 'body': json.dumps({
-                    "Error": "put meaningful error"
+                    "Error": "Transcription Failed"
                 })
             }
-                    
-    # TODO implement
-    return {
-        'statusCode': 200,
-        'headers': {'Content-Type': 'application/json'},
-        'body': json.dumps({
-            "Success": "put meaningful message here"
-        })
-    }
+        
+        
+    except:
+        return {
+            'statusCode': 200,
+            'headers': {'Content-Type': 'application/json'},
+            'body': json.dumps({
+                "Error": "Cannot connect to the database"
+            })
+        }     
