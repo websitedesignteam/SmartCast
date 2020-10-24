@@ -61,10 +61,16 @@ def getEpisode(podcastID,episodeID):
         returnData["visitedCount"] = 0
     else:
         returnData["transcribedStatus"] = data["transcribedStatus"]
-        returnData["transcribedText"] = data["transcribedText"]
+        if data["transcribedStatus"] == "COMPLETED":
+            s3 = boto3.resource('s3')
+            obj = s3.Object("files-after-transcribing","02f0123246c944e289ee2bb90804e41b.txt")
+            text = obj.get()['Body'].read().decode('utf-8')
+            returnData["transcribedText"] = text
+        else:
+            returnData["transcribedText"] = data["transcribedText"]
         returnData["tags"] = data["tags"]
         returnData["genreIDs"] = data["genreIDs"]
-        returnData["visitedCount"] = data["visitedCount"]
+        returnData["visitedCount"] = int(data["visitedCount"])
 
     return { "Data": returnData}
 
@@ -85,3 +91,14 @@ def lambda_handler(event, context):
         'headers' : {'Content-Type': 'application/json'},
         'body': json.dumps(getEpisode(podcastID = podcastID, episodeID = episodeID))
     }
+
+if __name__ == "__main__":
+    
+    event = {
+        "body": json.dumps({
+            "podcastID": "4d3fe717742d4963a85562e9f84d8c79",
+            "episodeID": "52e7254095164fef9cce2e9372edc62d"
+        })
+    }
+    
+    print(lambda_handler(event,None))
