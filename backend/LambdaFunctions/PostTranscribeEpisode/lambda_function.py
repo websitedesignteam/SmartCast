@@ -42,7 +42,8 @@ def putEpisode(podcastID,episodeID, transcribedStatus = None,transcribedText = N
         return 'Error'
 
 def lambda_handler(event, context):
-
+    print(event)
+    print(type(event))
     #Extract the body from event
     body = event["body"]
     body = json.loads(body)
@@ -57,8 +58,14 @@ def lambda_handler(event, context):
         putResponse = putEpisode(podcastID, episodeID)
         if putResponse == "Error":
             return {
-                'statusCode': 404,
-                'headers': {'Content-Type': 'application/json'},
+                'statusCode': 200,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Credentials': True,
+                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+                },
                 'body': json.dumps({
                     "Error": "Cannot connect to the database"
                 })
@@ -77,20 +84,32 @@ def lambda_handler(event, context):
             }
             
             lambdaClient.invoke(
-                FunctionName = 'arn:aws:lambda:us-east-1:838451841239:function:TranscribeAudio', #TODO: put your ARN over here
+                FunctionName = 'arn:aws:lambda:us-east-1:838451841239:function:TranscribeAudio',
                 InvocationType = 'Event',
                 Payload = json.dumps(event)
                 )
                 
             return{
-            'statusCode': 200,
-            'headers' : {'Content-Type': 'application/json'},
-            'body': json.dumps({"Success" : "Transcription Job Started"})
+                'statusCode': 200,
+                'headers' : {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Credentials': True,
+                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+                },
+                'body': json.dumps({"Success" : "Transcription Job Started"})
             }
         except:
             return {
                 'statusCode': 200,
-                'headers': {'Content-Type': 'application/json'},
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Credentials': True,
+                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+                },
                 'body': json.dumps({
                     "Error": "Transcription Failed"
                 })
@@ -100,8 +119,14 @@ def lambda_handler(event, context):
     except:
         return {
             'statusCode': 200,
-            'headers': {'Content-Type': 'application/json'},
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': True,
+                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'                
+            },
             'body': json.dumps({
                 "Error": "Cannot connect to the database"
             })
-        }     
+        }
