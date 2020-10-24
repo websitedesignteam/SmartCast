@@ -17,14 +17,25 @@ def lambda_handler(event, context):
     else:
         sortBy = None
         
+    if "currentPage" in body:
+        currentPage = int(body["currentPage"])
+    else:
+        currentPage = 0
+        
+    print(currentPage)
+    
+        
         
     #search Function
-    def searchPodcasts(searchString, sortBy=None):
+    def searchPodcasts(searchString, currentPage, sortBy=None):
         
         if sortBy is None:
             sortBy = "recent_first"
             
-        returnData = {}
+        if currentPage is None:
+            currentPage = 0
+            
+        
         
         url = "https://listen-api.listennotes.com/api/v2/search"
         querystring = {"sort_by_date":"0", "type":"podcast","offset":"0","len_min":"2","len_max":"10","only_in":"title","language":"English","safe_mode":"1","q":searchString}
@@ -37,9 +48,21 @@ def lambda_handler(event, context):
         responseData = response.json()
         print(responseData)
         
+        returnData = {}
+        
         #generic data for the podcastsearch
         returnData["totalCount"] = responseData["count"]
         returnData["totalPodcasts"] = responseData["total"]
+        
+        if(currentPage == 0):
+            returnData["currentPage"] = 0
+            returnData["previousPage"] = 0
+            returnData["nextPage"] = int(currentPage) + 10
+        
+        else:
+            returnData["currentPage"] = int(currentPage)
+            returnData["previousPage"] = int(currentPage) - 10
+            returnData["nextPage"] = int(currentPage) + 10
         
         #specific data for each podcast
         returnData["podcasts"] = []
@@ -66,5 +89,5 @@ def lambda_handler(event, context):
     return {
         'statusCode': 200,
         'headers': {'Content-Type': 'application/json'},
-        'body': json.dumps(searchPodcasts(searchString))
+        'body': json.dumps(searchPodcasts(searchString, currentPage))
     }
