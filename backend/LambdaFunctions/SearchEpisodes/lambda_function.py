@@ -27,7 +27,7 @@ def lambda_handler(event, context):
         returnData = {}
         
         url = "https://listen-api.listennotes.com/api/v2/search"
-        querystring = {"sort_by_date":"0", "type":"episode","offset":"0","len_min":"2","len_max":"10","genre_ids":"68%2C82","published_before":"1490190241000","published_after":"1390190241000","only_in":"title","language":"English","safe_mode":"1","q":searchString}
+        querystring = {"sort_by_date":"0", "type":"episode","offset":"0","len_min":"2","len_max":"10","only_in":"title","language":"English","safe_mode":"1","q":searchString}
         
         headers = {
             'X-ListenAPI-Key': os.environ.get("APIKEY")
