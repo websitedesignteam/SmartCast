@@ -76,7 +76,7 @@ def lambda_handler(event, context):
             }
             
             client.invoke(
-                Functionname = 'PUT ARN HERE', #TODO: put your ARN over here
+                Functionname = 'arn:aws:lambda:us-east-1:838451841239:function:TranscribeAudio', #TODO: put your ARN over here
                 InvocationType = 'Event',
                 Paylaod = json.dumps(event)
                 )
