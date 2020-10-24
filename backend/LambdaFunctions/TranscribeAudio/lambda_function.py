@@ -4,6 +4,7 @@ import os
 import boto3
 import time
 import urllib.request
+import uuid
 
 
 def putEpisode(podcastID,episodeID, transcribedStatus = None,transcribedText = None,tags = None, genreIDs = None, visitedCount = None):
@@ -83,6 +84,7 @@ def lambda_handler(event, context):
     
     #Extract the body from event
     print("eventtype ", type(event))
+    print(event)
     json.dumps(event)
     body = event["body"]
     print("body1: ",body)
@@ -126,7 +128,7 @@ def lambda_handler(event, context):
     transcribe = boto3.client('transcribe')
     
     #### This will be the naming convention for every transcribe job
-    job_name = "Transcription-job-for-" + str(episodeID)
+    job_name = "Transcription-job-" + str(uuid.uuid1())
     
     #this is the s3 path from where we are fetching the mp3 file we just stored above
     job_uri = "s3://transcribe-bucket-for-mp3/downloadedfile.mp3" 
@@ -214,7 +216,13 @@ def lambda_handler(event, context):
     
     return {
         'statusCode': 200,
-        'headers': {'Content-Type': 'application/json'},
+        'headers': {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Credentials': True,
+            'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+        },
         'body': 'Successfully Transcribed'
     }
     
