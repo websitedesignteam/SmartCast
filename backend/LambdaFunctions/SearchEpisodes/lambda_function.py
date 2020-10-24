@@ -17,12 +17,23 @@ def lambda_handler(event, context):
     else:
         sortBy = None
         
+    if "currentPage" in body:
+        currentPage = int(body["currentPage"])
+    else:
+        currentPage = 0
+    
+    print("current page", currentPage)
+        
         
     #search Function
-    def searchEpisodes(searchString, sortBy=None):
+    def searchEpisodes(searchString, currentPage, sortBy=None ):
         
         if sortBy is None:
             sortBy = "recent_first"
+            
+        if currentPage is None:
+            currentPage = 0
+            
             
         returnData = {}
         
@@ -36,10 +47,22 @@ def lambda_handler(event, context):
         response = requests.request("GET", url, headers=headers, params=querystring)
         responseData = response.json()
         print(responseData)
+        
+        returnData = {}
+        
         #generic data for the search
         returnData["totalCount"] = responseData["count"]
         returnData["totalEpisodes"] = responseData["total"]
-        # returnData["nextPageNumber"] = responseData["next_episode_pub_date"]
+        
+        if(currentPage == 0):
+            returnData["currentPage"] = 0
+            returnData["previousPage"] = 0
+            returnData["nextPage"] = int(currentPage) + 10
+        
+        else:
+            returnData["currentPage"] = int(currentPage)
+            returnData["previousPage"] = int(currentPage) - 10
+            returnData["nextPage"] = int(currentPage) + 10
         
         #specific data for each episode
         returnData["episodes"] = []
@@ -62,9 +85,11 @@ def lambda_handler(event, context):
             "Data": returnData
         }
 
-
+    print("in the end")
+    print(currentPage)
+    print("in the end")
     return {
         'statusCode': 200,
         'headers': {'Content-Type': 'application/json'},
-        'body': json.dumps(searchEpisodes(searchString))
+        'body': json.dumps(searchEpisodes(searchString, currentPage))
     }
