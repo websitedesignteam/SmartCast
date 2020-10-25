@@ -4,10 +4,13 @@ const { getAPI, postAPI } = require("./axios");
 const getGenres = () => getAPI(`/getallgenres`); //all genres
 
 //podcast results (search, genre)
-const getGenrePodcasts = () => getAPI(`/getallpodcastsofgenre`); //get podcasts of specific genre
+const getGenrePodcasts = (data) => postAPI(`/getallpodcastsofgenre`, data); //get podcasts of specific genre
 
-// TODO : search
-// const postSearch = (data) => postAPI(`search/`, data); 
+//search episodes
+const searchEpisodes = (data) => postAPI(`searchepisodes/`, data); 
+
+//search podcasts
+const searchPodcasts = (data) => postAPI(`searchpodcasts/`, data); 
 
 //podcast
 const getPodcast = (data) => postAPI(`/getallepisodes`,  data );
@@ -18,7 +21,8 @@ const getPodcast = (data) => postAPI(`/getallepisodes`,  data );
 export { 
     getGenres,
     getGenrePodcasts,
-    // postSearch, 
+    searchEpisodes,
+    searchPodcasts, 
     getPodcast,
     // getEpisode,
 }

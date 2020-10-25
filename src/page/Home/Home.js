@@ -6,47 +6,39 @@ import Search from '../../component/Search/Search'
 import { getGenres } from '../../utils/api';
 import axios from 'axios';
 import Axios from 'axios';
-import {Link} from 'react-router-dom'
-function Home() {
+import {Link, useParams} from 'react-router-dom'
+function Home(props) {
 
        const [genres, setGenres] = useState({});
 
-       const APIKEY = process.env.REACT_APP_SMARTCAST_API_KEY
-       //PROXY URL TO GET AROUND CORS ISSUE
-       const PROXY_URL = 'https://cors-anywhere.herokuapp.com/'
-       const URL ='https://g0rjpqharl.execute-api.us-east-1.amazonaws.com/test/getallgenres/'
-
-       // let config = {
-       //        'X-API-KEY': APIKEY,
-       //        'Authorization': APIKEY,
-       //        'Content-Type': 'application/json',
-       //        'Access-Control-Allow-Origin': 'http://localhost:3000',
-       // }
        useEffect(() => {
 			getGenres()
 			.then((response) => {
-                            console.log(response)
-				const genreData = response.data;
-				setGenres(genreData);
+				const genreData = response.data.Data;
+                            setGenres(genreData);
 			})
 			.catch((error) => {
-				console.log(error);
+                            console.log(error);
 			});
        }, []) 
-       
+
   return ( 
          <div className={styles.homeContainer}>
-              <p>Hi, I'm the home page</p>
               <Search/>
               <div className={styles.genreSection}>
-                     <div className={styles.genreHeading}>
-                            <h5>Genres</h5>
+                     <div className={styles.subGenre}>
+                            <div className={styles.genreHeading}>
+                                   <h5>Genres</h5>
+                            </div>
+                            <div className={styles.thumbnailContainer}>
+                            {Object.entries(genres).map(([key, val]) =>{
+                                   return <Link to={`/genres/${key}/${val}`}><Thumbnail title={key} id={val}/></Link>
+                            })}
+                            </div>
                      </div>
-                     {/* <div className={styles.thumbnailContainer}>
-                     {Object.keys(genres).map(function (key){
-                            return <Link to={`/genre/${key}`}><Thumbnail title={key}/></Link>
-                     })}
-                     </div> */}
+                     <div className={styles.subGenre}>
+                                   <h5>Top</h5>
+                     </div>
               </div>
          </div>
   );

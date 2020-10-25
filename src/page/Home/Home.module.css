@@ -7,7 +7,6 @@
 .genreSection{
        display: flex;
        flex-direction: column;
-       background: rgb(192, 193, 228);
        width: 100%;
        overflow: scroll;
 }
@@ -15,4 +14,14 @@
 .thumbnailContainer{
        display: flex;
        flex-direction: row;
+}
+
+.subGenre{
+       margin: 35px;
+}
+
+.divider{
+       color: 'black';
+       height: 5;
+       width: 100%;
 }

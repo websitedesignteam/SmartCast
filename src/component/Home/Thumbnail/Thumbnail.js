@@ -5,6 +5,7 @@ function Thumbnail(props) {
   return (    <div className={styles.thumbnailWrapper}>
                      <div className={styles.mainThumbnailContainer}>
                             <p>this is the thumbnail</p>
+                            <p>{props.id}</p>
                      </div>
                      <p>{props.title}</p>
               </div>

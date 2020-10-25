@@ -2,5 +2,13 @@
        display: flex;
        flex-direction: column;
        padding: 25px;
+       justify-content: center;
+       align-content: center;
 
+}
+
+.resultsContainer{
+       display: flex;
+       flex-direction: column;
+       align-items: center;
 }

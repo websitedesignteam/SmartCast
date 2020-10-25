@@ -1,8 +1,23 @@
 .overlayContent{
-       position: relative;
-       top: 46%;
-       width: 80%;
+       width: 100%;
        text-align: center;
-       margin-top: 30px;
-       margin: auto;  
+       margin-top: 50px; 
 }
+
+.searchBar{
+       width: 90%;
+       height: 35px;
+}
+
+.searchButton{
+       height: 41px;
+}
+
+.checkboxes{
+       display: flex;
+       flex-direction: row;
+       margin-left: 35px;
+       margin-top: 15px;
+}
+
+
