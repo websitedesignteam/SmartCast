@@ -7,7 +7,6 @@ function Navbar() {
                      <Link to='/'><h3 className={styles.logoText}>SmartCast</h3></Link>
                      <div className={styles.linksContainer}>
                              <Link to='/'><h5 className={styles.linkText}>Home</h5></Link>
-                             <Link to='/genres'><h5 className={styles.linkText}>Genres</h5></Link>
                      </div>
               </div>
   );
