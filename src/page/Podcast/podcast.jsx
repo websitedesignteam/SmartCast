@@ -45,7 +45,7 @@ function Podcast(props) {
 				<div className={styles.podcastDescription}>
 					<strong>Description</strong> 
 					<br/>
-					{currentPodcast.podcastDescription}
+                                   <p dangerouslySetInnerHTML={{__html: currentPodcast.podcastDescription}}></p>
 				</div> 
 				<ul className={styles.episodeList}>
 					<strong>Episodes</strong> 

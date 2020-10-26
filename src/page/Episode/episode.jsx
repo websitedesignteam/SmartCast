@@ -141,7 +141,7 @@ function Episode(props) {
                     <div className={styles.episodeDescription}>
                         <strong>Description</strong>
                         <br/>
-                        {currentEpisode.episodeDescription}
+                        <p dangerouslySetInnerHTML={{__html: currentEpisode.episodeDescription}}></p>
                     </div> 
 
                     { currentEpisode.transcribedText &&    

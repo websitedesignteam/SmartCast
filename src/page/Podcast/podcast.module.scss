@@ -11,8 +11,12 @@ div {
   display: block;
   position: relative;
   margin: 0 auto 1rem;
-  width: 100%; 
-  min-width: 12rem;
+  height: auto;
+  width: auto;
+//   max-width: 6rem;
+//   width: 100%; 
+//   min-width: 12rem;
+//   max-width: 12rem;
   @media screen and (min-width: 768px) {
     max-width: 30rem;
     margin: 0;
