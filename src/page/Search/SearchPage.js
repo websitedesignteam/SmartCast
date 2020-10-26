@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from 'react'
 import Search from '../../component/Search/Search'
+import { Link } from "react-router-dom"
 import {searchEpisodes, searchPodcasts} from '../../utils/api'
 import {withSearchContext} from "state/Search/withSearchContext"
 import {useSearchContext} from "state/Search/useSearchContext"
 import PodcastContainer from "component/PodcastContainer/PodcastContainer"
 import EpisodeContainer from "component/EpisodeContainer/EpisodeContainer"
+import styles from './SearchPage.module.css'
 
 function SearchPage(props) {
 
@@ -52,18 +54,26 @@ function SearchPage(props) {
                      return( <div>
                                    <h4>Episode Results for: "{searchTerm}"</h4>
                                    <p>{episodes.map((episodes)=>{
-                                          return <EpisodeContainer episodeTitle={episodes.episodeTitle}
-                                                        episodeDescription={episodes.episodeDescription}
-                                                        imgSrc={episodes.episodeImage}/>
+                                          return (
+                                                 <Link to={`/podcast/${episodes.podcastID}/episode/${episodes.episodeID}`} className={styles.link}>
+                                                        <EpisodeContainer episodeTitle={episodes.episodeTitle}
+                                                               episodeDescription={episodes.episodeDescription}
+                                                               imgSrc={episodes.episodeImage}/>
+                                                 </Link> 
+                                          )
                                    })}</p>
                             </div>)
               }else if (userChoice === 'podcasts'){
                      return( <div>
                             <h4>Podcast Results for: "{searchTerm}"</h4>
                             <p>{podcasts.map((podcasts)=>{
-                                   return <PodcastContainer podcastTitle={podcasts.podcastTitle}
+                                   return (
+                                   <Link to={`/podcast/${podcasts.podcastID}`} className={styles.link}>
+                                   <PodcastContainer podcastTitle={podcasts.podcastTitle}
                                                  podcastDescription={podcasts.podcastDescription}
                                                  imgSrc={podcasts.podcastImage}/>
+                                                 </Link>
+                                   )
                             })}</p>
                      </div>)
               }
