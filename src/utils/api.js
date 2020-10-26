@@ -13,10 +13,12 @@ const searchEpisodes = (data) => postAPI(`searchepisodes/`, data);
 const searchPodcasts = (data) => postAPI(`searchpodcasts/`, data); 
 
 //podcast
-const getPodcast = (data) => postAPI(`/getallepisodes`,  data );
+const getPodcast = (data) => postAPI(`/getallepisodes`, data );
 
-// TODO : episode
-// const getEpisode = (episodeId) => getAPI(`episode/${episodeId}`);
+// episode
+const getEpisode = (data) => postAPI(`/getepisode`, data);
+const postTranscribeEpisode = (data) => postAPI(`/posttranscribeepisode`, data);
+const getTranscribeUpdate = (data) => postAPI(`/gettranscribeupdate`, data);
 
 export { 
     getGenres,
@@ -24,5 +26,7 @@ export {
     searchEpisodes,
     searchPodcasts, 
     getPodcast,
-    // getEpisode,
+    getEpisode,
+    postTranscribeEpisode,
+    getTranscribeUpdate,
 }
