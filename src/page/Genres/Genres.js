@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom"
 import { getGenrePodcasts } from '../../utils/api'
 import styles from '../Genres/Genres.module.css'
 import PodcastContainer from '../../component/PodcastContainer/PodcastContainer'
+
 function Genres(props) {
        const [podcasts, setPodcasts] = useState()
        let {genreName} = useParams()
@@ -12,7 +13,7 @@ function Genres(props) {
 
        useEffect(() => {
               let body = {
-                     "genreID": 143,
+                     "genreID": genreName,
                      "page": 1
                  }
               getGenrePodcasts(body)
