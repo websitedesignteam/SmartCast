@@ -125,11 +125,11 @@ function Episode(props) {
                         {currentEpisode.podcastTitle}
                     </div>
 
-                    { currentEpisode.publisher &&
+                    { currentEpisode.podcastPublisher &&
                     <div className={styles.episodePublisher}>
                         <strong>Publisher</strong>
                         <br/>
-                        {currentEpisode.publisher}
+                        {currentEpisode.podcastPublisher}
                     </div>}
 
                     <div className={styles.episodeAudioLength}>
