@@ -1,18 +1,92 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import Podcast from './page/Podcast/Podcast'
+import Episode from './page/Episode/Episode'
+import Home from './page/Home/Home'
+import Genres from './page/Genres/Genres'
+import Navbar from './component/Navbar/Navbar'
+import SearchPage from './page/Search/SearchPage'
+
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
+import {withSearchContext} from "state/Search/withSearchContext"
+import AudioFooter from './component/AudioFooter/audioFooter';
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  // TODO: clean up by making this into a custom hook
+  const [audioPlayerOpen, setAudioPlayerOpen] = useState(false); 
+  const [audioUrl, setAudioUrl] = useState(""); 
+
+  const openAudioPlayer = (newAudioUrl) => {
+    setAudioUrl(newAudioUrl);
+    setAudioPlayerOpen(true);
+    localStorage.setItem('audioUrl', newAudioUrl);
+  }
+
+  const closeAudioPlayer = () => {
+    setAudioPlayerOpen(false);
+    setAudioUrl(null);
+    localStorage.removeItem("audioUrl");
+  }
+
+  useEffect(() => {
+    const currentAudioUrl = localStorage.getItem("audioUrl") || "";
+    
+    if (!!currentAudioUrl) {
+      setAudioUrl(currentAudioUrl);
+      setAudioPlayerOpen(true);
+    }
+
+    setIsLoading(false);
+  }, [audioUrl]);
+
+  if (isLoading) return null;
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          DEVELOP V1 BRANCH
-        </p>
-      </header>
+    <Router>
+      <Navbar />
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+
+        <Route exact path="/genres">
+          <Genres />
+        </Route>
+
+        <Route exact path="/genres/:genreName2/:genreName" component={Genres}>
+          <Genres />
+        </Route>
+
+        <Route exact path="/searchPage">
+          <SearchPage />
+        </Route>
+
+        {/* This route is temporarily used for episode while not using a modal popup */}
+        <Route exact path="/podcast/:podcastID/episode/:episodeID"> 
+          <Episode openAudioPlayer={openAudioPlayer} />
+        </Route> 
+
+        <Route exact path="/podcast/:podcastID">
+          <Podcast />
+        </Route>
+
+        {audioPlayerOpen && 
+        <AudioFooter audioUrl={audioUrl} closeAudioPlayer={closeAudioPlayer} />}
+
+        <Route exact path="/">
+          <img className="logo" src={process.env.PUBLIC_URL + "/assets/logo.png"} alt="Podcast Logo" />
+        </Route>
+      </Switch>
+    </Router>
     </div>
   );
 }
 
-export default App;
+export default withSearchContext(App);
