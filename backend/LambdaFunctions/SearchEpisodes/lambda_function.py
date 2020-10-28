@@ -90,6 +90,12 @@ def lambda_handler(event, context):
     print("in the end")
     return {
         'statusCode': 200,
-        'headers': {'Content-Type': 'application/json'},
+        'headers': {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Credentials': True,
+            'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+        },
         'body': json.dumps(searchEpisodes(searchString, currentPage))
     }
