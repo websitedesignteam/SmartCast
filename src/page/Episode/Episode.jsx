@@ -14,13 +14,18 @@ function Episode(props) {
     const [currentEpisode, setCurrentEpisode] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
 
+    //make into custom hook
+    const [episodePageList, setEpisodePageList] = useState([]); 
+    const [currentEpisodePageIndex, setCurrentEpisodePageIndex] = useState(-1);
+
     //api calls
     const getEpisodeAPI = () => {
-        const data = { episodeID, podcastID };
+        const data = { episodeID, podcastID, nextPage : episodePageList[currentEpisodePageIndex] };
         getEpisode(data)
         .then((response) => {
             const episodeData = response.data.Data;
             setCurrentEpisode(episodeData);
+            setEpisodePageList(episodePageList.concat([episodeData.nextPageNumber]));
         })
         .catch((error) => {
             console.log(error);
