@@ -45,9 +45,7 @@ function Genres(props) {
               </div>)
        } else{
               return (<div className={styles.genresContainer}>
-                     <div className="resultsContainer">
-                            Loading...
-                     </div>
+                     <div className="loader" />
                 </div>)
        }
 }
