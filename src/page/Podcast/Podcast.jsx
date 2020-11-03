@@ -12,22 +12,48 @@ function Podcast(props) {
 	const [currentPodcast, setCurrentPodcast] = useState(null);
 	const [errorMessage, setErrorMessage] = useState(null);
 
-	//api call to be confirmed
+	//make into custom hook
+	const [episodePageList, setEpisodePageList] = useState([]); 
+	const [currentEpisodePageIndex, setCurrentEpisodePageIndex] = useState(-1);
+
+	//api call to get podcast metadata
+	const getPodcastAPI = () => {
+		const data = { podcastID, nextPage : episodePageList[currentEpisodePageIndex] }
+		getPodcast(data)
+		.then((response) => {
+			const podcastData = response.data.Data;
+			setCurrentPodcast(podcastData);
+			setEpisodePageList(episodePageList.concat([podcastData.nextPageNumber]));
+		})
+		.catch((error) => {
+			console.log(error);
+			setErrorMessage(errorMessageText);
+		});
+	};
+
+	//utils for button function
+	const gotoLastPage = () => {
+		if (currentEpisodePageIndex > -1) {
+			setCurrentEpisodePageIndex(currentEpisodePageIndex-1)
+		}
+		else {
+			return;
+		}
+	}
+
+	const gotoNextPage = () => {
+		if (currentEpisodePageIndex < episodePageList.length-1) {
+			setCurrentEpisodePageIndex(currentEpisodePageIndex+1)
+		}
+		else {
+			return;
+		}
+	}
+
+
 	useEffect(() => {
-		const data = { podcastID };
-		const getPodcastAPI = () => {
-			getPodcast(data)
-			.then((response) => {
-				const podcastData = response.data.Data;
-				setCurrentPodcast(podcastData);
-			})
-			.catch((error) => {
-				console.log(error);
-				setErrorMessage(errorMessageText);
-			});
-		};
 		getPodcastAPI();
-	}, [podcastID, errorMessage]);
+	}, [podcastID, errorMessage, currentEpisodePageIndex]);
 
 	return (
 		<div className={styles.podcastContainer}>
@@ -45,7 +71,7 @@ function Podcast(props) {
 				<div className={styles.podcastDescription}>
 					<strong>Description</strong> 
 					<br/>
-                                   <p dangerouslySetInnerHTML={{__html: currentPodcast.podcastDescription}}></p>
+					<p dangerouslySetInnerHTML={{__html: currentPodcast.podcastDescription}}></p>
 				</div> 
 				<ul className={styles.episodeList}>
 					<strong>Episodes</strong> 
@@ -56,10 +82,17 @@ function Podcast(props) {
 					</li>
 				)}
 				</ul>
+				<div className={styles.episodePageButtons}>
+					{ currentEpisodePageIndex > -1 &&
+					<button onClick={gotoLastPage}>Last Page</button>}
+					{ currentEpisodePageIndex < episodePageList.length-1 &&
+					<button onClick={gotoNextPage}>Next Page</button>}
+
+				</div>
 			</>
 			: (errorMessage) 
 			? <div className={styles.errorMessage}>{errorMessage}</div>
-			: <div className={styles.loader}></div>
+			: <div className="loader" />
 			}
 		</div>
 	);
