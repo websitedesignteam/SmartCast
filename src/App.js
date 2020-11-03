@@ -16,20 +16,16 @@ import {withSearchContext} from "state/Search/withSearchContext"
 import AudioFooter from './component/AudioFooter/audioFooter';
 
 function App() {
+  //global app states
   const [isLoading, setIsLoading] = useState(true);
-
-  // TODO: clean up by making this into a custom hook
-  const [audioPlayerOpen, setAudioPlayerOpen] = useState(false); 
   const [audioUrl, setAudioUrl] = useState(""); 
 
   const openAudioPlayer = (newAudioUrl) => {
     setAudioUrl(newAudioUrl);
-    setAudioPlayerOpen(true);
     localStorage.setItem('audioUrl', newAudioUrl);
   }
 
   const closeAudioPlayer = () => {
-    setAudioPlayerOpen(false);
     setAudioUrl(null);
     localStorage.removeItem("audioUrl");
   }
@@ -39,7 +35,6 @@ function App() {
     
     if (!!currentAudioUrl) {
       setAudioUrl(currentAudioUrl);
-      setAudioPlayerOpen(true);
     }
 
     setIsLoading(false);
@@ -51,7 +46,7 @@ function App() {
     <div className="App">
     <Router>
       <Navbar />
-      {audioPlayerOpen && 
+      {audioUrl && 
         <AudioFooter audioUrl={audioUrl} closeAudioPlayer={closeAudioPlayer} />}
       <Switch>
 

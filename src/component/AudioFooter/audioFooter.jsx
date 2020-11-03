@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styles from "./audioFooter.module.css";
 
 function AudioFooter({audioUrl, closeAudioPlayer}) {
     const onClick = () => {
         closeAudioPlayer();
     }
+
     return (
         <>
         <button className={styles.closeAudioPlayer} onClick={onClick}>✖</button>

@@ -12,7 +12,7 @@ function Episode(props) {
 
     //states
     const [currentEpisode, setCurrentEpisode] = useState(null);
-    const [errorMessage, setErrorMessage] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(null)
 
     //api calls
     const getEpisodeAPI = () => {
@@ -65,6 +65,10 @@ function Episode(props) {
     
     const postTranscribeEpisodeAPI = (audioLink) => {
         const data = { episodeID, podcastID, audioLink }
+        setCurrentEpisode({
+            ...currentEpisode,
+            transcribedStatus : "IN PROGRESS",
+        });
         postTranscribeEpisode(data)
         .then((response) => {
             if (response.data.Success) {
@@ -84,7 +88,7 @@ function Episode(props) {
     const formatEpisodeLength = (episodeAudioLength) => {
         const episodeMin = Math.floor(episodeAudioLength/60);
         const episodeSec = episodeAudioLength%60;
-        return `${episodeMin}:${episodeSec}`;
+        return `${episodeMin}:${episodeSec > 9 ? episodeSec : `0`+episodeSec}`;
     }
 
     //api call to get episode
@@ -154,7 +158,7 @@ function Episode(props) {
             </>
             : (errorMessage) 
 			? <div className={styles.errorMessage}>{errorMessage}</div>
-			: <div className={styles.loader}></div>
+			: <div className="loader" />
             }
         </div>
         
