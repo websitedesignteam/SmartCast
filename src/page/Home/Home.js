@@ -31,9 +31,9 @@ function Home(props) {
                                    <h5>Genres</h5>
                             </div>
                             <div className={styles.thumbnailContainer}>
-                            {Object.entries(genres).map(([key, val]) =>{
+                            {/* {Object.entries(genres).map(([key, val]) =>{
                                    return <Link to={`/genres/${key}/${val}`}><Thumbnail title={key} id={val}/></Link>
-                            })}
+                            })} */}genre results
                             </div>
                      </div>
                      <div className={styles.subGenre}>

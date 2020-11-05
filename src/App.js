@@ -6,7 +6,7 @@ import Home from './page/Home/Home'
 import Genres from './page/Genres/Genres'
 import Navbar from './component/Navbar/Navbar'
 import SearchPage from './page/Search/SearchPage'
-
+import UserProfile from './page/Profile/UserProfile'
 import {
   BrowserRouter as Router,
   Switch,
@@ -54,6 +54,10 @@ function App() {
       <Switch>
         <Route exact path="/">
           <Home />
+        </Route>
+
+        <Route exact path="/profile">
+          <UserProfile />
         </Route>
 
         <Route exact path="/genres">
