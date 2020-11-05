@@ -49,7 +49,7 @@ function SearchPage(props) {
               }
        }
 
-       if (isLoading == false){
+       if (isLoading === false){
               if (userChoice === 'episodes'){
                      return( <div>
                                    <h4>Episode Results for: "{searchTerm}"</h4>
@@ -77,10 +77,8 @@ function SearchPage(props) {
                             })}</p>
                      </div>)
               }
-       }else if (isLoading == true){
-              return(<div>
-                     <p>Loading...</p>
-              </div>)
+       }else if (isLoading === true){
+              return (<div className="loader" />)
        }
 }
 
