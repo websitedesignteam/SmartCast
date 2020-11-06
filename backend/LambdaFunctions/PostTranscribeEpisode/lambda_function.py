@@ -58,7 +58,7 @@ def lambda_handler(event, context):
         putResponse = putEpisode(podcastID, episodeID)
         if putResponse == "Error":
             return {
-                'statusCode': 200,
+                'statusCode': 404,
                 'headers': {
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
@@ -115,10 +115,30 @@ def lambda_handler(event, context):
                 })
             }
         
+    except TypeError as e:
+        print("Type Error", e)
+        return{"Error" : "error"}
+        # return {'body': json.dumps({"Error" : e})}
+                
+    except requests.exceptions.HTTPError as errh:
+        return {'body': json.dumps({"HTTP Exception" : errh})}
+        print("HTTP Exception : ", errh)
+        
+    except requests.exceptions.ConnectionError as errc:
+        return {'body': json.dumps({"Connection Exception" : errc})}
+        print("Connection Exception : ", errc)
+        
+    except requests.exceptions.Timeout as errt:
+        return {'body': json.dumps({"Timeout Exception" : errt})}
+        print("Timeout Exception : ", errt)
+        
+    except requests.exceptions.RequestException as err:
+        return {'body': json.dumps({"Unknown exception" : err})}
+        print("Unknown Exception : ", err)
         
     except:
         return {
-            'statusCode': 200,
+            'statusCode': 404,
             'headers': {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
