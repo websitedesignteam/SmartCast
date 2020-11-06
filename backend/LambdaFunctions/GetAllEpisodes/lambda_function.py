@@ -107,7 +107,7 @@ def lambda_handler(event, context):
                 'Access-Control-Allow-Credentials': True,
                 'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
             },
-            'body': json.dumps(getAllEpisodes(podcastID = podcastID,sortBy = sortBy, nextPage = nextPage))
+            'body': json.dumps(data)
         }
     else:
         return {
@@ -119,6 +119,6 @@ def lambda_handler(event, context):
                 'Access-Control-Allow-Credentials': True,
                 'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
             },
-            'body': json.dumps(getAllEpisodes(podcastID = podcastID,sortBy = sortBy, nextPage = nextPage))
+            'body': json.dumps(data)
         }
         
