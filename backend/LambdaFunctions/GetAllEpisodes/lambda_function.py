@@ -2,27 +2,11 @@ import json
 import requests
 import os
 
-def lambda_handler(event, context):
+
+#Main function call
+def getAllEpisodes(podcastID,sortBy = None,nextPage = None):
     
-    #Extract the body from event
-    body = event["body"]
-    body = json.loads(body)
-    
-    #Extract values from GET request and initialize vars for function call
-    podcastID =str(body["podcastID"])
-    
-    if "sortBy" in body:
-        sortBy = str(body["sortBy"])
-    else:
-        sortBy = None
-    
-    if "nextPage" in body:
-        nextPage = str(body["nextPage"])
-    else:
-        nextPage = None
-    
-    #Main function call
-    def getAllEpisodes(podcastID,sortBy = None,nextPage = None):
+    try: 
         if sortBy is None:
             sortBy = "recent_first"
         
@@ -64,10 +48,77 @@ def lambda_handler(event, context):
         return {
             "Data": returnData
         }
+    except Exception as e:
+        body = {
+            "Error": "You must provide a valid Podcast ID."
+        }
+        return body
+            
+
+def lambda_handler(event, context):
+    
+    try:
+        #Extract the body from event
+        body = event["body"]
+        body = json.loads(body)
+        
+        #Extract values from GET request and initialize vars for function call
+        if "podcastID" in body:
+            podcastID =str(body["podcastID"])
+        else:
+            raise Exception("Fail")
+        
+        if "sortBy" in body:
+            sortBy = str(body["sortBy"])
+        else:
+            sortBy = None
+        
+        if "nextPage" in body:
+            nextPage = str(body["nextPage"])
+        else:
+            nextPage = None
+    except Exception as e:
+        body = {
+            "Error": "You must provide a Podcast ID."
+        }
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': True,
+                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+            },
+            'body': json.dumps(body)
+        }
+    
+
 
     # TODO implement
-    return {
-        'statusCode': 200,
-        'headers': {'Content-Type': 'application/json'},
-        'body': json.dumps(getAllEpisodes(podcastID = podcastID,sortBy = sortBy, nextPage = nextPage))
-    }
+    data = getAllEpisodes(podcastID = podcastID, sortBy = sortBy, nextPage = nextPage)
+    if "Data" in data:
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': True,
+                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+            },
+            'body': json.dumps(getAllEpisodes(podcastID = podcastID,sortBy = sortBy, nextPage = nextPage))
+        }
+    else:
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': True,
+                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+            },
+            'body': json.dumps(getAllEpisodes(podcastID = podcastID,sortBy = sortBy, nextPage = nextPage))
+        }
+        
