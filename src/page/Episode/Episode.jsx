@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import { getEpisode, postTranscribeEpisode, getTranscribeUpdate } from '../../utils/api';
+import useIsActive from '../../hook/useIsActive';
 import styles from "./Episode.module.scss";
 
 function Episode(props) {
@@ -12,7 +15,11 @@ function Episode(props) {
 
     //states
     const [currentEpisode, setCurrentEpisode] = useState(null);
-    const [errorMessage, setErrorMessage] = useState(null)
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [editTranscription, setEditTranscription] = useState("");
+
+    //util states 
+    const openEditor = useIsActive();
 
     //api calls
     const getEpisodeAPI = () => {
@@ -21,6 +28,9 @@ function Episode(props) {
         .then((response) => {
             const episodeData = response.data.Data;
             setCurrentEpisode(episodeData);
+            if (episodeData.transcribedText) {
+                setEditTranscription(episodeData.transcribedText);
+            }
         })
         .catch((error) => {
             console.log(error);
@@ -52,6 +62,8 @@ function Episode(props) {
                     transcribedText,
                     transcribedStatus,
                 })
+
+                setEditTranscription(transcribedText);
             } 
             else {
                 return;
@@ -89,6 +101,22 @@ function Episode(props) {
         const episodeMin = Math.floor(episodeAudioLength/60);
         const episodeSec = episodeAudioLength%60;
         return `${episodeMin}:${episodeSec > 9 ? episodeSec : `0`+episodeSec}`;
+    }
+
+    const openTranscription = () => {
+       openEditor.activate();
+    }
+
+    const closeTranscription = () => {
+        setCurrentEpisode({ 
+            ...currentEpisode, 
+            transcribedText : editTranscription,
+        });
+        openEditor.deactivate();
+     }
+
+    const onChangeEditTranscription = (value) => {
+        setEditTranscription(value);
     }
 
     //api call to get episode
@@ -147,13 +175,26 @@ function Episode(props) {
                         <br/>
                         <p dangerouslySetInnerHTML={{__html: currentEpisode.episodeDescription}}></p>
                     </div> 
+                    
+                    <div className={styles.episodeTranscription}>
+                        <div className={styles.header}>
+                            <strong>Transcription</strong>
+                            { openEditor.isActive 
+                            ? <button className={styles.editTranscription} onClick={closeTranscription}>Save <img src={baseUrl + "/assets/button/save.svg"} alt="" title="Save Episode Transcription"/></button> 
+                            : <button className={styles.editTranscription} onClick={openTranscription}>Edit <img src={baseUrl + "/assets/button/edit.svg"} alt="" title="Edit Episode Transcription"/></button> }
+                        </div>
+                        {/* <br/> */}
+                        { !openEditor.isActive && 
+                            <p dangerouslySetInnerHTML={{__html: currentEpisode.transcribedText || "No Transcription Available" }}></p>
+                        }                       
+                    </div>
 
-                    { currentEpisode.transcribedText &&    
-                    <div>
-                        <strong>Transcription</strong>
-                        <br/>
-                        {currentEpisode.transcribedText}                        
-                    </div>}
+                    { openEditor.isActive &&
+                    <ReactQuill 
+                        name="editTranscription"
+                        value={editTranscription}
+                        onChange={onChangeEditTranscription} /> 
+                    }
                 </div>
             </>
             : (errorMessage) 

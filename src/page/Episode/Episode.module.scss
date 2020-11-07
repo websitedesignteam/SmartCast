@@ -11,8 +11,8 @@ div {
 	display: block;
 	position: relative;
 	margin: 0 auto 1rem;
-       width: auto;
-       height: auto; 
+	width: auto;
+	height: auto; 
 	// min-width: 12rem;
 	@media screen and (min-width: 768px) {
 	  max-width: 30rem;
@@ -49,6 +49,19 @@ div {
 		width: 5rem;
 		height: 5rem;	
 		margin-left: 1rem;
+	}
+}
+
+button.editTranscription {
+	font: bold 1rem Cairo;
+	border: none;
+	border-radius: 0.2rem;
+	display: inline-flexbox;
+	img {
+		width: 1.1rem;
+		height: 1.1rem;
+		margin: 0 0 -0.15rem 0;
+		padding: 0;
 	}
 }
 

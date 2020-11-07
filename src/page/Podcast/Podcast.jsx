@@ -7,6 +7,7 @@ function Podcast(props) {
 	//vars
 	const { podcastID } = useParams();
 	const errorMessageText = "Sorry! We couldn't find that podcast.";
+	const baseUrl = process.env.PUBLIC_URL;
 
 	//states
 	const [currentPodcast, setCurrentPodcast] = useState(null);
@@ -84,9 +85,9 @@ function Podcast(props) {
 				</ul>
 				<div className={styles.episodePageButtons}>
 					{ currentEpisodePageIndex > -1 &&
-					<button onClick={gotoLastPage}>Last Page</button>}
+					<button onClick={gotoLastPage}><img src={baseUrl + "/assets/button/page-back.png"} alt="Previous Page" title="Go to previous page"/></button>}
 					{ currentEpisodePageIndex < episodePageList.length-1 &&
-					<button onClick={gotoNextPage}>Next Page</button>}
+					<button onClick={gotoNextPage}><img src={baseUrl + "/assets/button/page-next.png"} alt="Next Page" title="Go to next page"/></button>}
 
 				</div>
 			</>
