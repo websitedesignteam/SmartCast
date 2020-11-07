@@ -2,26 +2,15 @@ import json
 import os
 import requests
 
-def lambda_handler(event, context):
+
+#Main function call
+def getBestPodCastByGenre(genreID,page = None):
     
-    #Extract the body from event
-    body = event["body"]
-    body = json.loads(body)
-    
-    #Extract values from GET request and initialize vars for function call
-    genreID = str(body["genreID"])
-    if "page" in body:
-        page = str(body["page"])
-    else:
-        page = None
-    
-    #Main function call
-    def getBestPodCastByGenre(genreID,page = None):
-    
+    try:
         returnData = {}
         if page is None:
             page = "1"
-
+    
         url = 'https://listen-api.listennotes.com/api/v2/best_podcasts?genre_id='+genreID+'&page='+page+'&region=us&safe_mode=0'
         headers = {
           'X-ListenAPI-Key': os.environ.get("APIKEY"),
@@ -52,9 +41,63 @@ def lambda_handler(event, context):
         return {
             "Data": returnData
         }
+    except Exception as e:
+        return {
+            "Error": "You must provide a valid Genre ID"
+        }
 
-    return {
-        'statusCode': 200,
-        'headers': {'Content-Type': 'application/json'},
-        'body': json.dumps(getBestPodCastByGenre(genreID = genreID, page = page))
-    }
+def lambda_handler(event, context):
+    
+    #Extract the body from event
+    try:
+        body = event["body"]
+        body = json.loads(body)
+        
+        #Extract values from GET request and initialize vars for function call
+        genreID = str(body["genreID"])
+        if "page" in body:
+            page = str(body["page"])
+        else:
+            page = None
+    
+    except Exception as e:
+        body = {
+            "Error": "You must provide a genre."
+        }
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': True,
+                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+            },
+            'body': json.dumps(body)
+        }
+    
+
+    
+    data = getBestPodCastByGenre(genreID = genreID, page = page)
+    if "Data" in data:
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': True,
+                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'},
+            'body': json.dumps(data)
+        }
+    else:
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': True,
+                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'},
+            'body': json.dumps(data)
+        }
