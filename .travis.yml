@@ -18,7 +18,7 @@ matrix:
           - node_modules
       script:
         - npm install
-        - npm test --code-coverage
+        - npm run test:ci
 
 addons:
   sonarcloud:
