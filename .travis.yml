@@ -19,11 +19,12 @@ matrix:
       script:
         - npm install
         - npm run test:ci
+        - sonar-scanner -Dsonar.projectKey=$SONAR_PROJECT_KEY
 
 addons:
   sonarcloud:
-    organization: "websitedesignteam_SmartCast"
+    organization: "smartcast"
     token:
-      secure: SONAR_TOKEN
+      secure: $SONAR_TOKEN
 script:
   - sonar-scanner
