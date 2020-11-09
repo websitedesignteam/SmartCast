@@ -19,20 +19,17 @@ def getEpisode(podcastID,episodeID):
 
         )
         if "Item" not in response:
-            data = { "Data": {}
-            }
+            raise Exception("Failure")
         else:
             data = response["Item"]
             data = {
                 "Data": data
             }
     except Exception as e:
-        print(str(e))
-        #LOG TO CLOUDWATCH HERE OR SET SOME KIND OF ALERT
-        data =  {
-            "Data" : {}
+        body = {
+            "Error": "Invalid Request. This episode never reached the transcription stage."
         }
-    
+        return body
 
     returnData = {}
 
@@ -44,44 +41,64 @@ def getEpisode(podcastID,episodeID):
         returnData["transcribedStatus"] = data["transcribedStatus"]
         if data["transcribedStatus"] == "COMPLETED":
             s3 = boto3.resource('s3')
-            obj = s3.Object("files-after-transcribing","02f0123246c944e289ee2bb90804e41b.txt")
+            obj = s3.Object("files-after-transcribing",data["transcribedText"])
             text = obj.get()['Body'].read().decode('utf-8')
             returnData["transcribedText"] = text
         else:
             returnData["transcribedText"] = data["transcribedText"]
 
     return { "Data": returnData}
+    
 
 def lambda_handler(event, context):
-    #Extract the body from event
     
-    body = event["body"]
-    body = json.loads(body)
+    try:
+        #Extract the body from event
+        
+        body = event["body"]
+        body = json.loads(body)
+        
+        #Extract values from GET request and initialize vars for function call
+        episodeID = str(body["episodeID"])
+        podcastID = str(body["podcastID"])
+    except Exception as e:
+        body = {
+            "Error": "You must provide a Podcast ID and Episode ID."
+        }
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': True,
+                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+            },
+            'body': json.dumps(body)
+        }
     
-    #Extract values from GET request and initialize vars for function call
-    episodeID = str(body["episodeID"])
-    podcastID = str(body["podcastID"])
+    body = getEpisode(podcastID = podcastID, episodeID = episodeID)
     
-    
-    
-    return{
-        'statusCode': 200,
-        'headers' : {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Credentials': True,
-            'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'},
-        'body': json.dumps(getEpisode(podcastID = podcastID, episodeID = episodeID))
-    }
-
-if __name__ == "__main__":
-    
-    event = {
-        "body": json.dumps({
-            "podcastID": "4d3fe717742d4963a85562e9f84d8c79",
-            "episodeID": "52e7254095164fef9cce2e9372edc62d"
-        })
-    }
-    
-    print(lambda_handler(event,None))
+    if "Data" in body:
+        return{
+            'statusCode': 200,
+            'headers' : {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': True,
+                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'},
+            'body': json.dumps(body)
+        }
+    else:
+        return{
+            'statusCode': 400,
+            'headers' : {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': True,
+                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'},
+            'body': json.dumps(body)
+        }
+        
