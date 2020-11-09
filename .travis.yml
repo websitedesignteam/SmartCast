@@ -4,7 +4,6 @@ matrix:
       python: 3.6
       install:
         - pip install -r requirements.txt
-        - pip install .
       before_script:
         - cd backend
       script:
