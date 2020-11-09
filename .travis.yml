@@ -22,7 +22,7 @@ matrix:
 
 addons:
   sonarcloud:
-    organization: "smartcast"
+    organization: "websitedesignteam_SmartCast"
     token:
       secure: SONAR_TOKEN
 script:
