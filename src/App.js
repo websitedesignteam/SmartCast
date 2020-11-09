@@ -51,7 +51,10 @@ function App() {
     <div className="App">
     <Router>
       <Navbar />
+      {audioPlayerOpen && 
+        <AudioFooter audioUrl={audioUrl} closeAudioPlayer={closeAudioPlayer} />}
       <Switch>
+
         <Route exact path="/">
           <Home />
         </Route>
@@ -76,9 +79,6 @@ function App() {
         <Route exact path="/podcast/:podcastID">
           <Podcast />
         </Route>
-
-        {audioPlayerOpen && 
-        <AudioFooter audioUrl={audioUrl} closeAudioPlayer={closeAudioPlayer} />}
 
         <Route exact path="/">
           <img className="logo" src={process.env.PUBLIC_URL + "/assets/logo.png"} alt="Podcast Logo" />
