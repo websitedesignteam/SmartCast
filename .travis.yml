@@ -4,10 +4,15 @@ matrix:
       python: 3.6
       install:
         - pip install -r requirements.txt
+        - pip install pytest
+        - pip install codecov
+        - pip install pytest-cov
       before_script:
         - cd backend/UnitTests
       script:
-        - pytest
+        - pytest --cov-report term --cov=investpy
+      after_success: 
+        - codecov
     - language: node.js
       node_js: 14
       cache:
