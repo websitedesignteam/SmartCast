@@ -5,7 +5,7 @@ matrix:
       install:
         - pip install -r requirements.txt
       before_script:
-        - cd backend
+        - cd backend/UnitTests
       script:
         - pytest
     - language: node.js
