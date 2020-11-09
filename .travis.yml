@@ -7,10 +7,8 @@ matrix:
         - pip install pytest
         - pip install codecov
         - pip install pytest-cov
-      before_script:
-        - cd backend/UnitTests
       script:
-        - pytest --cov-report term --cov=investpy
+        - pytest --cov-report term --cov=backend backend/UnitTests/ 
       after_success: 
         - codecov
     - language: node.js
@@ -20,7 +18,7 @@ matrix:
           - node_modules
       script:
         - npm install
-        - npm test -- --code-coverage
+        - npm test --code-coverage
 
 addons:
   sonarcloud:
