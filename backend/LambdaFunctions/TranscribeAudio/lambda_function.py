@@ -192,6 +192,20 @@ def putTagsInML_Tag_Search_Table(table, tagsList, podcastID, episodeID, comprehe
             
             
             
+#-------------GET THE JSON BLACKLIST FILE WHICH CONTAINS TAGS TO IGNORE-----------------------#
+def getBlackListIgnoreJson():
+    s3 = boto3.resource('s3')
+    jsonFile = s3.Object("smartcast-metadata", "ignore.json")
+    jsonFileText = jsonFile.get()["Body"].read().decode("utf-8")
+    
+    jsonObject = json.loads(jsonFileText)
+    
+    blackList = jsonObject["ignore"]
+    # print(blackList)
+    
+    return blackList
+
+            
 
 def putEpisode(podcastID,episodeID, transcribedStatus = None,transcribedText = None,tags = None, genreIDs = None, visitedCount = None):
     
