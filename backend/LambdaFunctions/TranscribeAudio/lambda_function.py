@@ -57,7 +57,66 @@ def updateItemInPodcastTable(table, item, tagsList):
         return "Error: No database entry found"
         
 
+#---------------PUT TAGS IN THE ML CATEGORY TABLE------------------#
+def putTagsinML_Category_Table(table, comprehendData):
+    
+    #iterate through the comprehendData which is a dictionary
+    for key in comprehendData.keys():
         
+        #tags associated with this one key
+        tagsList = comprehendData[key]
+        
+        #the key might already be in the table
+        #so get the response and see what is already in the table
+        response = ML_Category_Table.get_item(
+            Key={
+                'category' : key
+            }
+        )   
+        
+        #if the item already exists
+        if "Item" in response:
+            
+            #take the item
+            item = response["Item"]
+            
+            #get the current tags in the database rn
+            currentTags = item["tags"]
+            
+            #iterate through the tagsList that is passed in the function
+            for tag in tagsList:
+                
+                #if the tag is not already in the list, append tag to the list
+                if tag not in currentTags:
+                    # print(tag)
+                    currentTags.append(tag)
+                    
+            item["tags"] = currentTags
+            
+            try:
+                #now simply put the item back into the database
+                response2 = table.put_item(
+                   Item = item
+                )
+                
+                # print("Success : updated tags in the ML_Category_Table")
+            except Exception as e:
+                print(str(e))
+            
+            
+        else:
+            response3 = ML_Category_Table.put_item(
+                Item={
+                    'category': key,
+                    'tags' : tagsList
+                }
+            )
+            # print("Successfully added tags to ML_Category_Table")
+            
+            
+            
+            
+            
 
 def putEpisode(podcastID,episodeID, transcribedStatus = None,transcribedText = None,tags = None, genreIDs = None, visitedCount = None):
     
