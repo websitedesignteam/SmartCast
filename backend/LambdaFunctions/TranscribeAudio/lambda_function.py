@@ -116,6 +116,81 @@ def putTagsinML_Category_Table(table, comprehendData):
             
             
             
+#--------------PUT TAGS IN ML TAG SEARCH TABLE ---------------------#
+def putTagsInML_Tag_Search_Table(table, tagsList, podcastID, episodeID, comprehendData):
+    
+    #iterate over the comprehendData dictionary
+    for category in comprehendData.keys():    
+        #put current podcastID and episodeID together as a list
+        currentEpisode = [podcastID, episodeID]
+        
+        #the tagsList is passed into the function
+        #go through the tagsList
+        for tag in tagsList:
+        
+            #for every tag, see if the tag is already there or not
+            response = table.get_item(
+                Key={
+                    'tag' : tag
+                }
+            )
+            
+            #check to see if the tag is already in the database
+            if "Item" in response:
+                
+                #collect the item into variables
+                item = response["Item"]
+                episodes = item["episodes"]
+                categories = item["categories"]
+                # print("here")
+                
+                #if the current episode is not in the episodes list already
+                if currentEpisode not in episodes:
+                    #add the current episode to the List
+                    episodes.append(currentEpisode)
+                
+                #if the category is not already in the categories column
+                #and
+                #if the tag in this iteration is mapping to the correct key in comprehendData
+                if category not in categories and tag in comprehendData[category]:
+                    #append that key into the categories
+                    categories.append(category)
+                
+                
+                #update the database
+                item["categories"] = categories
+                item["episodes"] =  episodes
+                
+                try:
+                #now simply put the item back into the database
+                    response2 = table.put_item(
+                       Item = item
+                    )
+                    
+                    # print("Success : updated tags in the ML_Tag_Search_Table")
+                except Exception as e:
+                    print(str(e))
+                
+            #if the tag does NOT already exist in the database
+            else:
+                #make an empty list
+                categoriesList = []
+                
+                #if the tag in this iteration is mapping to the correct key in comprehendData
+                if tag in comprehendData[category]:
+                    #add the key (category) to the keyList
+                    categoriesList.append(category)
+                
+                response3 = table.put_item(
+                    Item={
+                        'tag': tag,
+                        'episodes' : [currentEpisode],
+                        'categories' : categoriesList
+                    }
+                )
+                # print("Success: Added a new tag to the ML_Tag_Search_Table")    
+            
+            
             
 
 def putEpisode(podcastID,episodeID, transcribedStatus = None,transcribedText = None,tags = None, genreIDs = None, visitedCount = None):
