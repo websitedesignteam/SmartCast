@@ -7,6 +7,58 @@ import urllib.request
 import uuid
 
 
+#################### HELPER FUNCTIONS #####################
+
+
+#------------GET ITEM FROM THE PODCAST TABLE-------------------------#
+def getItemFromPodcastTable(table, podcastID, episodeID):
+
+    #get the current item from the table
+    #the primary key are podcastID and episodeID
+    response = table.get_item(
+        Key={
+            'podcastID': podcastID,
+            'episodeID' : episodeID
+        }
+    )
+    
+    #if the database returns any item with ^ those primarykeys
+    if "Item" in response:
+        #get the item (i.e a row from table)
+        item = response["Item"]
+        return item
+    
+    #otherwise return None    
+    else:
+        return None
+        
+#-------------UPDATE THE ENTRY IN PODCAST TABLE------------------#
+def updateItemInPodcastTable(table, item, tagsList):
+    
+    #if item is not none
+    if item:
+        
+        #since the tags are initially empty
+        #put the tagsList that is passed into the function, in the item["tags"]
+        item["tags"] = tagsList
+        # print(tagsList)
+        try:
+            #now simply put the item back into the database
+            response = table.put_item(
+               Item = item
+            )
+            
+            print("Success : updated tags in the database")
+        except Exception as e:
+            print(str(e))
+            
+    #there was no such record to be updated      
+    else:
+        return "Error: No database entry found"
+        
+
+        
+
 def putEpisode(podcastID,episodeID, transcribedStatus = None,transcribedText = None,tags = None, genreIDs = None, visitedCount = None):
     
     tableName = os.environ.get("TableName")
@@ -231,6 +283,10 @@ def lambda_handler(event, context):
             print(transcribedText)
             #Update your entry
             putEpisode(podcastID = podcastID, episodeID =episodeID, transcribedStatus = transcribedStatus, transcribedText = keyString, tags = tags, genreIDs = genreIDs, visitedCount = visitedCount)
+            
+            #write the code to update all 3 databases once this transcription job is completed
+            
+            
             
             return {
                 'statusCode': 200,
