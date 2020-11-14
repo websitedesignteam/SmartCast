@@ -1,25 +1,44 @@
 import json
 import boto3
 
-def getAllEpisodesofATag(table, tag):
+def getAllTagsOfACategory(ML_Category_Table, ML_Tag_Search_Table, category):
     
     try: 
-        #run the query for a tag
-        response = table.get_item(
+        #run the query for a category
+        response = ML_Category_Table.get_item(
             Key={
-                'tag': tag
+                'category': category
             }
         )
-        print("response --> ", response)
         
         if "Item" in response:
             item = response["Item"]
+            tagsList = item["tags"]
             
-            episodes = item["episodes"]
+            returnList = []
             
-            print(episodes)
+            for tag in tagsList:
+                
+                response2 = ML_Tag_Search_Table.get_item(
+                    Key={
+                        'tag' : tag
+                    }
+                ) 
+                
+                if "Item" in response2:
+                    item2 = response2["Item"]
+                    episodes = item2["episodes"]
+    
+                    tagObject = {}
+                    tagObject["tag"] = tag
+                    tagObject["image"] = ""
+                    tagObject["episodeCount"] = len(episodes)
+                    returnList.append(tagObject)
+                
+            print(returnList)
+            
             return {
-                "Data" : episodes
+                "Data" : returnList
             }
     
     except Exception as e:
@@ -30,109 +49,48 @@ def getAllEpisodesofATag(table, tag):
     
 
 def lambda_handler(event, context):
-    # TODO implement
-    print("event" , event)
     
-    
-    try:
-        dynamoDB = boto3.resource('dynamodb')
-        ML_Tag_Search_Table = dynamoDB.Table("ML_Tag_Search")
-        
-        # print(event)
+    try: 
         body = event["body"]
         body = json.loads(body)
         
+        print("body: ", body)
+        if "category" in body:
+            category = body["category"]
+            print("category == ", category)
         
-        if ("tag" in body):
-            tag = str(body["tag"])
+            dynamoDB = boto3.resource('dynamodb')
+            ML_Category_Table = dynamoDB.Table("ML_Category")
+            ML_Tag_Search_Table = dynamoDB.Table("ML_Tag_Search")
+                
+            data = getAllTagsOfACategory(ML_Category_Table, ML_Tag_Search_Table, category)
+            print("data -->", data)
             
-        data = getAllEpisodesofATag(ML_Tag_Search_Table, tag)
-        
-        if "Data" in data:
-            episodes = data["Data"]
-            
-            #iterate through the list of episodes
-            for episode in episodes:
+            if "Data" in data:
+                tagsList = data["Data"]
                 
-                #set body from the event in every iteration
-                body = event["body"]
-                body = json.loads(body)
-                
-                #each episode here itself is a list that contains two items
-                #episode[0] = podcastID
-                #episode[1] = episodeID
-                #how do we know? the logic is written in TranscribeAudio lambda in putTagsInML_Tag_Search_Table() function
-                
-                podcastID = episode[1]
-                episodeID = episode[0]
-                
-                #now that we have retrieved the episodeID and podcastID
-                body["podcastID"] = podcastID
-                body["episodeID"] = episodeID
-                
-                
-                # print("\n before: ")
-                # print(type(event["body"]))
-                # print(event["body"])
-                # print("Event before : ",event)
-                event["body"] =  body
-                print("==========", event)
-                # print("\n after: ")
-                # print(type(event["body"]))
-                # print(event["body"])
-                # print("Event after : ",event)
-                
-                lambdaClient = boto3.client('lambda')
-                print("event", event)
-                response = lambdaClient.invoke(
-                    FunctionName='arn:aws:lambda:us-east-1:838451841239:function:getEpisode',
-                    Payload= json.dumps(event)
-                )
-                
-                print("response payload: ", response)
-                responsePayload = response["Payload"].read()
-                print(responsePayload)
-                
-            
-            return{
-                'statusCode': 200,
-                'headers' : {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Credentials': True,
-                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
-                },
-                'body': json.dumps(episodes)
-            }
-        
-        else:
-            return {
-                'statusCode': 400,
-                'headers': {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Credentials': True,
-                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
-                },
-                'body': json.dumps({
-                    "Error": "No data found for this episodeID and podcastID"
-                })
-            }
+                return{
+                    'statusCode': 200,
+                    'headers' : {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Credentials': True,
+                        'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+                    },
+                    'body': json.dumps(tagsList)
+                }
             
     except Exception as e:
-        print("Exception : ",e)
-        return {
-            'statusCode': 400,
-            'headers': {
+        print("Exception : " , e)
+        return{
+            'statusCode': 200,
+            'headers' : {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Credentials': True,
                 'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
             },
-            'body': json.dumps({
-                "Error": e
-                })
-                }
+            'body': json.dumps({"Error : ", e})
+        }
