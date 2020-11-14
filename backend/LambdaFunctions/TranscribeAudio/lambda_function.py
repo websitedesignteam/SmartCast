@@ -41,19 +41,20 @@ def updateItemInPodcastTable(table, item, tagsList):
         #since the tags are initially empty
         #put the tagsList that is passed into the function, in the item["tags"]
         item["tags"] = tagsList
-        # print(tagsList)
+        print(tagsList)
         try:
             #now simply put the item back into the database
             response = table.put_item(
                Item = item
             )
             
-            print("Success : updated tags in the database")
+            print("Success : updated tags in Podcast Table")
         except Exception as e:
             print(str(e))
             
     #there was no such record to be updated      
     else:
+        print("Error: No database entry found")
         return "Error: No database entry found"
         
 
@@ -68,7 +69,7 @@ def putTagsinML_Category_Table(table, comprehendData):
         
         #the key might already be in the table
         #so get the response and see what is already in the table
-        response = ML_Category_Table.get_item(
+        response = table.get_item(
             Key={
                 'category' : key
             }
@@ -105,7 +106,7 @@ def putTagsinML_Category_Table(table, comprehendData):
             
             
         else:
-            response3 = ML_Category_Table.put_item(
+            response3 = table.put_item(
                 Item={
                     'category': key,
                     'tags' : tagsList
@@ -283,17 +284,10 @@ def getEpisode(podcastID,episodeID):
 def lambda_handler(event, context):
     
     #Extract the body from event
-    print("eventtype ", type(event))
-    print(event)
     json.dumps(event)
     body = event["body"]
-    print("body1: ",body)
     
-    print(type(body))
-    print("============")
     json.dumps(body)
-    print("body2: ",body)
-    print(type(body))
     
     # body = json.loads(body)
     
@@ -301,9 +295,9 @@ def lambda_handler(event, context):
     podcastID = str(body["podcastID"])
     episodeID = str(body["episodeID"])
     audioLink = str(body["audioLink"])
-    print(podcastID)
-    print(episodeID)
-    print(audioLink)
+    print("PodcastID: ",podcastID)
+    print("EpisodeID: ",episodeID)
+    print("AudioLink: ",audioLink)
     
     #Define variables for eventual database update
     transcribedStatus = "COMPLETED"
@@ -311,6 +305,7 @@ def lambda_handler(event, context):
     tags = []
     genreIDs = None
     visitedCount = None
+    blackListForTags = getBlackListIgnoreJson()
     
     try:
         #download the audiofile using audioLink variable
@@ -428,14 +423,91 @@ def lambda_handler(event, context):
             genreIDs = data["genreIDs"]
             visitedCount = data["visitedCount"]
             
-            print(transcribedText)
+            
+            print("Transcribed Text : ", transcribedText)
+            
             #Update your entry
             putEpisode(podcastID = podcastID, episodeID =episodeID, transcribedStatus = transcribedStatus, transcribedText = keyString, tags = tags, genreIDs = genreIDs, visitedCount = visitedCount)
             
             #write the code to update all 3 databases once this transcription job is completed
             
+            # Get your tables from DynamoDB
+            
+            dynamoDB = boto3.resource('dynamodb')
+            PodcastTable = dynamoDB.Table("PodcastTable_DEV") #using a test table for now, but will change it to Podcast_DEV table later which has all the transcriptions done
+            ML_Category_Table = dynamoDB.Table("ML_Category")
+            ML_Tag_Search_Table = dynamoDB.Table("ML_Tag_Search")
+            
+            #make a dictionary to store key value pairs like this
+            # KEY : [data, data2, data,3]
+            # "NAME" : ["name1", "name2", "name3"]
+            # "LOCATION : ["location1", "location2"]"
+            comprehendData = {}
+            tagsList = []
+            
+            #now search the keystring in s3 and store it as s3Entry
+            s3 = boto3.resource('s3')
+            s3Entry = s3.Object("files-after-transcribing", keyString)
+            
+            #read the s3 entry for transcribed text and store transcribed text into transcribedText variable
+            transcribedText = s3Entry.get()["Body"].read().decode("utf-8")
+            
+            #Since our comprehend can only take 5000 bytes at max, we need to truncate any long transcribed text
+            if (len(transcribedText) > 4800):
+                # print(transcribedText)
+                transcribedText = transcribedText[:4800]
             
             
+            # print(transcribedText)
+            
+            comprehend = boto3.client(service_name='comprehend', region_name='us-east-1')
+            #run AWS comprehend on the transcribedText and store the results into comprehendObject
+            comprehendObject = comprehend.detect_entities(Text=transcribedText,
+            LanguageCode='en')
+            
+            #we only care ablout comprehend entities from the comprehendObject i.e the response from running the service
+            comprehendEntities = comprehendObject["Entities"]
+            
+            print("Comprehend Entitities : ",comprehendEntities)
+            
+            #now for every entity in the dictionary of entities
+            for entity in comprehendEntities:
+                # print(entity)
+                #every entity looks like this: {"Score": 0.992189347743988, "Type": "TITLE", "Text": "Star Wars", "BeginOffset": 260, "EndOffset": 269}
+                #for every entity type, pull out everything and sort it as a key dictionary
+                if entity["Type"] not in comprehendData:
+                    comprehendData[entity["Type"]] = []
+                
+                
+                if entity["Text"] not in comprehendData[entity["Type"]]:
+                    if entity["Text"] not in blackListForTags:
+                        comprehendData[entity["Type"]].append(entity["Text"].lower())
+                
+                #store all the tags into the list
+                tag = entity["Text"]
+                if tag not in tagsList:
+                    if tag not in blackListForTags:
+                        print(entity["Type"], tag)
+                        tagsList.append(tag.lower())
+            
+            
+            #remove duplicates from the tagsList
+            tagsList = list(set(tagsList))
+            
+            
+            #get the current row
+            item = getItemFromPodcastTable(PodcastTable, podcastID, episodeID)
+            
+            #update the current row by adding all the tags
+            updateItemInPodcastTable(PodcastTable, item, tagsList)
+            
+            #populate the ML_Category_Table
+            putTagsinML_Category_Table(ML_Category_Table, comprehendData)
+            
+            #populate the ML_Tag_Search_Table
+            putTagsInML_Tag_Search_Table(ML_Tag_Search_Table, tagsList, podcastID, episodeID, comprehendData)
+            
+            print("updated everything... yeah")
             return {
                 'statusCode': 200,
                 'headers': {
@@ -462,7 +534,8 @@ def lambda_handler(event, context):
             }
             
         
-    except:
+    except Exception as e:
+        print("error: ",e)
         return {
             'statusCode': 404,
             'headers': {
