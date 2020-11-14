@@ -92,7 +92,6 @@ def putTagsinML_Category_Table(table, comprehendData):
                     currentTags.append(tag)
                     
             item["tags"] = currentTags
-            
             try:
                 #now simply put the item back into the database
                 response2 = table.put_item(
@@ -160,6 +159,7 @@ def putTagsInML_Tag_Search_Table(table, tagsList, podcastID, episodeID, comprehe
                 #update the database
                 item["categories"] = categories
                 item["episodes"] =  episodes
+                item["episodeCount"] = len(episodes)
                 
                 try:
                 #now simply put the item back into the database
@@ -185,7 +185,9 @@ def putTagsInML_Tag_Search_Table(table, tagsList, podcastID, episodeID, comprehe
                     Item={
                         'tag': tag,
                         'episodes' : [currentEpisode],
-                        'categories' : categoriesList
+                        'categories' : categoriesList,
+                        'episodeCount': len(currentEpisode),
+                        'tagImage': "https://i.imgur.com/yNwH3jV.jpg"
                     }
                 )
                 # print("Success: Added a new tag to the ML_Tag_Search_Table")
