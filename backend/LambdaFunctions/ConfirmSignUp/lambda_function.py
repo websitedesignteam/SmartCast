@@ -34,7 +34,7 @@ def lambda_handler(event, context):
         
     except Exception as e:
         body = {
-            "Error": "You must provide an email your code."
+            "Error": "You must provide an email and code."
         }
         return {
             'statusCode': 400,
