@@ -16,6 +16,7 @@ def get_secret_hash(username,CLIENT_ID,CLIENT_SECRET):
     
 def lambda_handler(event, context):
     
+    #Get params from ssm
     store = boto3.client('ssm')
     env = store.get_parameter(Name = "/smartcast/env", WithDecryption = True)
     env = json.loads(env["Parameter"]["Value"])
@@ -26,7 +27,6 @@ def lambda_handler(event, context):
     
     
     try:
-        #Get params from client
         body = event["body"]
         body = json.loads(body)
         username = body["email"]
@@ -48,14 +48,7 @@ def lambda_handler(event, context):
             },
             'body': json.dumps(body)
         }   
-    
-    event = {
-        "username": "arunajay42795@gmail.com",
-        "password": "Test123!",
-        "code": "167109"
-    }
-    
-    
+
     try:
         client = boto3.client('cognito-idp') 
         client.confirm_forgot_password(
@@ -131,6 +124,3 @@ def lambda_handler(event, context):
             },
             'body': json.dumps(body)
         }
-      
-
-print(lambda_handler(123,345))
