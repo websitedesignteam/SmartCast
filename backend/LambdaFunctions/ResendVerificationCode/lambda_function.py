@@ -31,7 +31,7 @@ def lambda_handler(event, context):
         #Get params from client
         body = event["body"]
         body = json.loads(body)
-        email = body["email"]
+        username = body["email"]
         
     except Exception as e:
         body = {
@@ -53,7 +53,6 @@ def lambda_handler(event, context):
     
     
     try:
-        username = event['username']        
         response = client.resend_confirmation_code(
         ClientId=CLIENT_ID,
         SecretHash=get_secret_hash(username,CLIENT_ID,CLIENT_SECRET),
