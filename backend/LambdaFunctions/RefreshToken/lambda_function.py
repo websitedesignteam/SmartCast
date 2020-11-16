@@ -30,7 +30,7 @@ def refreshToken(client, username, refresh_token,CLIENT_ID,CLIENT_SECRET):
         return 200,response,None
     except client.exceptions.UserNotFoundException as e:
         return 400,None, {
-            "Error": "This user doesn't exist."
+            "Error": "This user doesn't exist. Please sign up to obtain a valid refresh token."
         }
         
     except client.exceptions.NotAuthorizedException as e:
@@ -48,7 +48,7 @@ def refreshToken(client, username, refresh_token,CLIENT_ID,CLIENT_SECRET):
             return 400,None,body
     except client.exceptions.UserNotConfirmedException:
         return 400,None, {
-            "Error": "User has not verified their account."
+            "Error": "This user has not verified their account."
         }
     except Exception as e:
         print(str(e))
@@ -155,5 +155,3 @@ def lambda_handler(event, context):
             },
             'body': json.dumps(body)
             }
-
-
