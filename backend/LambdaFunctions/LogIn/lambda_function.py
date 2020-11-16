@@ -62,8 +62,8 @@ def lambda_handler(event, context):
         #Get params from client
         body = event["body"]
         body = json.loads(body)
-        username = body["email"]
-        password = body['password']
+        username = str(body["email"])
+        password = str(body['password'])
         
     except Exception as e:
         body = {

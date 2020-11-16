@@ -29,7 +29,7 @@ def lambda_handler(event, context):
         #Get params from client
         body = event["body"]
         body = json.loads(body)
-        username = body["email"]
+        username = str(body["email"])
         code = str(body["code"])
         
     except Exception as e:

@@ -32,11 +32,12 @@ def lambda_handler(event, context):
         #Get params from client
         body = event["body"]
         body = json.loads(body)
-        email = body["email"]
-        password = body['password']
-        name = body["name"]  
+        email = str(body["email"])
+        password = str(body['password'])
+        name = str(body["name"])
         
     except Exception as e:
+        print(str(e))
         body = {
             "Error": "You must provide an email, password, and your name."
         }

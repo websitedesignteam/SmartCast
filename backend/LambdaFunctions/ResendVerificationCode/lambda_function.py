@@ -31,7 +31,7 @@ def lambda_handler(event, context):
         #Get params from client
         body = event["body"]
         body = json.loads(body)
-        username = body["email"]
+        username = str(body["email"])
         
     except Exception as e:
         body = {
@@ -71,22 +71,8 @@ def lambda_handler(event, context):
                 'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
             },
             'body': json.dumps(body)
-        } 
-    except client.exceptions.ExpiredCodeException as e:
-        body = {
-            "Success": "Your code has expired. Please request for a new one."
         }
-        return {
-            'statusCode': 400,
-            'headers': {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Credentials': True,
-                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
-            },
-            'body': json.dumps(body)
-        }
+    
     except Exception as e:
         if len(username) == 0:
             body = {
