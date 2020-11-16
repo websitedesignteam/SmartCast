@@ -123,11 +123,6 @@ def lambda_handler(event, context):
             
     if resp.get("AuthenticationResult"):
         authparam = resp["AuthenticationResult"]
-        print()
-        print("ACCESS TOKEN:", authparam["AccessToken"])
-        print()
-        print("ID TOKEN:",authparam["IdToken"])
-        print()
         body = {
             "JWT": {
                 "access_token": resp["AuthenticationResult"]["AccessToken"],
