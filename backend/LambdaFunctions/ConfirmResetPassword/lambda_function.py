@@ -31,7 +31,7 @@ def lambda_handler(event, context):
         body = json.loads(body)
         username = body["email"]
         password = body['password']
-        code = body["code"]  
+        code = str(body["code"])
         
     except Exception as e:
         body = {
