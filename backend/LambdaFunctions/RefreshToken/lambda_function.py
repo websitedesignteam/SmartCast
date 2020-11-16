@@ -38,7 +38,7 @@ def refreshToken(client, username, refresh_token,CLIENT_ID,CLIENT_SECRET):
         print(errorMessage)
         if "invalid refresh token" in errorMessage:
             body = {
-                "Error": "You have provided an invalid refresh token."
+                "Error": "You have provided an invalid refresh token. Please log in again."
             }
             return 400,None,body
         else:
