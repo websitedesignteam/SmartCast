@@ -27,7 +27,15 @@ function Episode(props) {
         getEpisode(data)
         .then((response) => {
             const episodeData = response.data.Data;
+<<<<<<< Updated upstream
             setCurrentEpisode(episodeData);
+=======
+            const isTooLong = (episodeData.episodeAudioLength > 420);
+            setCurrentEpisode({ 
+                ...episodeData,
+                isTooLong
+            });
+>>>>>>> Stashed changes
             if (episodeData.transcribedText) {
                 setEditTranscription(episodeData.transcribedText);
             }
@@ -119,6 +127,16 @@ function Episode(props) {
         setEditTranscription(value);
     }
 
+    const openAudio = () => {
+        const audio = {
+            episodeTitle: currentEpisode.episodeTitle,
+            podcastTitle: currentEpisode.podcastTitle,
+            podcastPublisher: currentEpisode.podcastPublisher,
+            audioUrl: currentEpisode.episodeAudioLink,
+        }
+        props.openAudioPlayer(audio);
+    }
+
     //api call to get episode
     useEffect(() => {
         getEpisodeAPI();
@@ -137,13 +155,13 @@ function Episode(props) {
                         </div> 
 
                         <div className={styles.episodeButtons}>
-                            <button className={styles.episodePlayButton} onClick={() => props.openAudioPlayer(currentEpisode.episodeAudioLink)}>
+                            <button className={styles.episodePlayButton} onClick={openAudio}>
                                 <img src={baseUrl + "/assets/button/play.svg"} alt="play episode button" title="Play Episode"/>
                             </button>
                             
                             { currentEpisode.transcribedStatus === "NOT TRANSCRIBED" && 
-                            <button className={styles.episodeTranscribeButton} onClick={() => postTranscribeEpisodeAPI(currentEpisode.episodeAudioLink)}> 
-                                <img src={baseUrl + "/assets/button/transcribe.png"} alt="transcribe episode button" title="Transcribe Episode"/>
+                            <button className={styles.episodeTranscribeButton} onClick={() => postTranscribeEpisodeAPI(currentEpisode.episodeAudioLink)} disabled={currentEpisode.isTooLong} > 
+                                <img src={baseUrl + "/assets/button/transcribe.png"} alt="transcribe episode button" title={currentEpisode.isTooLong ? "Episode is too long to transcribe" : "Transcribe Episode"}/>
                             </button>}
 
                             { currentEpisode.transcribedStatus === "IN PROGRESS" && 

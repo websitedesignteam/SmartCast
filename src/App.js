@@ -18,27 +18,27 @@ import AudioFooter from './component/AudioFooter/audioFooter';
 function App() {
   //global app states
   const [isLoading, setIsLoading] = useState(true);
-  const [audioUrl, setAudioUrl] = useState(""); 
+  const [audio, setAudio] = useState({}); // audio = {podcastName, episodeName, podcastPublisher, audio}
 
-  const openAudioPlayer = (newAudioUrl) => {
-    setAudioUrl(newAudioUrl);
-    localStorage.setItem('audioUrl', newAudioUrl);
+  const openAudioPlayer = (newAudio) => {
+    setAudio(newAudio);
+    localStorage.setItem("audio", JSON.stringify(newAudio));
   }
 
   const closeAudioPlayer = () => {
-    setAudioUrl(null);
-    localStorage.removeItem("audioUrl");
+    setAudio({});
+    localStorage.removeItem("audio");
   }
 
   useEffect(() => {
-    const currentAudioUrl = localStorage.getItem("audioUrl") || "";
+    const currentAudio = JSON.parse(localStorage.getItem("audio")) || {};
     
-    if (!!currentAudioUrl) {
-      setAudioUrl(currentAudioUrl);
+    if (!!currentAudio) {
+      setAudio(currentAudio);
     }
 
     setIsLoading(false);
-  }, [audioUrl]);
+  }, []);
 
   if (isLoading) return null;
 
@@ -46,8 +46,8 @@ function App() {
     <div className="App">
     <Router>
       <Navbar />
-      {audioUrl && 
-        <AudioFooter audioUrl={audioUrl} closeAudioPlayer={closeAudioPlayer} />}
+      {audio.audioUrl && 
+        <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
       <Switch>
 
         <Route exact path="/">

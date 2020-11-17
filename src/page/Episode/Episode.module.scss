@@ -53,7 +53,7 @@ div {
 }
 
 button.editTranscription {
-	font: bold 1rem Cairo;
+	font: bold 1rem Cairo, sans-serif;
 	border: none;
 	border-radius: 0.2rem;
 	display: inline-flexbox;
@@ -65,8 +65,20 @@ button.editTranscription {
 	}
 }
 
-.loader {
+.loaderSmall {
+	border: 16px solid #f3f3f3; /* Light grey */
+	border-top: 16px solid #3498db; /* Blue */
+	border-radius: 50%;
+	animation: spin 2s linear infinite;
+	margin-left: 1rem;
+	margin-bottom: 0;
+	padding: 0;
 	height: 3rem;
 	width: 3rem;
 	display: inline-block;
 }
+
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
+  }
