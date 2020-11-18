@@ -27,15 +27,11 @@ function Episode(props) {
         getEpisode(data)
         .then((response) => {
             const episodeData = response.data.Data;
-<<<<<<< Updated upstream
-            setCurrentEpisode(episodeData);
-=======
             const isTooLong = (episodeData.episodeAudioLength > 420);
             setCurrentEpisode({ 
                 ...episodeData,
                 isTooLong
             });
->>>>>>> Stashed changes
             if (episodeData.transcribedText) {
                 setEditTranscription(episodeData.transcribedText);
             }

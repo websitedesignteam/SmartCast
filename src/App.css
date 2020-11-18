@@ -1,15 +1,36 @@
 .App {
-  position: relative;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.App-content {
+  padding: 1.5rem;
 }
 
 .logo {
-  margin: auto;
-  width: 20rem;
+  width: 15rem;
+  height: 15rem;
+}
+
+@media screen and (min-width: 400px) {
+  .logo {
+    width: 10rem;
+    height: 10rem;
+    top: 0;
+    position: absolute;
+  }
 }
 
 body {
   font-family: "Cairo";
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: black;
 }
 
 button {

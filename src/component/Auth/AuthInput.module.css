@@ -1,0 +1,28 @@
+.block {
+    display: flex;
+    flex-direction: column;  
+    margin-bottom: 1rem;
+    /* flex-wrap: nowrap; */
+}
+
+.item {
+    vertical-align: middle;  
+    align-self: center;
+    width: 60%;
+}
+
+label.item {
+    font-size: 0.8rem;
+}
+
+input.item {
+    height: 1.7rem;
+    border-radius: 0.5rem;
+    border: 0;
+    background-color: #c9c9c9;
+    padding-left: 0.5rem;
+}
+
+input.item:focus {
+    outline: none;
+}

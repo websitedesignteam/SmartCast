@@ -1,5 +1,10 @@
 const { getAPI, postAPI } = require("./axios");
 
+//auth
+const postLogin = (data) => postAPI(`/login`, data);
+const postSignup = (data) => postAPI(`/signup`, data);
+const postConfirmSignup = (data) => postAPI(`/confirmsignup`, data);
+
 //landing
 const getGenres = () => getAPI(`/getallgenres`); //all genres
 
@@ -29,4 +34,7 @@ export {
     getEpisode,
     postTranscribeEpisode,
     getTranscribeUpdate,
+    postLogin,
+    postSignup,
+    postConfirmSignup,
 }
