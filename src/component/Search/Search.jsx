@@ -1,11 +1,9 @@
 import React, {useContext} from 'react'
 import {useState} from 'react'
-import styles from '../Search/Search.module.css'
+import styles from '../Search/Search.module.scss'
 import {Link, useParams, useHistory} from 'react-router-dom'
-import SearchContextProvider from '../../state/Search/SearchContextProvider'
-import {SearchContext} from '../../state/Search/SearchContextProvider'
 import {useSearchContext} from 'state/Search/useSearchContext'
-import {withSearchContext} from "state/Search/withSearchContext"
+import { baseUrl } from "../../utils/constants"
 
 function Search(props) {
 	
@@ -14,7 +12,6 @@ function Search(props) {
 	const [checkboxValue, setCheckboxValue] = useState({})
 	const searchContext = useSearchContext();
 	const history = useHistory();
-	const baseUrl = process.env.PUBLIC_URL;
 	
 	const handleSearch =(event)=>{
 		setQuery(event.target.value)
@@ -31,8 +28,6 @@ function Search(props) {
 		else {
 			history.push("/searchPage");
 		}
-
-		console.log(checkboxValue)
 	}
 
 	const handleCheckboxes =(value)=>{
@@ -41,11 +36,10 @@ function Search(props) {
 	}
 
 	return (
-
 		<div id="search" className={styles.overlayContent}>
 			<form className="form" onSubmit={handleSubmit}>
 				<div className={styles.searchBar}>
-					<img className={styles.searchIcon} src={baseUrl + "assets/search.svg"} alt="" />
+					<img className={styles.searchIcon} src={baseUrl + "/assets/search.svg"} alt="" />
 					<input className={styles.searchInput} type="text" placeholder="Search for Podcasts" name="search" onChange={handleSearch}/>
 				</div>
 				<input type="submit" className={styles.searchEnter}/>

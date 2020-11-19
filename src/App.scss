@@ -1,3 +1,5 @@
+@import "styles/variables";
+
 .App {
   min-height: 100vh;
   display: flex;
@@ -7,6 +9,18 @@
 
 .App-content {
   padding: 1.5rem;
+}
+
+.App-blur {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  backdrop-filter: blur(0.1rem);
+  margin: 0; 
+  padding: 0;
+  min-width: 100vw;
+  min-height: 90vh;
 }
 
 .logo {
@@ -34,17 +48,26 @@ a {
 }
 
 button {
+  font-family: 'Cairo';
   cursor: pointer;
-  background-color: #dfdfdf;
+  background-color: $medium-gray;
+}
+
+input {
+  font-family: "Cairo";
+}
+
+p {
+  margin: 0;
 }
 
 button:hover:not([disabled]) {
-	background-color: #d3d3d3;
+	background-color: $gray;
 }
 
 .loader {
-  border: 16px solid #f3f3f3; /* Light grey */
-  border-top: 16px solid #3498db; /* Blue */
+  border: 16px solid $light-gray;
+  border-top: 16px solid $blue;
   border-radius: 50%;
   width: 120px;
   height: 120px;

@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from 'react'
-import Search from '../../component/Search/Search'
 import { Link } from "react-router-dom"
 import {searchEpisodes, searchPodcasts} from '../../utils/api'
-import {withSearchContext} from "state/Search/withSearchContext"
 import {useSearchContext} from "state/Search/useSearchContext"
 import PodcastContainer from "component/PodcastContainer/PodcastContainer"
 import EpisodeContainer from "component/EpisodeContainer/EpisodeContainer"

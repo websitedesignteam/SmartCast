@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from "./AuthInput.module.css";
+import styles from "./AuthInput.module.scss";
 
 function AuthInput(props) {
     function onChange(event) {
@@ -8,7 +8,7 @@ function AuthInput(props) {
     
     return (
         <div className={styles.block}>
-            <label for={props.id} className={styles.item}>{props.label}</label>
+            <label htmlFor={props.id} className={styles.item}>{props.label}</label>
             <input id={props.id} name={props.name} className={styles.item} type={props.type} placeholder={props.placeholder} value={props.value} onChange={onChange}/>
         </div>
     );

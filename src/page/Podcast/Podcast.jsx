@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from "react-router-dom";
 import { getPodcast } from '../../utils/api';
-import useIsActive from 'hook/useIsActive';
+import { useIsActive } from 'hooks';
 import styles from "./Podcast.module.scss";
+import { baseUrl, errorPodcast } from "../../utils/constants";
 
 function Podcast(props) {
 	//vars
 	const { podcastID } = useParams();
-	const errorMessageText = "Sorry! We couldn't find that podcast.";
-	const baseUrl = process.env.PUBLIC_URL;
 
 	//states
 	const [currentPodcast, setCurrentPodcast] = useState(null);
@@ -32,7 +31,7 @@ function Podcast(props) {
 		})
 		.catch((error) => {
 			console.log(error);
-			setErrorMessage(errorMessageText);
+			setErrorMessage(errorPodcast);
 		});
 	};
 
@@ -121,7 +120,7 @@ function Podcast(props) {
 				</div>
 			</>
 			: (errorMessage) 
-			? <div className={styles.errorMessage}>{errorMessage}</div>
+			? <div className={styles.error}>{errorMessage}</div>
 			: <div className="loader" />
 			}
 		</div>

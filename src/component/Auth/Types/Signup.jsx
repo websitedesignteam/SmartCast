@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useHistory } from "react-router-dom";
-import AuthInput from './AuthInput';
-import { postSignup } from '../../utils/api';
-import { isFormComplete } from '../../utils/helper';
+import AuthInput from '../AuthInput/AuthInput';
+import { postSignup } from '../../../utils/api';
+import { isFormComplete } from '../../../utils/helper';
+import styles from "../Auth.module.scss";
 
 function Signup(props) {
     //vars
@@ -22,31 +23,32 @@ function Signup(props) {
         event.preventDefault();
         postSignup(input)
         .then((response) => {
-            alert(response.data.message);
-            // history.push('/login');
+            alert(response.data.Success);
+            props.onSuccessSignup();
         })
         .catch((error) => {
-            setInput({name: "", email: "", password: ""});
-            (error.response)
-            ? setErrorMessage(error.response.data.message)
-            : setErrorMessage(error.toString())
+            (error.response.data.Error) 
+            ? setErrorMessage(error.response.data.Error)
+            : setErrorMessage("We're sorry, but something wrong happened!")
         });
     }
 
     return (
         <form id="signup-form" onSubmit={handleSubmit} className="container">
-            <div className="form-container">
-                <h1>Sign up</h1>
+            <div className={styles.formContainer}>
+                <p>Sign up to join our SmartCast community!</p>
                 {/* display any error msgs */}
-                { (!isFormComplete(input) && !errorMessage) &&
-                    <div className="error-msg">Please fill in all fields</div> }
-                { (errorMessage) && <div className="error-msg">{errorMessage}</div> }     
+                {/* { (!isFormComplete(input) && !errorMessage) &&
+                    <div className={styles.error}>Please fill in all fields</div> } */}
+                { (errorMessage) && <div className={styles.error}>{errorMessage}</div> }     
                 
                 <AuthInput id="signup-name" name="name" value={input.name} label="Name" placeholder="Enter Name" onChangeInput={onChangeInput} />
                 <AuthInput id="signup-email" name="email" value={input.email} label="Email" placeholder="Enter Email" type="email" onChangeInput={onChangeInput} />
                 <AuthInput id="signup-password" name="password" value={input.password} label="Password" placeholder="Enter Password" type="password" onChangeInput={onChangeInput} />
 
-                <button id="btn-signup" className="submit-btn" type="submit" disabled={!isFormComplete(input)}>Sign up</button>
+                <div className={styles.footerContainer}>
+                	<button className={styles.submit} type="submit" disabled={!isFormComplete(input)}>Sign up</button>
+                </div>
             </div>
         </form>
     );

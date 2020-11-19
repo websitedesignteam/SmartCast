@@ -1,3 +1,5 @@
+@import "../../../styles/variables";
+
 .block {
     display: flex;
     flex-direction: column;  
@@ -6,9 +8,7 @@
 }
 
 .item {
-    vertical-align: middle;  
-    align-self: center;
-    width: 60%;
+    vertical-align: middle;
 }
 
 label.item {
@@ -19,7 +19,7 @@ input.item {
     height: 1.7rem;
     border-radius: 0.5rem;
     border: 0;
-    background-color: #c9c9c9;
+    background-color: $gray;
     padding-left: 0.5rem;
 }
 

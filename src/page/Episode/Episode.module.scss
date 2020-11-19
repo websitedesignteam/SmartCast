@@ -1,10 +1,19 @@
+@import "../../styles/variables";
+
 .episodeContainer {
-	padding: 2rem;
+	padding-top: 2rem;
 }
 
-div {
-	display: block;
+div.dataSection {
 	margin-bottom: 1rem;
+}
+
+div.dataTitle {
+	display: block;
+}
+
+div.error {
+	font-size: 1.2rem;
 }
 
 .episodeImage {
@@ -66,8 +75,8 @@ button.editTranscription {
 }
 
 .loaderSmall {
-	border: 16px solid #f3f3f3; /* Light grey */
-	border-top: 16px solid #3498db; /* Blue */
+	border: 16px solid $light-gray;
+	border-top: 16px solid $blue;
 	border-radius: 50%;
 	animation: spin 2s linear infinite;
 	margin-left: 1rem;

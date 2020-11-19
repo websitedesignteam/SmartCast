@@ -3,15 +3,13 @@ import { useParams } from "react-router-dom";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { getEpisode, postTranscribeEpisode, getTranscribeUpdate } from '../../utils/api';
-import useIsActive from '../../hook/useIsActive';
+import { useIsActive } from '../../hooks';
+import { baseUrl, errorEpisode, errorTranscribe } from "../../utils/constants";
 import styles from "./Episode.module.scss";
 
 function Episode(props) {
     //vars
     const { episodeID, podcastID } = useParams();
-    const errorEpisodeMessageText = "Sorry! We couldn't find that episode.";
-    const errorTranscribeMessageText = "Sorry! We couldn't transcribe that episode.";
-    const baseUrl = process.env.PUBLIC_URL;
 
     //states
     const [currentEpisode, setCurrentEpisode] = useState(null);
@@ -38,7 +36,7 @@ function Episode(props) {
         })
         .catch((error) => {
             console.log(error);
-            setErrorMessage(errorEpisodeMessageText);
+            setErrorMessage(errorEpisode);
         });
     };
 
@@ -91,7 +89,7 @@ function Episode(props) {
                 getTranscribeUpdateAPI();
             }
             else if (response.data.Error) {
-                setErrorMessage(errorTranscribeMessageText);
+                setErrorMessage(errorTranscribe);
             }
         })
         .catch((error) => {
@@ -146,7 +144,7 @@ function Episode(props) {
                 
                 <div className={styles.episodeData}>
                     <div className={styles.header}>
-                        <div className={styles.episodeTitle}>
+                        <div className={styles.dataTitle}>
                             <strong>{currentEpisode.episodeTitle}</strong>
                         </div> 
 
@@ -165,32 +163,28 @@ function Episode(props) {
                         </div>
                     </div>
 
-                    <div className={styles.podcastTitle}>
-                        <strong>Podcast</strong>
-                        <br/>
+                    <div className={styles.dataSection}>
+                        <div className={styles.dataTitle}><strong>Podcast</strong></div>
                         {currentEpisode.podcastTitle}
                     </div>
 
                     { currentEpisode.podcastPublisher &&
-                    <div className={styles.episodePublisher}>
-                        <strong>Publisher</strong>
-                        <br/>
+                    <div className={styles.dataSection}>
+                        <div className={styles.dataTitle}><strong>Publisher</strong></div>
                         {currentEpisode.podcastPublisher}
                     </div>}
 
-                    <div className={styles.episodeAudioLength}>
-                        <strong>Length</strong>
-                        <br/>
+                    <div className={styles.dataSection}>
+                        <div className={styles.dataTitle}><strong>Length</strong></div>
                         {formatEpisodeLength(currentEpisode.episodeAudioLength)}
                     </div>
 
-                    <div className={styles.episodeDescription}>
-                        <strong>Description</strong>
-                        <br/>
+                    <div className={styles.dataSection}>
+                    <div className={styles.dataTitle}><strong>Description</strong></div>
                         <p dangerouslySetInnerHTML={{__html: currentEpisode.episodeDescription}}></p>
                     </div> 
                     
-                    <div className={styles.episodeTranscription}>
+                    <div className={styles.dataSection}>
                         <div className={styles.header}>
                             <strong>Transcription</strong>
                             { openEditor.isActive 
@@ -212,7 +206,7 @@ function Episode(props) {
                 </div>
             </>
             : (errorMessage) 
-			? <div className={styles.errorMessage}>{errorMessage}</div>
+			? <div className={styles.error}>{errorMessage}</div>
 			: <div className="loader" />
             }
         </div>

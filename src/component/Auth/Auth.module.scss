@@ -1,0 +1,69 @@
+@import "../../styles/variables";
+
+.authContainer {
+    width: 20rem;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    left: 50%;
+    top: 50%; 
+    transform: translate(-50%, -50%);
+    margin: 0;
+    padding: 1.5rem;
+    background-color: $light-gray;
+    box-shadow: $box-shadow;
+    border-radius: 1rem;
+    z-index: 2;
+}
+
+.logo {
+    text-align: center;
+    img {
+        height: 10rem;
+        width: 10rem;
+        border-radius: 100%;
+    }
+}
+
+.formContainer{
+    p {
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+}
+
+button.authButton {
+    margin-top: 1rem;
+    background: none;
+    &:hover:not([disabled]) { 
+        background: none;
+        outline: 0;
+    }
+}
+
+button.submit {
+    height: 2rem;
+    border-radius: 1.5rem;
+    font-size: 1rem;
+    font-family: 'Cairo';
+    padding: 0 1rem;
+    background-color: $blue;
+}
+
+button.submit:hover:not([disabled]) {
+    background-color: $blue-bright;
+    outline: none;
+}
+
+button:focus {
+    outline: $dark-gray;
+}
+
+.footerContainer {
+    text-align: center;
+}
+
+div.error {
+    color: $blue;
+    font-size: 0.8rem;
+}

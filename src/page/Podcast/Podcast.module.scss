@@ -3,12 +3,19 @@ button {
 }
 
 .podcastContainer {
-  padding: 2rem;
+  padding-top: 2rem;
 }
 
-div {
-  display: block;
+div.dataSection {
   margin-bottom: 1rem;
+}
+
+div.dataTitle {
+  display: block;
+}
+
+div.error {
+	font-size: 1.2rem;
 }
 
 .podcastImage {
@@ -17,10 +24,6 @@ div {
   margin: 0 auto 1rem;
   height: auto;
   width: auto;
-//   max-width: 6rem;
-//   width: 100%; 
-//   min-width: 12rem;
-//   max-width: 12rem;
   @media screen and (min-width: 768px) {
     max-width: 30rem;
     margin: 0;
@@ -46,7 +49,7 @@ div {
   img {
     height: 1.5rem;
     width: 1.5rem;
-    margin: 0 0 -0.1rem 0;
+    margin: 0 0 -0.3rem -0.1rem;
   }
 }
 
