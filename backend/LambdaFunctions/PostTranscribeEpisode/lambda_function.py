@@ -1,13 +1,12 @@
 import json
 import requests
-import os
 import boto3
 
 #Main function call
 def putEpisode(podcastID,episodeID, transcribedStatus = None,transcribedText = None,tags = None, genreIDs = None, visitedCount = None):
-    tableName = os.environ.get("TableName")
+    
     dynamoDB = boto3.resource('dynamodb')
-    table = dynamoDB.Table(tableName)
+    table = dynamoDB.Table("PodcastTable_DEV")
 
     if transcribedStatus is None:
         transcribedStatus = "IN PROGRESS"
@@ -42,8 +41,14 @@ def putEpisode(podcastID,episodeID, transcribedStatus = None,transcribedText = N
         return 'Error'
 
 def lambda_handler(event, context):
-    print(event)
-    print(type(event))
+    
+    #Retrieve the environments variables via SSM
+    ssm = boto3.client('ssm')
+    parameter = ssm.get_parameter(Name='/smartcast/env', WithDecryption=True)
+    parameter = parameter['Parameter']["Value"]
+    parameter = json.loads(parameter)
+    
+    TRANSCRIBE_AUDIO_LAMBDA = parameter["TRANSCRIBE_AUDIO_LAMBDA"]
     #Extract the body from event
     body = event["body"]
     body = json.loads(body)
@@ -84,7 +89,7 @@ def lambda_handler(event, context):
             }
             
             lambdaClient.invoke(
-                FunctionName = 'arn:aws:lambda:us-east-1:838451841239:function:TranscribeAudio',
+                FunctionName = TRANSCRIBE_AUDIO_LAMBDA,
                 InvocationType = 'Event',
                 Payload = json.dumps(event)
                 )
@@ -100,7 +105,8 @@ def lambda_handler(event, context):
                 },
                 'body': json.dumps({"Success" : "Transcription Job Started"})
             }
-        except:
+        except Exception as e:
+            print("Exception : ",e)
             return {
                 'statusCode': 200,
                 'headers': {
