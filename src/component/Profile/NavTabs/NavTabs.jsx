@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import NavButton from '../NavTabs/NavButton/NavButton'
 import styles from '../NavTabs/NavTabs.module.scss'
 
@@ -13,8 +13,17 @@ const NavTabs=(props)=> {
                      <div className={styles.avatarContainer}>
                             <div className={styles.avatar}>
                             </div>
+                            <div>
+                                   Ali Belaj
+                            </div>
+                            <div className={styles.bio}>
+                                   {props.bio}
+                            </div>
                      </div>
                      <div className={styles.navButtons}>
+                            <div className={styles.settingsButton} onClick={()=> changeTab('My Profile')}>
+                                   <NavButton label="My Profile" />
+                            </div>
                             <div className={styles.settingsButton} onClick={()=> changeTab('Settings')}>
                                    <NavButton label="Settings" />
                             </div>

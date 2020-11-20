@@ -14,7 +14,10 @@
        flex-direction: column;
        margin-top: 50px;
 }
-
+.bio{
+       max-width: 200px;
+       text-align: center;
+}
 .avatar{
        width: 75px;
        height: 75px;
@@ -25,5 +28,7 @@
 
 .avatarContainer{
        display: flex;
+       flex-direction: column;
        justify-content: center;
+       align-items: center;
 }

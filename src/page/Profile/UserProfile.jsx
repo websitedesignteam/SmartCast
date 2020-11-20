@@ -8,6 +8,8 @@ import Body from '../../component/Profile/Body/Body'
 const UserProfile =()=> {
        const [tab, setTab]= useState('Settings')
 
+       const [bio, setBio] = useState("Hi, my name's Ali and I'm a senior @ the City College of New York. I love to hang out with friends, eat food, and play video games.")
+
        const getTab=(tab)=>{
               setTab(tab)
        }
@@ -16,12 +18,12 @@ const UserProfile =()=> {
               <div>  
                      <div className={styles.profileContainer}>
                             <div>
-                                   <NavTabs changeTab={getTab}/>
+                                   <NavTabs changeTab={getTab} bio={bio}/>
                                    {/* <Card /> */}
                             </div>
                             <div className={styles.moderatorDuties}>
                                    <div>
-                                          <Body currentTab={tab}/>
+                                          <Body currentTab={tab} bio={bio}/>
                                    </div>
                                    {/* <ModeratorDuties /> */}
                             </div>

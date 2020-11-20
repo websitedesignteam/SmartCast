@@ -7,7 +7,7 @@ const Body=(props)=> {
        if (props.currentTab === 'Settings'){
               return (
                      <div>
-                     <Settings />   
+                            <Settings bio={props.bio}/>   
                      </div>
               )
        }else if (props.currentTab === 'Moderator Dashboard'){
@@ -16,7 +16,11 @@ const Body=(props)=> {
                             <ModeratorDashboard />   
                      </div>
               )
-              }
+       }else if (props.currentTab === 'My Profile'){
+              return(<div>
+                     i am your profile
+              </div>)
+       }
 }
 
 export default Body;
