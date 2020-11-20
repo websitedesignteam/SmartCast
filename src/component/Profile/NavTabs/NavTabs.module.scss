@@ -1,0 +1,29 @@
+.container{
+       display:flex;
+       flex-direction: column;
+       min-width: 250px;
+       min-height: 80vh;
+       padding-top: 25px;
+       -webkit-box-shadow: 16px -1px 14px -14px rgba(0,0,0,0.15);
+       -moz-box-shadow: 16px -1px 14px -14px rgba(0,0,0,0.15);
+       box-shadow: 16px -1px 14px -14px rgba(0,0,0,0.15);
+}
+
+.navButtons{
+       display: flex;
+       flex-direction: column;
+       margin-top: 50px;
+}
+
+.avatar{
+       width: 75px;
+       height: 75px;
+       background-color: lightgrey;
+       border-radius: 50%;
+       display: inline-block;
+}
+
+.avatarContainer{
+       display: flex;
+       justify-content: center;
+}

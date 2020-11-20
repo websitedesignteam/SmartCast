@@ -16,6 +16,11 @@
        flex-direction: row;
 }
 
+.tags{
+       display: flex;
+       flex-direction: row;
+}
+
 .subGenre{
        margin: 35px;
 }
