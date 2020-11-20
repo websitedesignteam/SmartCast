@@ -1,53 +1,102 @@
 import json
 import boto3
 
-def getAllEpisodesofATag(table, podcastID, episodeID):
+def getAllEpisodesofATag(table, tag):
     
-    #get the current item from the table
-    #the primary key are podcastID and episodeID
-    response = table.get_item(
-        Key={
-            'podcastID': podcastID,
-            'episodeID' : episodeID
-        }
-    )
+    try: 
+        #run the query for a tag
+        response = table.get_item(
+            Key={
+                'tag': tag
+            }
+        )
+        print("response --> ", response)
+        
+        if "Item" in response:
+            item = response["Item"]
+            
+            episodes = item["episodes"]
+            
+            print(episodes)
+            return {
+                "Data" : episodes
+            }
     
-    #if the database returns any item with ^ those primarykeys
-    if "Item" in response:
-        
-        item = response["Item"]
-        return {
-            "Data" : item["tags"]
+    except Exception as e:
+        print("Exception : " , e)
+        return{
+            json.dumps({"Error : ", e})
         }
-        
-    #otherwise return None   
-    else:
-        return None
     
 
 def lambda_handler(event, context):
-    # TODO implement
+    
+    #Retrieve the environments variables via SSM
+    ssm = boto3.client('ssm')
+    parameter = ssm.get_parameter(Name='/smartcast/env', WithDecryption=True)
+    parameter = parameter['Parameter']["Value"]
+    parameter = json.loads(parameter)
+    
+    GET_EPISODE_SYNCHRONOUS_LAMBDA = parameter["GET_EPISODE_SYNCHRONOUS_LAMBDA"]
     
     try:
         dynamoDB = boto3.resource('dynamodb')
-        PodcastTable = dynamoDB.Table("PodcastTable_DEV")
+        ML_Tag_Search_Table = dynamoDB.Table("ML_Tag_Search")
         
-        print(event)
+        # print(event)
         body = event["body"]
         body = json.loads(body)
         
         
-        if "podcastID" in body:
-            podcastID = str(body["podcastID"])
+        if ("tag" in body):
+            tag = str(body["tag"])
             
-        if "episodeID" in body:
-            episodeID = str(body["episodeID"])
-    
-    
-        data = getAllEpisodesofATag(PodcastTable, podcastID, episodeID)
+        data = getAllEpisodesofATag(ML_Tag_Search_Table, tag)
         
+        print("data --> ml table ", data)
         if "Data" in data:
-            print(data)
+            
+            returnList = []
+            
+            episodes = data["Data"]
+            
+            #iterate through the list of episodes
+            for episode in episodes:
+                #each episode here itself is a list that contains two items
+                #episode[0] = podcastID
+                #episode[1] = episodeID
+                #how do we know? the logic is written in TranscribeAudio lambda in putTagsInML_Tag_Search_Table() function
+                
+                podcastID = episode[0]
+                episodeID = episode[1]
+                print("PODCAST ID: ",podcastID)
+                print("EPISODE ID: ", episodeID)
+                event = {
+                    "body" :{
+                        "podcastID" : podcastID,
+                        "episodeID" : episodeID
+                    }
+                }
+                
+                lambdaClient = boto3.client('lambda')
+                
+                response = lambdaClient.invoke(
+                    FunctionName= GET_EPISODE_SYNCHRONOUS_LAMBDA,
+                    Payload= json.dumps(event) #don't use json.dumps here becuase getEpisode expects a dict object (the way it is currently implemented)
+                )
+                
+                print("response payload: ", response)
+                responsePayload = response["Payload"]
+                responsePayload = responsePayload.read()
+                responsePayload = responsePayload.decode("utf-8")
+                responsePayload = json.loads(responsePayload)
+                
+                body2 = responsePayload["body"]
+                body2 = json.loads(body2)
+                print("body2 == ",body2)
+                returnList.append(body2["Data"])
+            
+            print("hereeee")
             return{
                 'statusCode': 200,
                 'headers' : {
@@ -57,7 +106,7 @@ def lambda_handler(event, context):
                     'Access-Control-Allow-Credentials': True,
                     'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
                 },
-                'body': json.dumps(data)
+                'body': json.dumps({"Data" : returnList})
             }
         
         else:
@@ -89,4 +138,4 @@ def lambda_handler(event, context):
             'body': json.dumps({
                 "Error": e
                 })
-            }
+                }
