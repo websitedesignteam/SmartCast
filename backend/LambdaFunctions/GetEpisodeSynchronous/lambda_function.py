@@ -1,15 +1,22 @@
 import json
 import requests
-import os
 import boto3
 
 
 def getEpisode(podcastID,episodeID):
     
-    tableName = os.environ.get("TableName")
-    dynamoDB = boto3.resource('dynamodb')
-    table = dynamoDB.Table(tableName)
+    #Retrieve the environments variables via SSM
+    ssm = boto3.client('ssm')
+    parameter = ssm.get_parameter(Name='/smartcast/env', WithDecryption=True)
+    parameter = parameter['Parameter']["Value"]
+    parameter = json.loads(parameter)
     
+    API_KEY = parameter["API_KEY"]
+    print("API_KEY = ", API_KEY)
+    dynamoDB = boto3.resource('dynamodb')
+    table = dynamoDB.Table("PodcastTable_DEV")
+    
+    print(table)
     try:
         response = table.get_item(
             Key = {
@@ -30,11 +37,11 @@ def getEpisode(podcastID,episodeID):
     
         url = 'https://listen-api.listennotes.com/api/v2/episodes/' + episodeID
         headers = {
-          'X-ListenAPI-Key': os.environ.get("APIKEY"),
+          'X-ListenAPI-Key': API_KEY
         }
         response = requests.request('GET', url, headers=headers)
         listenNotesData = response.json()
-        
+        print("listennotesdata--> ", listenNotesData)
         returnData = {}
         returnData["episodeID"] = episodeID
         returnData["episodeAudioLink"] = listenNotesData["audio"]
@@ -47,6 +54,8 @@ def getEpisode(podcastID,episodeID):
         returnData["podcastPublisher"] = listenNotesData["podcast"]["publisher"]
         returnData["podcastTitle"] = listenNotesData["podcast"]["title"]
         data = data["Data"]
+        
+        print("Data -->", data)
         if len(data) == 0:
             returnData["transcribedStatus"] = "NOT TRANSCRIBED"
             returnData["transcribedText"] = ""
@@ -62,12 +71,13 @@ def getEpisode(podcastID,episodeID):
                 returnData["transcribedText"] = text
             else:
                 returnData["transcribedText"] = data["transcribedText"]
-            returnData["tags"] = data["tags"]
-            returnData["genreIDs"] = data["genreIDs"]
-            returnData["visitedCount"] = int(data["visitedCount"])
-    
+                returnData["tags"] = data["tags"]
+                returnData["genreIDs"] = data["genreIDs"]
+                returnData["visitedCount"] = int(data["visitedCount"])
+                
         return { "Data": returnData}
     except Exception as e:
+        print("Exception in function : ", e)
         body = {"Error": "Please provide a valid Podcast ID and Episode ID."}
         return body
 
@@ -75,7 +85,7 @@ def lambda_handler(event, context):
     
     try:
         #Extract the body from event
-        
+        print(event)
         body = event["body"]
         # body = json.loads(body) #uncomment this for /getEpisode to work
         
@@ -83,6 +93,7 @@ def lambda_handler(event, context):
         episodeID = str(body["episodeID"])
         podcastID = str(body["podcastID"])
     except Exception as e:
+        print("Exception : ", e)
         body = {
             "Error": "You must provide a Podcast ID and Episode ID."
         }
@@ -97,9 +108,10 @@ def lambda_handler(event, context):
             },
             'body': json.dumps(body)
         }
-        
     body = getEpisode(podcastID = podcastID, episodeID = episodeID)
+    print("bodyy ---> ", body)
     if "Error" in body:
+        print("Error")
         return {
             'statusCode': 400,
             'headers': {
