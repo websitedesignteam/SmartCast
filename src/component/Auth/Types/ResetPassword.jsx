@@ -1,18 +1,14 @@
 import React, { useState } from 'react';
-import AuthInput from '../AuthInput/AuthInput';
 import { useHistory, useParams } from "react-router-dom";
-import { postLogin } from '../../../utils/api';
+import AuthInput from '../AuthInput/AuthInput';
+import styles from '../Auth.module.scss';
+import { postConfirmPasswordReset } from '../../../utils/api';
 import { isFormComplete } from '../../../utils/helper';
 import { errorDefault } from "../../../utils/constants";
-import styles from "../Auth.module.scss";
 
-function Login({loginUser, onClickForgotPassword}) {
-    //vars
-    const history = useHistory();
-    const { authType } = useParams();
-
+function ResetPassword(props) {
     //states
-    const [input, setInput] = useState({email: "", password: ""});
+    const [input, setInput] = useState({email: "", password: "", code: ""});
     const [errorMessage, setErrorMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
@@ -25,14 +21,14 @@ function Login({loginUser, onClickForgotPassword}) {
     const handleSubmit = (event) => {
         event.preventDefault();
         setIsLoading(true);
-        postLogin(input)
+        postConfirmPasswordReset(input)
         .then((response) => {
-            const data = response.data;
-            loginUser(data);
-            authType && history.push("/");
+            alert(response.data.Success);
+            props.onSuccessReset();
         })
         .catch((error) => {
-            (error?.response?.data?.Error) 
+            setInput({...input, code: ""});
+            (error.response?.data?.Error) 
             ? setErrorMessage(error.response.data.Error)
             : setErrorMessage(errorDefault)
             setIsLoading(false);
@@ -40,16 +36,14 @@ function Login({loginUser, onClickForgotPassword}) {
     }
 
     return (
-        <form id="login-form" onSubmit={handleSubmit} className="container">
-            <div className={styles.formContainer}>
-                <p>Log in to your account</p>
+        <form id="confirm-form" onSubmit={handleSubmit} className="container">
+            <div className={styles.formContainer}> 
+                <p>Last step to reset your password!<br/>Please retrieve the code from your email</p>
                 {/* display any error msgs */}
-                {/* { (!isFormComplete(input) && !errorMessage) &&
-                    <div className={styles.error}>Please fill in all fields</div> } */}
                 { (errorMessage) && <div className={styles.error}>{errorMessage}</div> }     
-                
+
                 <AuthInput 
-                    id="login-email" 
+                    id="confirm-reset-email" 
                     name="email" 
                     value={input.email} 
                     label="Email" 
@@ -58,30 +52,37 @@ function Login({loginUser, onClickForgotPassword}) {
                     onChangeInput={onChangeInput} 
                 />
                 <AuthInput 
-                    id="login-password" 
+                    id="confirm-reset-password" 
                     name="password" 
                     value={input.password} 
                     label="Password" 
-                    placeholder="Enter Password" 
+                    placeholder="Enter New Password" 
                     type="password" 
                     onChangeInput={onChangeInput} 
                 />
-
-                <button className={styles.forgotPassword} onClick={onClickForgotPassword}>Forgot password?</button>
-                
+                <AuthInput 
+                    id="confirm-reset-code" 
+                    name="code" 
+                    value={input.code} 
+                    label="Code" 
+                    placeholder="Enter Code" 
+                    type="text" 
+                    onChangeInput={onChangeInput} 
+                />
                 <div className={styles.footerContainer}>
-                {!isLoading
+                    {!isLoading
                     ? <button 
                         className={styles.submit} 
-                        type="submit" disabled={!isFormComplete(input)}
+                        type="submit" 
+                        disabled={!isFormComplete(input)}
                     >
-                        Login
+                        Reset password
                     </button>
-                : <div className="loaderTiny"></div>}
+                    : <div className="loaderTiny"></div>}
                 </div>
             </div>
         </form>
     );
 }
 
-export default Login;
+export default ResetPassword;

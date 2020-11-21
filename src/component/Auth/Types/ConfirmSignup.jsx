@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import AuthInput from '../AuthInput/AuthInput';
 import { useHistory, useParams } from "react-router-dom";
-import { postLogin } from '../../../utils/api';
+import AuthInput from '../AuthInput/AuthInput';
+import styles from '../Auth.module.scss';
+import { postConfirmSignup } from '../../../utils/api';
 import { isFormComplete } from '../../../utils/helper';
 import { errorDefault } from "../../../utils/constants";
-import styles from "../Auth.module.scss";
 
-function Login({loginUser, onClickForgotPassword}) {
+function ConfirmEmail(props) {
     //vars
     const history = useHistory();
     const { authType } = useParams();
 
     //states
-    const [input, setInput] = useState({email: "", password: ""});
+    const [input, setInput] = useState({email: "", code: ""});
     const [errorMessage, setErrorMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
@@ -25,14 +25,15 @@ function Login({loginUser, onClickForgotPassword}) {
     const handleSubmit = (event) => {
         event.preventDefault();
         setIsLoading(true);
-        postLogin(input)
+        postConfirmSignup(input)
         .then((response) => {
-            const data = response.data;
-            loginUser(data);
+            alert(response.data.Success);
+            props.onSuccessVerification();
             authType && history.push("/");
         })
         .catch((error) => {
-            (error?.response?.data?.Error) 
+            setInput({...input, code: ""});
+            (error.response?.data?.Error) 
             ? setErrorMessage(error.response.data.Error)
             : setErrorMessage(errorDefault)
             setIsLoading(false);
@@ -40,16 +41,14 @@ function Login({loginUser, onClickForgotPassword}) {
     }
 
     return (
-        <form id="login-form" onSubmit={handleSubmit} className="container">
-            <div className={styles.formContainer}>
-                <p>Log in to your account</p>
+        <form id="confirm-form" onSubmit={handleSubmit} className="container">
+            <div className={styles.formContainer}> 
+                <p>Last step before joining SmartCast!<br/>Please verify your email</p>
                 {/* display any error msgs */}
-                {/* { (!isFormComplete(input) && !errorMessage) &&
-                    <div className={styles.error}>Please fill in all fields</div> } */}
                 { (errorMessage) && <div className={styles.error}>{errorMessage}</div> }     
-                
+
                 <AuthInput 
-                    id="login-email" 
+                    id="confirm-email" 
                     name="email" 
                     value={input.email} 
                     label="Email" 
@@ -58,30 +57,28 @@ function Login({loginUser, onClickForgotPassword}) {
                     onChangeInput={onChangeInput} 
                 />
                 <AuthInput 
-                    id="login-password" 
-                    name="password" 
-                    value={input.password} 
-                    label="Password" 
-                    placeholder="Enter Password" 
-                    type="password" 
+                    id="confirm-code" 
+                    name="code" 
+                    value={input.code} 
+                    label="Code" 
+                    placeholder="Enter Verification Code" 
+                    type="text" 
                     onChangeInput={onChangeInput} 
                 />
-
-                <button className={styles.forgotPassword} onClick={onClickForgotPassword}>Forgot password?</button>
-                
                 <div className={styles.footerContainer}>
-                {!isLoading
+                    {!isLoading
                     ? <button 
                         className={styles.submit} 
-                        type="submit" disabled={!isFormComplete(input)}
+                        type="submit" 
+                        disabled={!isFormComplete(input)}
                     >
-                        Login
+                        Verify email
                     </button>
-                : <div className="loaderTiny"></div>}
+                    : <div className="loaderTiny"></div>}
                 </div>
             </div>
         </form>
     );
 }
 
-export default Login;
+export default ConfirmEmail;

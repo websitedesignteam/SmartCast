@@ -4,6 +4,9 @@ const { getAPI, postAPI } = require("./axios");
 const postLogin = (data) => postAPI(`/login`, data);
 const postSignup = (data) => postAPI(`/signup`, data);
 const postConfirmSignup = (data) => postAPI(`/confirmsignup`, data);
+const postForgotPassword = (data) => postAPI(`/forgotpassword`, data);
+const postConfirmPasswordReset = (data) => postAPI(`/confirmpasswordreset`, data);
+const getUser = (data) => postAPI(`/getuser`, data);
 
 //landing
 const getGenres = () => getAPI(`/getallgenres`); //all genres
@@ -37,4 +40,7 @@ export {
     postLogin,
     postSignup,
     postConfirmSignup,
+    getUser,
+    postConfirmPasswordReset,
+    postForgotPassword,
 }

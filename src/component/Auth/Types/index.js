@@ -1,18 +1,24 @@
 import AuthInput from "../AuthInput/AuthInput";
 import Login from "./Login";
 import Signup from "./Signup";
-import Confirm from "./Confirm";
+import ConfirmSignup from "./ConfirmSignup";
+import ForgotPassword from "./ForgotPassword";
+import ResetPassword from "./ResetPassword";
 
 export {
     AuthInput,
     Login,
     Signup,
-    Confirm,
+    ConfirmSignup,
+    ForgotPassword,
+    ResetPassword,
 };
 
 export default {
     AuthInput,
     Login,
     Signup,
-    Confirm,
+    ConfirmSignup,
+    ForgotPassword,
+    ResetPassword,
 };

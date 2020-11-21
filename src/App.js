@@ -10,6 +10,7 @@ import {
 import { withSearchContext } from "state/Search/withSearchContext";
 import AudioFooter from './component/AudioFooter/audioFooter';
 import { useIsActive, useOnClickOutside } from 'hooks';
+import { getUser } from "./utils/api";
 
 function App() {
   //global app states
@@ -30,8 +31,23 @@ function App() {
   }
 
   const loginUser = (newUser) => {
-    localStorage.setItem("user", JSON.stringify(newUser));
-    setUser(newUser);
+    const { access_token, id_token, refresh_token } = newUser;
+    getUser({access_token})
+    .then((response) => {
+      closeAuthModal();
+      const userData = response.data;
+      const allUserData = { 
+        ...userData, 
+        access_token,
+        id_token,
+        refresh_token
+      }
+      localStorage.setItem("user", JSON.stringify(newUser));
+      setUser(allUserData);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   }
 
   const logoutUser = () => {
@@ -41,6 +57,10 @@ function App() {
 
   const openAuthModal = () => {
     authModalState.activate();
+  }
+
+  const closeAuthModal = () => {
+    authModalState.deactivate();
   }
 
   //refs
@@ -56,10 +76,10 @@ function App() {
             <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
 
         <div className="App-content">  
-          {(authModalState.isActive && !user.username) && 
+          {(authModalState.isActive && !user.access_token) && 
             <>
             <div className="App-modal" ref={authModalRef}>
-              <Auth loginUser={loginUser} type="login" /> 
+              <Auth loginUser={loginUser} type="login" onSuccessVerification={closeAuthModal} /> 
             </div>
             <div className="App-blur" />
             </>
