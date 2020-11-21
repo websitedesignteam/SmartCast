@@ -22,7 +22,7 @@ function Routes(props) {
 
 			<Route exact path="/auth/:authType">
 				<div className="App-background">
-						<Auth />
+					<Auth />
 				</div>
 			</Route>
 
@@ -34,7 +34,7 @@ function Routes(props) {
 				<Genres />
 			</Route>
 
-			<Route exact path="/searchPage">
+			<Route exact path="/search/results/:searchTerm/:searchType">
 				<SearchPage />
 			</Route>
 

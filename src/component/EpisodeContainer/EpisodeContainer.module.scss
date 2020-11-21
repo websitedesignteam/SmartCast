@@ -1,0 +1,58 @@
+@import "../../styles/variables";
+
+.EpisodeContainer{
+	display: flex;
+	flex-direction: row;
+	border: 0px solid black;
+	border-radius: 15px;
+	margin-bottom: 1.5rem;
+	height: 200px;
+	padding: 1.5rem;
+	-webkit-box-shadow: $box-shadow;
+	-moz-box-shadow: $box-shadow;
+	box-shadow: $box-shadow;
+}
+
+.img {
+	overflow: hidden;
+	img {
+		width: 100%;
+	}
+	height: 10rem;
+	margin-right: 1.5rem;
+	padding: 0;
+	@media screen and (min-width: 480px) {
+		width: 18rem;
+		height: 100%;
+		margin-right: 1.5rem;
+	}
+}
+
+.textContainer{
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+.textTitleHeader {
+	padding: 0;
+	margin: -0.5rem 0 0 0;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.textTitle {
+	max-height: 6rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	@supports (-webkit-line-clamp: 3) {
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+	}
+}

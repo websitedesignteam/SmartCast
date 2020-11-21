@@ -10,10 +10,11 @@ function PodcastContainer(props) {
 			<div className={styles.textContainer}>
 				<div className={styles.textTitleHeader}>
 					<strong className={styles.textTitle}>{props.podcastTitle}</strong>
-					<span className={styles.textTotalEpisodes}>
+					{props.podcastTotalEpisodes && 
+						<span className={styles.textTotalEpisodes}>
 						<strong className={styles.textTotalEpisodesTitle}>Total Episodes</strong>
 						{props.podcastTotalEpisodes}
-					</span>
+					</span>}
 				</div>
 				<p className={styles.textDescription} dangerouslySetInnerHTML={{__html: props.podcastDescription}}></p>
 			</div>

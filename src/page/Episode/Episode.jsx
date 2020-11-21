@@ -159,7 +159,7 @@ function Episode(props) {
                             </button>}
 
                             { currentEpisode.transcribedStatus === "IN PROGRESS" && 
-                            <div className={styles.loaderSmall}></div>}
+                            <div className="loaderSmall"></div>}
                         </div>
                     </div>
 
