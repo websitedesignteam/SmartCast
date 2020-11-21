@@ -65,6 +65,7 @@ def lambda_handler(event, context):
         else:
             return responseBody
     except Exception as e:
+        print(str(e))
         body = {
             "Error": "Something went wrong. We weren't able to validate your session. Please log in again."
         }
