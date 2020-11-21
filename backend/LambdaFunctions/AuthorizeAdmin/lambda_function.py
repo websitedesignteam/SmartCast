@@ -21,17 +21,7 @@ def lambda_handler(event, context):
         body = {
             "Error": "You must provide an access token."
         }
-        return {
-            'statusCode': 400,
-            'headers': {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Credentials': True,
-                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
-            },
-            'body': json.dumps(body)
-        }
+        return body
     
     try:
         lambdaClient = boto3.client('lambda')
@@ -57,6 +47,7 @@ def lambda_handler(event, context):
                 body = {
                     "Success": "User is allowed to perform this method."
                 }
+                return body
             else:
                 body = {
                     "Error": "You do not possess the permission to commit this action."
@@ -68,4 +59,5 @@ def lambda_handler(event, context):
         body = {
             "Error": "Something went wrong. We weren't able to validate your session. Please log in again."
         }
+        return body
         
