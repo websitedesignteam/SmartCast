@@ -1,7 +1,11 @@
 const { getAPI, postAPI } = require("./axios");
-
+const PROXY = 'https://cors-anywhere.herokuapp.com/'
+const APIURL = 'https://g0rjpqharl.execute-api.us-east-1.amazonaws.com/test'
 //landing
-const getGenres = () => getAPI(`/getallgenres`); //all genres
+const getallCategories = () => getAPI(PROXY + APIURL+ `/getallcategories`); //all categories
+
+const getallTagsofACategory = (data) => postAPI('/getalltagsofacategory', data)
+const getallEpisodesofATag = (data) => postAPI('/getallepisodesofatag', data)
 
 //podcast results (search, genre)
 const getGenrePodcasts = (data) => postAPI(`/getallpodcastsofgenre`, data); //get podcasts of specific genre
@@ -13,16 +17,22 @@ const searchEpisodes = (data) => postAPI(`searchepisodes/`, data);
 const searchPodcasts = (data) => postAPI(`searchpodcasts/`, data); 
 
 //podcast
-const getPodcast = (data) => postAPI(`/getallepisodes`,  data );
+const getPodcast = (data) => postAPI(`/getallepisodes`, data );
 
-// TODO : episode
-// const getEpisode = (episodeId) => getAPI(`episode/${episodeId}`);
+// episode
+const getEpisode = (data) => postAPI(`/getepisode`, data);
+const postTranscribeEpisode = (data) => postAPI(`/posttranscribeepisode`, data);
+const getTranscribeUpdate = (data) => postAPI(`/gettranscribeupdate`, data);
 
 export { 
-    getGenres,
+    getallCategories,
+    getallEpisodesofATag,
+    getallTagsofACategory,
     getGenrePodcasts,
     searchEpisodes,
     searchPodcasts, 
     getPodcast,
-    // getEpisode,
+    getEpisode,
+    postTranscribeEpisode,
+    getTranscribeUpdate,
 }

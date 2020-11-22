@@ -1,0 +1,14 @@
+.closeAudioPlayer {
+	position: fixed;
+	bottom: 3.5rem;
+	right: 0;
+	border: none;
+	width: 2rem;
+	height: 2rem;
+}
+
+.audio {
+	width: 100%;
+	position: fixed;
+	bottom: 0;
+}

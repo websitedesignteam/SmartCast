@@ -33,9 +33,13 @@ function Genres(props) {
                      <h3>Podcasts for: "{genreName2}"</h3>
                      <div className="resultsContainer">
                             {podcasts.map((podcasts)=>{
-                            return <PodcastContainer podcastTitle={podcasts.podcastTitle}
+                            return (
+                                   <Link to={`/podcast/${podcasts.podcastID}`} className={styles.link}>
+                                          <PodcastContainer podcastTitle={podcasts.podcastTitle}
                                                         podcastDescription={podcasts.podcastDescription}
                                                         imgSrc={podcasts.podcastImage}/>
+                                                        </Link>
+                            )
                             })}
                       </div>
               </div>)
