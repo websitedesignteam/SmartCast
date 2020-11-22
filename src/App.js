@@ -1,90 +1,94 @@
-import React, { useEffect, useState } from 'react';
-import './App.css';
-import Podcast from './page/Podcast/Podcast'
-import Episode from './page/Episode/Episode'
-import Home from './page/Home/Home'
-import Genres from './page/Genres/Genres'
-import Navbar from './component/Navbar/Navbar'
-import SearchPage from './page/Search/SearchPage'
-
+import React, { useState, useRef } from 'react';
+import './App.scss';
+import Navbar from './component/Navbar/Navbar';
+import Auth from './component/Auth/Auth';
+import Search from './component/Search/Search';
+import Routes from './Routes';
 import {
   BrowserRouter as Router,
-  Switch,
-  Route,
 } from "react-router-dom";
-import {withSearchContext} from "state/Search/withSearchContext"
+import { withSearchContext } from "state/Search/withSearchContext";
 import AudioFooter from './component/AudioFooter/audioFooter';
+import { useIsActive, useOnClickOutside } from 'hooks';
+import { getUser } from "./utils/api";
 
 function App() {
+  //global app states
   const [isLoading, setIsLoading] = useState(true);
+  const [audio, setAudio] = useState(() => JSON.parse(localStorage.getItem('audio')) || {}); // audio = {podcastName, episodeName, podcastPublisher, audio}
+  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user')) || {}); //user = {username, authToken, refreshToken}
+  const authModalState = useIsActive();
 
-  // TODO: clean up by making this into a custom hook
-  const [audioPlayerOpen, setAudioPlayerOpen] = useState(false); 
-  const [audioUrl, setAudioUrl] = useState(""); 
-
-  const openAudioPlayer = (newAudioUrl) => {
-    setAudioUrl(newAudioUrl);
-    setAudioPlayerOpen(true);
-    localStorage.setItem('audioUrl', newAudioUrl);
+  //util functions for states
+  const openAudioPlayer = (newAudio) => {
+    setAudio(newAudio);
+    localStorage.setItem("audio", JSON.stringify(newAudio));
   }
 
   const closeAudioPlayer = () => {
-    setAudioPlayerOpen(false);
-    setAudioUrl(null);
-    localStorage.removeItem("audioUrl");
+    setAudio({});
+    localStorage.removeItem("audio");
   }
 
-  useEffect(() => {
-    const currentAudioUrl = localStorage.getItem("audioUrl") || "";
-    
-    if (!!currentAudioUrl) {
-      setAudioUrl(currentAudioUrl);
-      setAudioPlayerOpen(true);
-    }
+  const loginUser = (newUser) => {
+    const { access_token, id_token, refresh_token } = newUser;
+    getUser({access_token})
+    .then((response) => {
+      closeAuthModal();
+      const userData = response.data;
+      const allUserData = { 
+        ...userData, 
+        access_token,
+        id_token,
+        refresh_token
+      }
+      localStorage.setItem("user", JSON.stringify(newUser));
+      setUser(allUserData);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+  }
 
-    setIsLoading(false);
-  }, [audioUrl]);
+  const logoutUser = () => {
+    setUser({});
+    localStorage.removeItem("user");
+  }
 
-  if (isLoading) return null;
+  const openAuthModal = () => {
+    authModalState.activate();
+  }
+
+  const closeAuthModal = () => {
+    authModalState.deactivate();
+  }
+
+  //refs
+  const authModalRef = useRef();
+  useOnClickOutside(authModalRef, authModalState.deactivate);
 
   return (
     <div className="App">
-    <Router>
-      <Navbar />
-      {audioPlayerOpen && 
-        <AudioFooter audioUrl={audioUrl} closeAudioPlayer={closeAudioPlayer} />}
-      <Switch>
+      <Router>
+        <Navbar logoutUser={logoutUser} openAuthModal={openAuthModal} user={user}/>
+        
+        {audio.audioUrl && 
+            <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
 
-        <Route exact path="/">
-          <Home />
-        </Route>
-
-        <Route exact path="/genres">
-          <Genres />
-        </Route>
-
-        <Route exact path="/genres/:genreName2/:genreName" component={Genres}>
-          <Genres />
-        </Route>
-
-        <Route exact path="/searchPage">
-          <SearchPage />
-        </Route>
-
-        {/* This route is temporarily used for episode while not using a modal popup */}
-        <Route exact path="/podcast/:podcastID/episode/:episodeID"> 
-          <Episode openAudioPlayer={openAudioPlayer} />
-        </Route> 
-
-        <Route exact path="/podcast/:podcastID">
-          <Podcast />
-        </Route>
-
-        <Route exact path="/">
-          <img className="logo" src={process.env.PUBLIC_URL + "/assets/logo.png"} alt="Podcast Logo" />
-        </Route>
-      </Switch>
-    </Router>
+        <div className="App-content">  
+          {(authModalState.isActive && !user.access_token) && 
+            <>
+            <div className="App-modal" ref={authModalRef}>
+              <Auth loginUser={loginUser} type="login" onSuccessVerification={closeAuthModal} /> 
+            </div>
+            <div className="App-blur" />
+            </>
+          }
+          <Search />
+          <Routes user={user} openAudioPlayer={openAudioPlayer} />
+          
+        </div>
+      </Router>
     </div>
   );
 }

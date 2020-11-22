@@ -1,0 +1,24 @@
+.closeAudioPlayer {
+	position: fixed;
+	bottom: 3.5rem;
+	right: 0;
+	border: none;
+	width: 2rem;
+	height: 2rem;
+	border-radius: 100%;
+}
+
+.audioFooter {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	background-color: #f3f3f3;
+}
+
+.audio {
+	width: 100%;
+}

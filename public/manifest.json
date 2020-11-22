@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "SmartCast",
+  "name": "SmartCast Community Podcast Transcription",
   "icons": [
     {
       "src": "assets/favicon.ico",

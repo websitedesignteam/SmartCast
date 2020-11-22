@@ -1,0 +1,21 @@
+.cardContainer{
+       display: inline-block;
+       text-align: center;
+       padding: 15px;
+       height: 100%;
+       -webkit-box-shadow: 16px -1px 14px -14px rgba(0,0,0,0.15);
+       -moz-box-shadow: 16px -1px 14px -14px rgba(0,0,0,0.15);
+       box-shadow: 16px -1px 14px -14px rgba(0,0,0,0.15);
+}
+
+.avatar{
+       width: 75px;
+       height: 75px;
+       background-color: lightgrey;
+       border-radius: 50%;
+       display: inline-block;
+}
+
+.bio{
+       max-width: 250px;
+}
