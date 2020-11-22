@@ -26,8 +26,16 @@ const Settings=(props)=> {
                             </div>
                      </SectionContainer>
                      <SectionContainer label="Change Password">
-
+                            <div className={styles.changePasswordContainer}>
+                            <label className={styles.labels}>Old Password:</label>
+                                                 <input className={styles.pass}></input>
+                            <label className={styles.labels}>New Password:</label>
+                                                 <input className={styles.pass}></input>  
+                            </div>
                      </SectionContainer>
+                     <div className={styles.submit}>
+                            Apply Changes
+                     </div>
               </div>
        )
 }

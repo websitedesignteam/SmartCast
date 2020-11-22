@@ -21,7 +21,7 @@ const NavTabs=(props)=> {
                             </div>
                      </div>
                      <div className={styles.navButtons}>
-                            <div className={styles.settingsButton} onClick={()=> changeTab('My Profile')}>
+                            <div className={styles.profileButton} onClick={()=> changeTab('My Profile')}>
                                    <NavButton label="My Profile" />
                             </div>
                             <div className={styles.settingsButton} onClick={()=> changeTab('Settings')}>

@@ -32,3 +32,36 @@
        // padding: 0px;
        // margin-right: 15px;
 }
+
+.pass{
+       margin-left: 5px;
+}
+
+.labels{
+       padding: 5px;
+}
+
+.submit{
+       display: inline-block;
+       // float: right;
+       max-width: 150px;
+       padding: 5px;
+       text-decoration: none;
+       text-align: center;
+       color: white;
+       border-radius: 5px;
+       // font-weight: 800;
+       // text-transform: uppercase;
+//        color: white;
+//     padding: 1em 3em;
+//     background-size: 200% auto;
+//     color: white;
+       opacity: .5;
+       box-shadow: 0 4px 6px rgba(50,50,93,.11), 0 1px 3px rgba(0,0,0,.08);
+       background-image: linear-gradient(to right, #895cf2 0%, #ffabf4 120%, #895cf2 100%);
+//     transition: 0.5s;
+    &:hover {
+           opacity: 1;
+      background-position: right center;
+    }  
+}

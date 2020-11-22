@@ -14,6 +14,7 @@ function Home(props) {
        const [tags, setTags] = useState([]);
        const [podcastID, setPodcastID] = useState();
        const [episodeID, setEpisodeID] = useState();
+       const [episodes, setEpisodes] = useState();
        let history = useHistory();
 
        useEffect(() => {
@@ -30,6 +31,7 @@ function Home(props) {
                      let data = {"category": category}
                      getallTagsofACategory(data)
                      .then((response) => {
+                            setEpisodes();
                             setTags(response.data.Data);
 			})
 			.catch((error) => {
@@ -41,13 +43,18 @@ function Home(props) {
               let data = {"tag": tag}
               getallEpisodesofATag(data)
               .then((response) => {
-                     setPodcastID(response.data.Data[0].podcastID.toString());
-                     setEpisodeID(response.data.Data[0].episodeID.toString());
-                     history.push(`/podcast/${response.data.Data[0].podcastID}/episode/${response.data.Data[0].episodeID}`)
+                     setEpisodes(response.data.Data)
+                     // setPodcastID(response.data.Data[0].podcastID.toString());
+                     // setEpisodeID(response.data.Data[0].episodeID.toString());
+                     // history.push(`/podcast/${response.data.Data[0].podcastID}/episode/${response.data.Data[0].episodeID}`)
               })
               .catch((error) => {
                      console.log(error);
               });
+        }
+
+        const sendToEpisodePage = (podcastID, episodeID)=>{
+              history.push(`/podcast/${podcastID}/episode/${episodeID}`)
         }
 
   return ( 
@@ -55,8 +62,7 @@ function Home(props) {
               <Search/>
               <div className={styles.genreSection}>
                      <div className={styles.subGenre}>
-                            <div className={styles.genreHeading}>
-                                   <h5>Genres</h5>
+                            <div className={styles.skew}>
                             </div>
                             <div className={styles.thumbnailContainer}>
                            {categories.map((category, index)=><div key={category} onClick={() => getTags(category)}><TagPill key={category} label={category}/></div>)}
@@ -64,9 +70,9 @@ function Home(props) {
                             <div className={styles.tags}>
                             {tags ? tags.map((category, index)=><div key={category} onClick={()=> getEpisodeData(category.tag)}><TagPill key={category} label={category.tag} count= {category.episodeCount}/></div>): null}
                             </div>
-                     </div>
-                     <div className={styles.subGenre}>
-                                   <h5>Top</h5>
+                            <div className={styles.tags}>
+                            {episodes ? episodes.map((episode, index)=><div key={episode} onClick={()=> sendToEpisodePage(episode.podcastID, episode.episodeID)}><TagPill key={episode} podcastTitle={episode.podcastTitle} label={episode.episodeTitle} /></div>): null}
+                            </div>
                      </div>
               </div>
          </div>
