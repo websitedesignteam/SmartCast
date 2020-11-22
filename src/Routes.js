@@ -22,13 +22,14 @@ function Routes(props) {
 			</Route>
 
 			<Route exact path="/auth/:authType">
+				{!!props.user.access_token ? <Redirect to="/" /> : 
 				<div className="App-background">
 					<Auth />
-				</div>
+				</div>}
 			</Route>
 
 			<Route exact path="/profile">
-				<UserProfile />
+				{!props.user.access_token ? <Redirect to="/" /> : <UserProfile />}
 			</Route>
 
 			<Route exact path="/genres">
