@@ -9,7 +9,7 @@ function ForgotPassword(props) {
     //states
     const [input, setInput] = useState({email: ""});
     const [errorMessage, setErrorMessage] = useState("");
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
     //set states
     function onChangeInput(event) {

@@ -22,6 +22,7 @@ function Navbar({openAuthModal, logoutUser, user}) {
 			<Link className={styles.link} to='/'><strong>SmartCast</strong></Link>
 			<div className={styles.linksContainer}>
 				<Link className={styles.link} to='/'>Home</Link>
+				{ !!user.access_token && <Link to='/profile' className={styles.link}>My Profile</Link>}
 				{ (!user.access_token && !isAuthActive)
 				? <button className={styles.userAction} onClick={onClickLogin}>Login</button>
 				: !!isAuthActive 

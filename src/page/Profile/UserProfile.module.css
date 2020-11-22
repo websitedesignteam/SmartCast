@@ -1,0 +1,9 @@
+.profileContainer{
+       display: flex;
+       flex-direction: row;
+       
+}
+
+.moderatorDuties{
+       margin-left: 15px;
+}

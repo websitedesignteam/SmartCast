@@ -1,0 +1,30 @@
+.navbarContainer{
+       background-image: linear-gradient(to right, #895cf2 0%, #ffabf4 200%, #895cf2 100%);
+       -webkit-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.37);
+-moz-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.37);
+box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.37);
+       display: flex;
+       height: 60px;
+       padding-left: 25px;
+       padding-right: 25px;
+}
+
+.logoText{
+       color: white;
+       text-decoration: none;
+}
+
+.linksContainer{
+       position: absolute;
+       display: flex;
+       flex-direction: row;
+       right: 0;
+       padding-left: 25px;
+       padding-right: 25px;
+       color: white;
+}
+
+.linkText{
+       margin-left: 25px;
+       margin-right: 25px;
+}

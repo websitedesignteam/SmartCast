@@ -6,6 +6,7 @@ import Home from './page/Home/Home';
 import Genres from './page/Genres/Genres';
 import SearchPage from './page/Search/SearchPage';
 import Auth from './component/Auth/Auth'
+import UserProfile from './page/Profile/UserProfile'
 import {
 	Switch,
 	Route,
@@ -24,6 +25,10 @@ function Routes(props) {
 				<div className="App-background">
 					<Auth />
 				</div>
+			</Route>
+
+			<Route exact path="/profile">
+				<UserProfile />
 			</Route>
 
 			<Route exact path="/genres">

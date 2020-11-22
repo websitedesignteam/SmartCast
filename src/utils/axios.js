@@ -6,7 +6,7 @@ const API_KEY = process.env.REACT_APP_API_KEY;
 const PROXY_URL= 'https://cors-anywhere.herokuapp.com/'
 //create instance
 const AxiosInstance = axios.create({
-    baseURL: API_URL,  
+    baseURL: PROXY_URL + API_URL,  
     headers : {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -17,7 +17,7 @@ const AxiosInstance = axios.create({
 });
 
 
-const getAPI = (apiUrl) => AxiosInstance.get( apiUrl);
+const getAPI = (apiUrl) => AxiosInstance.get(PROXY_URL + API_URL + apiUrl);
 
 const postAPI = (apiUrl, data) => AxiosInstance.post(PROXY_URL + API_URL + apiUrl, data);
 

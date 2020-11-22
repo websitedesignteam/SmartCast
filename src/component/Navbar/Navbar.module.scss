@@ -1,10 +1,10 @@
 @import "../../styles/variables";
 
 .navbarContainer{
-	background: $blue;
-	// -webkit-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.37);
-	// -moz-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.37);
-	// box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.37);
+	background-image: linear-gradient(to right, #895cf2 0%, #ffabf4 200%, #895cf2 100%);
+	-webkit-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.37);
+	-moz-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.37);
+	box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.37);
 	display: flex;
 	height: 4rem;
 	padding: 0 1.5rem;
