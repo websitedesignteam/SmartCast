@@ -10,23 +10,53 @@ def getAllEpisodesofATag(table, tag):
                 'tag': tag
             }
         )
-        print("response --> ", response)
         
-        if "Item" in response:
-            item = response["Item"]
-            
-            episodes = item["episodes"]
-            
-            print("Episodes : ", episodes)
-            
-            return {
-                "Data" : episodes
-            }
-    
+        
     except Exception as e:
-        print("Exception : " , e)
-        return{
-            json.dumps({"Error : ", e})
+        print("Exception : ", e)
+        body = {
+            "Error": "Could not retrieve tags from the database ML_Tag_Search_Table"
+        }
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': True,
+                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+            },
+            'body': json.dumps(body)
+        }
+    
+    
+    print("response --> ", response)
+    
+    if "Item" in response:
+        item = response["Item"]
+        
+        episodes = item["episodes"]
+        
+        print("Episodes : ", episodes)
+        
+        return {
+            "Data" : episodes
+        }
+
+    else:
+        body = {
+            "Error": "There is no Item in the database ML_Tag_Search_Table while retrieving all episodes of a tag"
+        }
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': True,
+                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+            },
+            'body': json.dumps(body)
         }
         
 
@@ -36,9 +66,29 @@ def getAllTags(table):
     #declare a list to store tags
     tagsList = []
     
-    #scan the whole table
-    response = table.scan()
-    
+    try: 
+        
+        #scan the whole table
+        response = table.scan()
+        
+    except Exception as e:
+        print("Exception : ", e)
+        body = {
+            "Error": "Could not scan the table to get all tags from ML_Tag_Search_Table"
+        }
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': True,
+                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+            },
+            'body': json.dumps(body)
+        }
+        
+        
     if "Items" in response:
         items = response["Items"]
         
@@ -52,15 +102,28 @@ def getAllTags(table):
         }
     
     else:
-        return{
-            json.dumps({"Data" : "Error: No tags found"})
+        body = {
+            "Error": "There is no Items in the database ML_Tag_Search_Table while retrieving all tags"
+        }
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': True,
+                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+            },
+            'body': json.dumps(body)
         }
 
 
 def lambda_handler(event, context):
     
-    try: 
     
+    #----------------------------------------Retrieve the parameters from SSM store----------------------------------------#
+    
+    try:
         #Retrieve the environments variables via SSM
         ssm = boto3.client('ssm')
         parameter = ssm.get_parameter(Name='/smartcast/env', WithDecryption=True)
@@ -68,14 +131,59 @@ def lambda_handler(event, context):
         parameter = json.loads(parameter)
         
         GET_EPISODE_SYNCHRONOUS_LAMBDA = parameter["GET_EPISODE_SYNCHRONOUS_LAMBDA"]
+    
+    
+    except Exception as e:
+        print("Exception : ", e)
+        body = {
+            "Error": "Could not retrieve the parameters from SSM store"
+        }
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': True,
+                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+            },
+            'body': json.dumps(body)
+        }
         
-        #get the info from request body
+    
+    
+    
+    #----------------------------------------Check parameters----------------------------------------#
+
+    try:
+        #Get params from client
         body = event["body"]
         body = json.loads(body)
         
-        if ("searchQuery" in body):
-            searchQuery = str(body["searchQuery"])
-            
+        searchQuery = str(body['searchQuery'])
+        
+        
+    except Exception as e:
+        print("Exception : ", e)
+        body = {
+            "Error": "You must provide a searchQuery."
+        }
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Credentials': True,
+                'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+            },
+            'body': json.dumps(body)
+        }
+        
+        #----------------------------------------Searching----------------------------------------#
+
+    try: 
+        #use the searchQuery that we obtained earlier from the body
         #split the string into arrays where delimeter is whitespace
         searchQueryArray = searchQuery.split()
         
@@ -184,14 +292,18 @@ def lambda_handler(event, context):
         }
         
     except Exception as e:
-        return{
-            'statusCode': 400,
-            'headers' : {
+        body = {
+            "Error": "An unknown error occured."
+        }
+        print(str(e))
+        return {
+            'statusCode': 500,
+            'headers': {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Credentials': True,
                 'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
             },
-            'body': json.dumps({"Exception" : e})
+            'body': json.dumps(body)
         }
