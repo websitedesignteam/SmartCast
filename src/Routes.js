@@ -29,7 +29,7 @@ function Routes(props) {
 			</Route>
 
 			<Route exact path="/profile">
-				{!props.user.access_token ? <Redirect to="/" /> : <UserProfile />}
+				{!props.user.access_token ? <Redirect to="/" /> : <UserProfile userData={props.user} />}
 			</Route>
 
 			<Route exact path="/genres">

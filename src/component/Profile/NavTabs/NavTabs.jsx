@@ -14,7 +14,7 @@ const NavTabs=(props)=> {
                             <div className={styles.avatar}>
                             </div>
                             <div>
-                                   Ali Belaj
+                                   {props.name}
                             </div>
                             <div className={styles.bio}>
                                    {props.bio}
