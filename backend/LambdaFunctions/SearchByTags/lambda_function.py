@@ -1,5 +1,6 @@
 import json
 import boto3
+import difflib
 
 def getAllEpisodesofATag(table, tag):
     
@@ -180,7 +181,9 @@ def lambda_handler(event, context):
             'body': json.dumps(body)
         }
         
-        #----------------------------------------Searching----------------------------------------#
+    
+    
+    #----------------------------------------Searching----------------------------------------#
 
     try: 
         #use the searchQuery that we obtained earlier from the body
@@ -208,6 +211,18 @@ def lambda_handler(event, context):
         
         #for every query in searchQuery (frontend)
         for query in searchQueryArray:
+            
+            #for every tag in the tagsList
+            for tag in tagsList:
+                
+                #match the sequence between query and tag
+                sequence = difflib.SequenceMatcher(None,query,tag)
+                ratio = sequence.ratio()
+                
+                #if the pattern matching > 60%
+                if(ratio > 0.6):
+                    print("Sequence Matching Ratio : ", ratio)
+                    returnSet.add(tag)
             
             #check if each query is a substring of anything in the tagsList (i.e a list of tags from the db)
             #store the results into a list
@@ -261,13 +276,33 @@ def lambda_handler(event, context):
                 }
             }
             
-            lambdaClient = boto3.client('lambda')
-                        
-            response = lambdaClient.invoke(
-                FunctionName= GET_EPISODE_SYNCHRONOUS_LAMBDA,
-                Payload= json.dumps(event) #don't use json.dumps here becuase getEpisode expects a dict object (the way it is currently implemented)
-            )
+            try:
+                
+                lambdaClient = boto3.client('lambda')
+                            
+                response = lambdaClient.invoke(
+                    FunctionName= GET_EPISODE_SYNCHRONOUS_LAMBDA,
+                    Payload= json.dumps(event) #don't use json.dumps here becuase getEpisode expects a dict object (the way it is currently implemented)
+                )
             
+            except:
+                body = {
+                    "Error": "Could not invoke GET_EPISODE_SYNCHRONOUS_LAMBDA"
+                }
+                print(str(e))
+                return {
+                    'statusCode': 400,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Credentials': True,
+                        'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+                    },
+                    'body': json.dumps(body)
+                }
+                
+                
             print("Response Payload : ", response)
             responsePayload = response["Payload"]
             responsePayload = responsePayload.read()
@@ -276,7 +311,6 @@ def lambda_handler(event, context):
             
             body2 = responsePayload["body"]
             body2 = json.loads(body2)
-            print("body2 == ",body2)
             returnList.append(body2["Data"])
             
         return{
@@ -292,6 +326,7 @@ def lambda_handler(event, context):
         }
         
     except Exception as e:
+        print("Exception : ", e)
         body = {
             "Error": "An unknown error occured."
         }
