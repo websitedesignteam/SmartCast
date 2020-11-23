@@ -44,10 +44,10 @@ def lambda_handler(event, context):
         #Get params from client
         body = event["body"]
         body = json.loads(body)
-        token = body["token"]
+        token = body["access_token"]
     except Exception as e:
         body = {
-            "Error": "You must provide a token."
+            "Error": "You must provide an access token."
         }
         return {
             'statusCode': 400,
