@@ -183,16 +183,6 @@ def lambda_handler(event, context):
     #----------------------------------------Favorite/unfavorite a podcast----------------------------------------#
 
     try:
-        body = event["body"]
-        body = json.loads(body)
-        
-        if("podcastID" in body):
-            podcastID = str(body["podcastID"])
-        
-        if("command" in body):
-            command = str(body["command"]).lower()
-        
-        
         try: 
             dynamoDB = boto3.resource('dynamodb')
             Users_Table = dynamoDB.Table("Users")
