@@ -157,11 +157,6 @@ def lambda_handler(event, context):
         data = response["Items"]
         
         
-        response = table.get_item(
-            Key = {
-                "username": body["email"]
-            })
-        
         output = []
         body = {
             "Data": output
@@ -170,7 +165,7 @@ def lambda_handler(event, context):
             if userRow["status"] == "admin":
                 continue
             else:
-                output.append(createUserObj(status = userRow["status"],email = userRow["email"],profilePicture = userRow["profilePicture"],editCount = userRow["editCount"]))
+                output.append(createUserObj(status = userRow["status"],email = userRow["username"],profilePicture = userRow["profilePicture"],editCount = int(userRow["approvedEdits"])))
                 
         
         return {
