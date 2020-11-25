@@ -15,9 +15,13 @@ select:-webkit-autofill:focus {
 
 .searchBar{
 	position : relative;
-	height: 35px;
+       height: 35px;
+       border: 2px solid lightgrey;
 	border-radius: 1.5rem;
-	background-color: $gray;
+       // background-color: $gray;
+       -webkit-box-shadow: inset -18px -18px 5px -16px rgba(0,0,0,0.11);
+-moz-box-shadow: inset -18px -18px 5px -16px rgba(0,0,0,0.11);
+box-shadow: inset -18px -18px 5px -16px rgba(0,0,0,0.11);
 	display: flex;
 	flex-direction: row;
 	align-items: center;

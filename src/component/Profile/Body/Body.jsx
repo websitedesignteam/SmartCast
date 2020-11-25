@@ -2,6 +2,7 @@ import React from 'react'
 import styles from '../Body/Body.module.scss'
 import Settings from '../Body/Settings/Settings'
 import ModeratorDashboard from '../ModeratorDuties'
+import ProfileContent from '../Body/Profile/ProfileContent'
 const Body=(props)=> {
 
        if (props.currentTab === 'Settings'){
@@ -18,8 +19,8 @@ const Body=(props)=> {
               )
        }else if (props.currentTab === 'My Profile'){
               return(<div>
-                     i am your profile
-              </div>)
+                            <ProfileContent />
+                     </div>)
        }
 }
 

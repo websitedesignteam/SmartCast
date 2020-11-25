@@ -6,7 +6,7 @@ import styles from '../Profile/UserProfile.module.css'
 import Body from '../../component/Profile/Body/Body'
 
 const UserProfile =(props)=> {
-       const [tab, setTab]= useState('Settings')
+       const [tab, setTab]= useState('My Profile')
 
        const [bio, setBio] = useState("Hi, my name's Ali and I'm a senior @ the City College of New York. I love to hang out with friends, eat food, and play video games.")
        const [userData, setUserData] = useState(props.userData)
@@ -18,7 +18,7 @@ const UserProfile =(props)=> {
               <div>  
                      <div className={styles.profileContainer}>
                             <div>
-                                   <NavTabs changeTab={getTab}  name={userData.name} bio={userData.bio}/>
+                                   <NavTabs changeTab={getTab}  name={userData.name} bio={userData.bio} userStatus={userData.status}/>
                                    {/* <Card /> */}
                             </div>
                             <div className={styles.moderatorDuties}>
