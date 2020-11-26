@@ -424,7 +424,7 @@ def lambda_handler(event, context):
         elif response == "SUCCESS":
             #if everything goes well, return the message
             body = {
-                "Success": "Your request for editing transcription has been recieved. Please wait for a decision."
+                "Success": "Your request for editing transcription has been received. Please wait for a decision."
             }
             return {
                 'statusCode': 200,
