@@ -47,9 +47,15 @@ def lambda_handler(event, context):
         token = body["access_token"]
         email = body["email"]
         command = body["command"]
-        if command != "PROMOTE" or command != "DEMOTE":
+        if command == "PROMOTE" or command == "DEMOTE":
+            print("command received")
+        else:
             raise Exception("Invalid command.")
     except Exception as e:
+        if "Invalid command" in str(e):
+            body = {
+                "Error": "You must provide a valid command."
+            }
         body = {
             "Error": "You must provide a valid access token, email, and command."
         }
@@ -163,7 +169,7 @@ def lambda_handler(event, context):
             
         
         body = {
-            "Success": email + "has been" + command.lower() + "d."
+            "Success": email + " has been " + command.lower() + "d."
         }
         
         return {
