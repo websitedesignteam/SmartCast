@@ -46,6 +46,7 @@ def getItemFromPodcastTable(table, podcastID, episodeID):
     
     #otherwise return None    
     else:
+        print("Exception : ", e)
         body = {
             "Error": "Could not find the item in the Podcast Table"
         }
@@ -70,8 +71,7 @@ def updateItemInPodcastTable(table, item, keyString, editorsEmail):
         if "editorsEmail" in item:
             
             #if some other user has already submitted the request for same transcription
-            #note: this implementation allows the same user to submit editTranscription request more than once in a row
-            if item["editorsEmail"] != editorsEmail:
+            if item["transcribedStatus"] == "EDIT IN PROGRESS":
                 print("someone already has submitted a request")
                 return "ERROR"
         
@@ -114,6 +114,7 @@ def updateItemInPodcastTable(table, item, keyString, editorsEmail):
             
     #there was no such record to be updated      
     else:
+        print("Exception : ", e)
         body = {
             "Error": "Could not update requestedEdit, editorsEmail, and transcribedStatus fields in Podcast Table"
         }
