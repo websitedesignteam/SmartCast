@@ -46,7 +46,6 @@ def getItemFromPodcastTable(table, podcastID, episodeID):
     
     #otherwise return None    
     else:
-        print("Exception : ", e)
         body = {
             "Error": "Could not find the item in the Podcast Table"
         }
@@ -115,7 +114,6 @@ def updateItemInPodcastTable(table, item, keyString, editorsEmail):
             
     #there was no such record to be updated      
     else:
-        print("Exception : ", e)
         body = {
             "Error": "Could not update requestedEdit, editorsEmail, and transcribedStatus fields in Podcast Table"
         }
