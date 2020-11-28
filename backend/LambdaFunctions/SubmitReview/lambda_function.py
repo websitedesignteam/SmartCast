@@ -78,13 +78,13 @@ def lambda_handler(event, context):
         rating = int(body["rating"])
         token = body["access_token"]
         podcastID = str(body["podcastID"])
-        episodeID = str(ody["episodeID"])
+        episodeID = str(body["episodeID"])
         combinedID =podcastID+episodeID
         
         
     except Exception as e:
         body = {
-            "Error": "You must provide an access_token, image, and extension."
+            "Error": "You must provide an access_token, review, rating, podcastID, and episodeID."
         }
         return {
             'statusCode': 400,
@@ -166,7 +166,7 @@ def lambda_handler(event, context):
     #----------------------------------------Submit Comment----------------------------------------#
     try:
         client = boto3.client('cognito-idp')  
-            
+        
         resp = client.get_user(
             AccessToken = token
            )
@@ -180,6 +180,8 @@ def lambda_handler(event, context):
                 email = attribute["Value"]
             elif attribute["Name"] == "name":
                 name = attribute["Value"]
+            elif attribute["Name"] == "sub":
+                username = attribute["Value"]
         
         tableName = "Users"
         dynamoDB = boto3.resource('dynamodb')
@@ -191,12 +193,39 @@ def lambda_handler(event, context):
                 "username": email
             })
         
-
+        
         item = response["Item"]
-        ratings = item["ratings"]
+        
+        try:
+            s3Resource = boto3.resource('s3')
+            bucketName = "profileratings-smartcast"
+            ratings = item["ratings"]
+            if len(ratings) > 0:
+                
+                s3Obj = s3Resource.Object(bucketName,ratings)
+                ratingsData = s3Obj.get()["Body"].read().decode("utf-8")
+                ratingsData = json.loads(ratingsData)
+            else:
+                ratingsData = []
+        except Exception as e:
+            print(str(e))
+            body = {
+                "Error": "We were unable to retrieve your review history."
+            }
+            return {
+                'statusCode': 500,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Credentials': True,
+                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+                },
+                'body': json.dumps(body)
+            }
         
         #Terminate early if user already submitted review
-        if combinedID in ratings:
+        if combinedID in ratingsData:
             body = {
                 "Error": "You've already submitted a review for this podcast."
             }
@@ -217,7 +246,24 @@ def lambda_handler(event, context):
         
         
         
-        #Save review into text file
+        
+        s3 = boto3.client('s3')
+        
+        #Save users entire rating history into their json file
+        filePath = "/tmp/"+username+"ratings.txt"
+        ratingKeystring = username+"ratings.txt"
+        bucketName = "profileratings-smartcast"
+        userRatingJsonDataFile = open(filePath,"wt")
+        ratingsData.append(combinedID)
+        ratingsData = json.dumps(ratingsData)
+        userRatingJsonDataFile.write(ratingsData)
+        userRatingJsonDataFile.close()
+        
+        #Store text file into S3
+        s3.upload_file(filePath,bucketName,ratingKeystring)
+        
+        
+        #Save users reviews into text file
         filePath = "/tmp/"+commentID+".txt"
         keystring = commentID+".txt"
         bucketName = "reviews-smartcast"
@@ -226,18 +272,17 @@ def lambda_handler(event, context):
         reviewTextFile.close()
         
         #Store text file into S3
-        s3 = boto3.client('s3')
         s3.upload_file(filePath,bucketName,keystring)
         
         
-        #Update user data to register their review
-        item["ratings"].append(combinedID)
+        #Update user profile
+        item["ratings"] = ratingKeystring
         response = table.put_item(
             Item = item
         )
         
         #Now go into comments database and register their review
-        tableName = "comments"
+        tableName = "Reviews"
         table = dynamoDB.Table(tableName)
         
         table.put_item(
@@ -246,9 +291,15 @@ def lambda_handler(event, context):
                 "commentID": commentID,
                 "review": keystring,
                 "rating": rating,
-                "date": convertDateToString(datetime.now())
+                "date": convertDateToString(datetime.now()),
+                "email": email,
+                "name": name,
+                "podcastID": podcastID,
+                "episodeID": episodeID
             })
-        
+        body  = {
+            "Success": "Your review has been submitted."
+        }
         return {
             'statusCode': 200,
             'headers': {
