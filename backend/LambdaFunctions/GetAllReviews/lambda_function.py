@@ -20,25 +20,25 @@ def deltaTimeString(previousTime,currentTime):
     if totalSeconds < 60:
         calculatedTime = totalSeconds
         calculatedTime = str(calculatedTime)
-        if calculatedTime == 1:
+        if calculatedTime == "1":
             return calculatedTime + " second ago"
         return calculatedTime + " seconds ago"
     elif totalSeconds < 3600:
         calculatedTime = totalSeconds //60
         calculatedTime = str(calculatedTime)
-        if calculatedTime == 1:
+        if calculatedTime == "1":
             return calculatedTime + " minute ago"
         return calculatedTime + " minutes ago"
     elif totalSeconds < 86400:
         calculatedTime = totalSeconds//60//60
         calculatedTime = str(calculatedTime)
-        if calculatedTime == 1:
+        if calculatedTime == "1":
             return calculatedTime + " hour ago"
         return calculatedTime + " hours ago"
     else:
         calculatedTime = totalSeconds//60//60//24
         calculatedTime = str(calculatedTime)
-        if calculatedTime == 1:
+        if calculatedTime == "1":
             return calculatedTime + " day ago"
         return calculatedTime + " days ago"
 
