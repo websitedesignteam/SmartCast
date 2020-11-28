@@ -68,18 +68,19 @@ def lambda_handler(event, context):
         
 
         item = response["Item"]
-
         body["favoritePodcasts"] = item["favoritePodcasts"]
         body["ratings"] = item["ratings"]
         body["profilePicture"] = item["profilePicture"]
-        #body["bio"] = item["bio"]
         
         try:
             s3 = boto3.resource('s3')
             bucketName = "biographies-smartcast"
             bioKeystring = item["bio"]
-            s3Obj = s3.Object(bucketName,bioKeystring)
-            body["bio"] = s3Obj.get()["Body"].read().decode("utf-8")
+            if len(item["bio"]) > 0:
+                s3Obj = s3.Object(bucketName,bioKeystring)
+                body["bio"] = s3Obj.get()["Body"].read().decode("utf-8")
+            else:
+                body["bio"] = ""
         except Exception as e:
             print(str(e))
             body = {
