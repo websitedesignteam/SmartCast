@@ -22,10 +22,10 @@ def lambda_handler(event, context):
         #Get params from client
         body = event["body"]
         body = json.loads(body)
-        token = body["token"]
+        token = str(body["access_token"])
     except Exception as e:
         body = {
-            "Error": "You must provide a token."
+            "Error": "You must provide an access token."
         }
         return {
             'statusCode': 400,
@@ -72,7 +72,34 @@ def lambda_handler(event, context):
         body["favoritePodcasts"] = item["favoritePodcasts"]
         body["ratings"] = item["ratings"]
         body["profilePicture"] = item["profilePicture"]
-        body["bio"] = item["bio"]
+        #body["bio"] = item["bio"]
+        
+        try:
+            s3 = boto3.resource('s3')
+            bucketName = "biographies-smartcast"
+            bioKeystring = item["bio"]
+            s3Obj = s3.Object(bucketName,bioKeystring)
+            body["bio"] = s3Obj.get()["Body"].read().decode("utf-8")
+        except Exception as e:
+            print(str(e))
+            body = {
+                "Error": "Unable to retrieve bio."
+            }
+            return {
+                'statusCode': 400,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Credentials': True,
+                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+                },
+                'body': json.dumps(body)
+            }
+            
+            
+            
+        
         body["status"] = item["status"]
         body["dateJoined"] = item["dateJoined"]
         return {
