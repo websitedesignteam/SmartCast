@@ -64,11 +64,14 @@ def getEpisode(podcastID,episodeID):
             returnData["visitedCount"] = 0
         else:
             returnData["transcribedStatus"] = data["transcribedStatus"]
-            if data["transcribedStatus"] == "COMPLETED":
+            if data["transcribedStatus"] == "COMPLETED" or data["transcribedStatus"] == "EDIT IN PROGRESS":
                 s3 = boto3.resource('s3')
                 obj = s3.Object("files-after-transcribing",data["transcribedText"])
                 text = obj.get()['Body'].read().decode('utf-8')
                 returnData["transcribedText"] = text
+                returnData["tags"] = data["tags"]
+                returnData["genreIDs"] = data["genreIDs"]
+                returnData["visitedCount"] = int(data["visitedCount"])
             else:
                 returnData["transcribedText"] = data["transcribedText"]
                 returnData["tags"] = data["tags"]
