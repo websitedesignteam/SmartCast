@@ -68,8 +68,63 @@ def lambda_handler(event, context):
         
 
         item = response["Item"]
-        body["favoritePodcasts"] = item["favoritePodcasts"]
-        body["ratings"] = item["ratings"]
+        try:
+            s3Resource = boto3.resource('s3')
+            bucketName = "profilefavorite-smartcast"
+            favoritePodcasts = item["favoritePodcasts"]
+            if len(favoritePodcasts) > 0:
+                s3Obj = s3Resource.Object(bucketName,favoritePodcasts)
+                favoritePodcastsData = s3Obj.get()["Body"].read().decode("utf-8")
+                favoritePodcastsData = json.loads(favoritePodcastsData)
+            else:
+                favoritePodcastsData = []
+        except Exception as e:
+            print(str(e))
+            body = {
+                "Error": "We were unable to retrieve your favorite podcasts."
+            }
+            return {
+                'statusCode': 500,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Credentials': True,
+                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+                },
+                'body': json.dumps(body)
+            }
+        
+        body["favoritePodcasts"] = favoritePodcastsData
+        
+        try:
+            s3Resource = boto3.resource('s3')
+            bucketName = "profileratings-smartcast"
+            ratings = item["ratings"]
+            if len(ratings) > 0:
+                
+                s3Obj = s3Resource.Object(bucketName,ratings)
+                ratingsData = s3Obj.get()["Body"].read().decode("utf-8")
+                ratingsData = json.loads(ratingsData)
+            else:
+                ratingsData = []
+        except Exception as e:
+            print(str(e))
+            body = {
+                "Error": "We were unable to retrieve your review history."
+            }
+            return {
+                'statusCode': 500,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Credentials': True,
+                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+                },
+                'body': json.dumps(body)
+            }
+        body["ratings"] = ratingsData
         body["profilePicture"] = item["profilePicture"]
         
         try:
