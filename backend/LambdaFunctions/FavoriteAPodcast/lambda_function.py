@@ -1,5 +1,6 @@
 import json
 import boto3
+import os
 
 
 def lambda_handler(event, context):
@@ -43,12 +44,13 @@ def lambda_handler(event, context):
         token = str(body['access_token'])
         command = str(body['command'])
         podcastID = str(body['podcastID'])
+        podcastName = str(body['podcastName'])
         
         
     except Exception as e:
         print("Exception : ", e)
         body = {
-            "Error": "You must provide a podcastID, command, and an access_token."
+            "Error": "You must provide a podcastID, podcastName command, and an access_token."
         }
         return {
             'statusCode': 400,
@@ -183,18 +185,83 @@ def lambda_handler(event, context):
     #----------------------------------------Favorite/unfavorite a podcast----------------------------------------#
 
     try:
-        try: 
-            dynamoDB = boto3.resource('dynamodb')
-            Users_Table = dynamoDB.Table("Users")
-            #fetch the user row from the database
-            response = Users_Table.get_item(
-                Key={
-                    'username': email 
-                }
-            )
+        try:
+            s3 =  boto3.resource('s3')
+            bucketName = 'profilefavorite-smartcast'
+            favoritePodcasts = item["favoritePodcasts"]
+            
+            if len(favoritePodcasts) > 0:
+                
+                s3Object = s3.Object(bucketName, favoritePodcasts)
+                favoritePodcastsList = s3Object.get()["Body"].read().decode("utf-8")
+                favoritePodcastsList = json.loads(favoritePodcastsList)
+            
+            else:
+                favoritePodcastsList = []
+                
         except Exception as e:
+            print("Exception : ", e)
             body = {
-                "Error": "Could not retrieve user's data."
+                "Error": "Could not fetch favoritePodcasts from User's database."
+            }
+            return {
+                'statusCode': 400,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Credentials': True,
+                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+                },
+                'body': json.dumps(body)
+            } 
+            
+        
+        #create a dict of what needs to be appended to the list
+        data = {
+            "podcastID" : podcastID,
+            "podcastName" : podcastName
+        }
+        
+        returnMessage = ""
+        
+        if (command == "add"):
+            if (data not in favoritePodcastsList):
+                favoritePodcastsList.append(data)
+                returnMessage = "Success: The podcast is added to the favorites list"
+            else:
+                returnMessage = "Message: The podcast is already in the favorites list"
+                
+                
+            
+        
+        elif (command == "remove"):
+            if(data in favoritePodcastsList):
+                favoritePodcastsList.remove(data)
+                returnMessage = "Success: The podcast is removed from the favorites list"
+            else:
+                returnMessage = "Message: The podcast is already NOT in the favorites list"
+
+        
+        #create a filepath
+        filepath = "/tmp/" + username + "favoritePodcasts.txt"
+        favoritePodcastsKeystring = username + "favoritePodcasts.txt"
+        
+        bucketName = 'profilefavorite-smartcast'
+        favoritePodcastsJsonDataFile = open(filepath, "wt")
+        favoritePodcastsJsonDataFile.write(json.dumps(favoritePodcastsList))
+        favoritePodcastsJsonDataFile.close()
+        
+        
+        try:
+            s3 = boto3.client('s3')
+            #there are 3 parameters : (1)the file to upload, (2)the bucket, (3)the filename by which the file is being store
+            s3.upload_file(filepath, bucketName, favoritePodcastsKeystring)
+        
+        except Exception as e:
+            print("Exception : ", e)
+            body = {
+                "Error": "Could not upload the file to S3."
             }
             print(str(e))
             return {
@@ -207,73 +274,49 @@ def lambda_handler(event, context):
                     'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
                 },
                 'body': json.dumps(body)
-            }  
+            }
         
-        print("response --> ", response)
+        os.remove(filepath)
         
-        if "Item" in response:
-            item = response["Item"]
+        item["favoritePodcasts"] = favoritePodcastsKeystring
+        
+        
+        #------------------------Add the items back to the database---------------------#
+        try:
+            #now simply put the item back into the database
+            response = table.put_item(
+               Item = item
+            )
             
-            #retrieve the existing favoritePodcasts list for this user
-            favoritePodcasts = item["favoritePodcasts"]
-            
-            
-            returnMessage = ""
-            
-            if (command == "add"):
-                if (podcastID not in favoritePodcasts):
-                    favoritePodcasts.append(podcastID)
-                    returnMessage = "Success: The episode is added to the favorites list"
-                else:
-                    returnMessage = "Message: The episode is already in the favorites list"
-                
-                    
-            elif (command == "remove"):
-                if (podcastID in favoritePodcasts):
-                    favoritePodcasts.remove(podcastID)
-                    returnMessage = "Success: The episode is removed from the favorites list"
-                else:
-                    returnMessage = "Message:  The episode is already not in the favorites list"
-            
-            item["favoritePodcasts"] = favoritePodcasts
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Credentials': True,
+                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+                },
+                'body': json.dumps({"Data" : returnMessage})
+            }
             
             
-            #------------------------Add the items back to the database---------------------#
-            try:
-                #now simply put the item back into the database
-                response = Users_Table.put_item(
-                   Item = item
-                )
-                
-                return {
-                    'statusCode': 200,
-                    'headers': {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
-                        'Access-Control-Allow-Origin': '*',
-                        'Access-Control-Allow-Credentials': True,
-                        'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
-                    },
-                    'body': json.dumps({"Data" : returnMessage})
-                }
-                
-                
-            except Exception as e:
-                print("Exception : ", e)
-                body = {
-                    "Error": "Could not update the database for user's FavoritePodcasts"
-                }
-                return {
-                    'statusCode': 400,
-                    'headers': {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
-                        'Access-Control-Allow-Origin': '*',
-                        'Access-Control-Allow-Credentials': True,
-                        'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
-                    },
-                    'body': json.dumps(body)
-                }
+        except Exception as e:
+            print("Exception : ", e)
+            body = {
+                "Error": "Could not update the database for user's FavoritePodcasts"
+            }
+            return {
+                'statusCode': 400,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Credentials': True,
+                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+                },
+                'body': json.dumps(body)
+            }
         
         
     except Exception as e:
