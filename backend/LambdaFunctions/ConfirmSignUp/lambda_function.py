@@ -75,8 +75,8 @@ def lambda_handler(event, context):
                 'username': username,
                 'bio': "",
                 'profilePicture': "https://profilepicture-smartcast.s3.amazonaws.com/defaultProfile.png",
-                'favoritePodcasts': [],
-                'ratings': [],
+                'favoritePodcasts': "",
+                'ratings': "",
                 'approvedEdits': 0,
                 'dateJoined': dateString,
                 'status': "standard"
