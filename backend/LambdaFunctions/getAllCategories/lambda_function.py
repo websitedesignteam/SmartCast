@@ -14,6 +14,8 @@ def getAllCategories(table):
         
         for item in items:
             category = item["category"]
+            if category == "COMMERCIAL_ITEM":
+                category = "COMMERCIAL ITEM"
             categoriesList.append(category)
             
         return {
@@ -46,7 +48,7 @@ def lambda_handler(event, context):
                     'Access-Control-Allow-Credentials': True,
                     'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
                 },
-                'body': json.dumps(categoriesList)
+                'body': json.dumps({"Data" : categoriesList})
                 }
         
         else:
