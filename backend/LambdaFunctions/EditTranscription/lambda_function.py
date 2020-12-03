@@ -325,6 +325,34 @@ def lambda_handler(event, context):
         
         editorsEmail = email
         
+        #--------------check to see if there is another user already who submitted a request to edit------------#
+        #get the Podcast Table
+        dynamoDB = boto3.resource('dynamodb')
+        PodcastTable = dynamoDB.Table("PodcastTable_DEV") 
+        
+        item = getItemFromPodcastTable(PodcastTable, podcastID, episodeID)
+        
+        #A precautionary step to see if the item's editorsEmail field is already populated, if it is already populated then should not overwrite and return
+        if "editorsEmail" in item:
+            
+            #if some other user has already submitted the request for same transcription
+            if item["transcribedStatus"] == "EDIT IN PROGRESS":
+                print("someone already has submitted a request")
+                body = {
+                    "Error": "A user has already submitted an EDIT TRANSCRIPTION request for this episode. "
+                }
+                return {
+                    'statusCode': 400,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Credentials': True,
+                        'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+                    },
+                    'body': json.dumps(body)
+                }
+        
         try:
             #open editedTranscriptionFile in /tmp directory
             editedTranscriptionFile = open("/tmp/editedTranscriptionFile.txt", "wt")
@@ -392,9 +420,6 @@ def lambda_handler(event, context):
         #the keyString is the actual name of editedTranscriptionFilename stored in S3
         keyString = editedTranscriptionFileName
         
-        #get the Podcast Table
-        dynamoDB = boto3.resource('dynamodb')
-        PodcastTable = dynamoDB.Table("PodcastTable_DEV") 
         
         #retrieve the item(row) from the database
         item = getItemFromPodcastTable(PodcastTable, podcastID, episodeID)
