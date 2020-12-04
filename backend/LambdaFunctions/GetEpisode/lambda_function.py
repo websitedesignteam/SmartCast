@@ -55,7 +55,7 @@ def getEpisode(podcastID,episodeID):
             returnData["visitedCount"] = 0
         else:
             returnData["transcribedStatus"] = data["transcribedStatus"]
-            if data["transcribedStatus"] == "COMPLETED":
+            if data["transcribedStatus"] == "COMPLETED" or data["transcribedStatus"] == "EDIT IN PROGRESS":
                 s3 = boto3.resource('s3')
                 obj = s3.Object("files-after-transcribing",data["transcribedText"])
                 text = obj.get()['Body'].read().decode('utf-8')
@@ -77,7 +77,7 @@ def lambda_handler(event, context):
         #Extract the body from event
         
         body = event["body"]
-        body = json.loads(body)
+        body = json.loads(body) #uncomment this for /getEpisode to work
         
         #Extract values from GET request and initialize vars for function call
         episodeID = str(body["episodeID"])
