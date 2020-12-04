@@ -17,9 +17,9 @@ const AxiosInstance = axios.create({
 });
 
 
-const getAPI = (apiUrl) => AxiosInstance.get(PROXY_URL + API_URL + apiUrl);
+const getAPI = (apiUrl) => AxiosInstance.get(apiUrl);
 
-const postAPI = (apiUrl, data) => AxiosInstance.post(PROXY_URL + API_URL + apiUrl, data);
+const postAPI = (apiUrl, data) => AxiosInstance.post(apiUrl, data);
 
 const putAPI = (apiUrl, data) => AxiosInstance.put(apiUrl, data);
 

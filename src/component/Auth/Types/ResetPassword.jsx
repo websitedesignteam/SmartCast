@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory, useParams } from "react-router-dom";
-import AuthInput from '../AuthInput/AuthInput';
+import Input from '../../../element/Input/Input';
 import styles from '../Auth.module.scss';
 import { postConfirmPasswordReset } from '../../../utils/api';
 import { isFormComplete } from '../../../utils/helper';
@@ -42,7 +42,7 @@ function ResetPassword(props) {
                 {/* display any error msgs */}
                 { (errorMessage) && <div className={styles.error}>{errorMessage}</div> }     
 
-                <AuthInput 
+                <Input 
                     id="confirm-reset-email" 
                     name="email" 
                     value={input.email} 
@@ -51,7 +51,7 @@ function ResetPassword(props) {
                     type="email" 
                     onChangeInput={onChangeInput} 
                 />
-                <AuthInput 
+                <Input 
                     id="confirm-reset-password" 
                     name="password" 
                     value={input.password} 
@@ -60,7 +60,7 @@ function ResetPassword(props) {
                     type="password" 
                     onChangeInput={onChangeInput} 
                 />
-                <AuthInput 
+                <Input 
                     id="confirm-reset-code" 
                     name="code" 
                     value={input.code} 

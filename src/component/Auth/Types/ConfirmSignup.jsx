@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory, useParams } from "react-router-dom";
-import AuthInput from '../AuthInput/AuthInput';
+import Input from '../../../element/Input/Input';
 import styles from '../Auth.module.scss';
 import { postConfirmSignup } from '../../../utils/api';
 import { isFormComplete } from '../../../utils/helper';
@@ -47,7 +47,7 @@ function ConfirmEmail(props) {
                 {/* display any error msgs */}
                 { (errorMessage) && <div className={styles.error}>{errorMessage}</div> }     
 
-                <AuthInput 
+                <Input 
                     id="confirm-email" 
                     name="email" 
                     value={input.email} 
@@ -56,7 +56,7 @@ function ConfirmEmail(props) {
                     type="email" 
                     onChangeInput={onChangeInput} 
                 />
-                <AuthInput 
+                <Input 
                     id="confirm-code" 
                     name="code" 
                     value={input.code} 

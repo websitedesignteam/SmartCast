@@ -7,6 +7,8 @@ const postConfirmSignup = (data) => postAPI(`/confirmsignup`, data);
 const postForgotPassword = (data) => postAPI(`/forgotpassword`, data);
 const postConfirmPasswordReset = (data) => postAPI(`/confirmpasswordreset`, data);
 const getUser = (data) => postAPI(`/getuser`, data);
+const getTokenValidation = (data) => postAPI(`/checktokenvalidity`, data);
+const getNewToken = (data) => postAPI(`/refreshtoken`, data);
 
 //landing
 const getallCategories = () => getAPI( `/getallcategories`); //all categories
@@ -25,11 +27,14 @@ const searchPodcasts = (data) => postAPI(`/searchpodcasts`, data);
 
 //podcast
 const getPodcast = (data) => postAPI(`/getallepisodes`, data);
+const postFavoritePodcast = (data) => postAPI(`/favoriteapodcast`, data);
 
 //episode
 const getEpisode = (data) => postAPI(`/getepisode`, data);
 const postTranscribeEpisode = (data) => postAPI(`/posttranscribeepisode`, data);
 const getTranscribeUpdate = (data) => postAPI(`/gettranscribeupdate`, data);
+const postRequestTranscription = (data) => postAPI(`/requesttranscription`, data);
+const postEditTranscription = (data) => postAPI(`/edittranscription`, data);
 
 export { 
     getallCategories,
@@ -48,4 +53,9 @@ export {
     getUser,
     postConfirmPasswordReset,
     postForgotPassword,
+    postRequestTranscription,
+    postEditTranscription,
+    getTokenValidation,
+    getNewToken,
+    postFavoritePodcast,
 }

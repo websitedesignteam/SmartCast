@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import AuthInput from '../AuthInput/AuthInput';
+import Input from '../../../element/Input/Input';
 import { useHistory, useParams } from "react-router-dom";
 import { postLogin } from '../../../utils/api';
 import { isFormComplete } from '../../../utils/helper';
@@ -48,7 +48,7 @@ function Login({loginUser, onClickForgotPassword}) {
                     <div className={styles.error}>Please fill in all fields</div> } */}
                 { (errorMessage) && <div className={styles.error}>{errorMessage}</div> }     
                 
-                <AuthInput 
+                <Input 
                     id="login-email" 
                     name="email" 
                     value={input.email} 
@@ -57,7 +57,7 @@ function Login({loginUser, onClickForgotPassword}) {
                     type="email" 
                     onChangeInput={onChangeInput} 
                 />
-                <AuthInput 
+                <Input 
                     id="login-password" 
                     name="password" 
                     value={input.password} 

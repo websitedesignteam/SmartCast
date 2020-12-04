@@ -69,7 +69,7 @@ function Auth(props) {
     }
 
     return (
-        <div className={!!authType && styles.authContainer}>
+        <div className={!!authType ? styles.authContainer : styles.authModal}>
             <div className={styles.logo}><img src={baseUrl + "/assets/logo.png"} alt="" /></div>
             {type === "login" && 
                 <Login loginUser={props.loginUser} onClickForgotPassword={onClickForgotPassword} />}

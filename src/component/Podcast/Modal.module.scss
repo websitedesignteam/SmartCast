@@ -1,0 +1,151 @@
+@import "../../styles/variables";
+
+.modalContainer {
+    width: 15rem;
+    @media screen and (min-width: 400px) {
+        min-width: 20rem;
+    }
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 1.5rem;
+    background-color: $light-gray;
+    box-shadow: $box-shadow;
+    border-radius: 1rem;
+    // @media (orientation: landscape) {
+    //     position: relative;
+    //     left: 0;
+    //     top: 1.5rem; 
+    //     transform: none;
+    //     margin: 0 auto;
+    // }
+    animation-name: expandUp;
+    -webkit-animation-name: expandUp;	
+  
+    animation-duration: 0.7s;	
+    -webkit-animation-duration: 0.7s;
+  
+    animation-timing-function: ease;	
+    -webkit-animation-timing-function: ease;		
+  
+    visibility: visible !important;	
+
+}
+
+button.submit, button.submitLoading {
+    height: 2rem;
+    border-radius: 1.5rem;
+    font-size: 1rem;
+    font-family: 'Cairo';
+    padding: 0 1rem;
+    background-color: $blue;
+}
+
+button.submitLoading {
+    width: 2rem;
+    background-color: $dark-gray
+}
+
+button.submit:hover:not([disabled]) {
+    background-color: $blue-bright;
+    outline: none;
+}
+
+button.submitLoading:hover:not([disabled]) {
+    outline: none;
+}
+
+button:focus {
+    outline: $dark-gray;
+}
+
+.footerContainer {
+    display: inline-flex;
+    width: 100%;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
+div.error {
+    color: $blue;
+    font-size: 0.8rem;
+}
+
+div.errorDisclaimer {
+    display: inline-block;
+    position: relative;
+    margin-left: 0.5rem;
+    height: 1rem;
+    width: 1rem;
+}
+
+img.errorDisclaimerImage {
+    height: 100%; 
+    width: 100%;
+}
+
+div.errorDisclaimerText {
+    visibility: hidden;
+    width: 12.5rem;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 0.5rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+   
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 3;
+    bottom: 90%;
+    left: -6.25rem;
+}
+
+div.errorDisclaimerText::after {
+    content: " ";
+    position: absolute;
+    top: 100%; /* At the bottom of the tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+  }
+
+div.errorDisclaimer:hover .errorDisclaimerText {
+    visibility: visible;
+}
+
+.modalHeader {
+    display: inline-block;
+}
+
+@keyframes expandUp {
+    0% {
+        transform: translateY(100%) scale(0.6) scaleY(0.5);
+    }
+    60%{
+        transform: translateY(-7%) scaleY(1.12);
+    }
+    75%{
+        transform: translateY(3%);
+    }	
+    100% {
+        transform: translateY(0%) scale(1) scaleY(1);
+    }	
+}
+  
+@-webkit-keyframes expandUp {
+    0% {
+        -webkit-transform: translateY(100%) scale(0.6) scaleY(0.5);
+    }
+    60%{
+        -webkit-transform: translateY(-7%) scaleY(1.12);
+    }
+    75%{
+        -webkit-transform: translateY(3%);
+    }	
+    100% {
+        -webkit-transform: translateY(0%) scale(1) scaleY(1);
+    }	
+}

@@ -5,10 +5,38 @@ function isFormComplete(inputDict) {
     return true;
 }
 
+const isInArray = (array, str1, str2="") => {
+    const str = str1+str2;
+    return array.includes(str);
+}
+
+const isInFavoritePodcasts = (podcastID, favoritePodcasts) => {
+    if (!!favoritePodcasts) {
+        return favoritePodcasts.reduce( 
+            (accumulator, currentValue) => 
+                ((currentValue["podcastID"] === podcastID) || accumulator) 
+            , false)
+    }
+} 
+
+const getNameInFavoritePodcasts = (podcastID, favoritePodcasts) => {
+    if (!!favoritePodcasts && !!favoritePodcasts.length) {
+        const index = favoritePodcasts.findIndex((element) => element["podcastID"] === podcastID );
+        return favoritePodcasts[index]?.["podcastName"];
+        // .podcastName;
+    }
+} 
+
 export { 
-    isFormComplete
+    isFormComplete,
+    isInArray,
+    isInFavoritePodcasts,
+    getNameInFavoritePodcasts,
 };
 
 export default  {
     isFormComplete,
+    isInArray,
+    isInFavoritePodcasts,
+    getNameInFavoritePodcasts,
 };

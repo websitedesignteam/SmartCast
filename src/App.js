@@ -1,16 +1,24 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './App.scss';
 import Navbar from './component/Navbar/Navbar';
 import Auth from './component/Auth/Auth';
 import Search from './component/Search/Search';
-import Routes from './Routes';
+import Podcast from './page/Podcast/Podcast';
+import Episode from './page/Episode/Episode';
+import Home from './page/Home/Home';
+import Genres from './page/Genres/Genres';
+import SearchPage from './page/Search/SearchPage';
+import UserProfile from './page/Profile/UserProfile'
 import {
   BrowserRouter as Router,
+  Route,
+  Switch,
+	Redirect,
 } from "react-router-dom";
 import { withSearchContext } from "state/Search/withSearchContext";
 import AudioFooter from './component/AudioFooter/audioFooter';
 import { useIsActive, useOnClickOutside } from 'hooks';
-import { getUser } from "./utils/api";
+import { getUser, getTokenValidation, getNewToken } from "./utils/api";
 
 function App() {
   //global app states
@@ -19,7 +27,7 @@ function App() {
   const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user')) || {}); //user = {username, authToken, refreshToken}
   const authModalState = useIsActive();
 
-  //util functions for states
+  //audioplayer
   const openAudioPlayer = (newAudio) => {
     setAudio(newAudio);
     localStorage.setItem("audio", JSON.stringify(newAudio));
@@ -30,19 +38,19 @@ function App() {
     localStorage.removeItem("audio");
   }
 
-  const loginUser = (newUser) => {
-    const { access_token, id_token, refresh_token } = newUser;
+  //auth
+  const getUserAPI = (currentUser) => {
+    if (!currentUser) currentUser = user;
+    const { access_token } = currentUser;
     getUser({access_token})
     .then((response) => {
       closeAuthModal();
       const userData = response.data;
       const allUserData = { 
+        ...currentUser,
         ...userData, 
-        access_token,
-        id_token,
-        refresh_token
       }
-      localStorage.setItem("user", JSON.stringify(newUser));
+      localStorage.setItem("user", JSON.stringify(allUserData));
       setUser(allUserData);
     })
     .catch((error) => {
@@ -55,6 +63,36 @@ function App() {
     localStorage.removeItem("user");
   }
 
+  const validateToken = () => {
+    const { access_token, refresh_token, username } = user;
+    if (!!access_token && !!refresh_token && !!username) {
+      getTokenValidation({access_token})
+        .catch(() => {
+          const data = {
+            refresh_token,
+            username,
+          }
+
+          //if user wants to stay logged in for 30 days
+          getNewToken(data)
+          .then((response) => {
+              const allUserData = {
+                ...user,
+                ...response.data,
+              }
+              localStorage.setItem("user", JSON.stringify(allUserData));
+              setUser(allUserData);
+          })
+          .catch((error)=> {
+            console.log(error);
+            setUser({});
+            localStorage.removeItem("user");
+          })
+        })
+    }
+  }
+
+  //modal
   const openAuthModal = () => {
     authModalState.activate();
   }
@@ -79,13 +117,49 @@ function App() {
           {(authModalState.isActive && !user.access_token) && 
             <>
             <div className="App-modal" ref={authModalRef}>
-              <Auth loginUser={loginUser} type="login" onSuccessVerification={closeAuthModal} /> 
+              <Auth loginUser={getUserAPI} type="login" onSuccessVerification={closeAuthModal} /> 
             </div>
             <div className="App-blur" />
             </>
           }
           <Search />
-          <Routes user={user} openAudioPlayer={openAudioPlayer} />
+          <Switch>
+			<Route exact path="/">
+				{/* <img className="logo" src={process.env.PUBLIC_URL + "/assets/logo.png"} alt="Podcast Logo" /> */}
+				<Home />
+			</Route>
+
+			<Route exact path="/auth/:authType">
+				{!!user.access_token ? <Redirect to="/" /> : 
+				<div className="App-background">
+					<Auth />
+				</div>}
+			</Route>
+
+			<Route exact path="/profile">
+				{!user.access_token ? <Redirect to="/" /> : <UserProfile />}
+			</Route>
+
+			<Route exact path="/genres">
+				<Genres />
+			</Route>
+
+			<Route exact path="/genres/:genreName2/:genreName" component={Genres}>
+				<Genres />
+			</Route>
+
+			<Route exact path="/search/results/:searchTerm/:searchType">
+				<SearchPage />
+			</Route>
+
+			<Route exact path="/podcast/:podcastID/episode/:episodeID"> 
+				<Episode openAudioPlayer={openAudioPlayer} user={user} validateToken={validateToken} />
+			</Route> 
+
+			<Route exact path="/podcast/:podcastID">
+				<Podcast user={user} validateToken={validateToken} getUserAPI={getUserAPI} />
+			</Route>
+		</Switch>
           
         </div>
       </Router>

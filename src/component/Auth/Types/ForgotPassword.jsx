@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import AuthInput from '../AuthInput/AuthInput';
+import Input from '../../../element/Input/Input';
 import styles from '../Auth.module.scss';
 import { postForgotPassword } from '../../../utils/api';
 import { isFormComplete } from '../../../utils/helper';
@@ -40,7 +40,7 @@ function ForgotPassword(props) {
                 {/* display any error msgs */}
                 { (errorMessage) && <div className={styles.error}>{errorMessage}</div> }     
 
-                <AuthInput 
+                <Input 
                     id="forgot-email" 
                     name="email" 
                     value={input.email} 

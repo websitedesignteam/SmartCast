@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 import styles from "./audioFooter.module.scss";
 
 function AudioFooter({audio, closeAudioPlayer}) {
@@ -8,9 +9,11 @@ function AudioFooter({audio, closeAudioPlayer}) {
 
     return (
         <div className={styles.audioFooter}>
-            <button className={styles.closeAudioPlayer} onClick={onClick}>✖</button>
-            <div>
-                {audio.podcastTitle} - {audio.episodeTitle}
+            <div className={styles.audioHeader}>
+                <div className={styles.audioTitle}>
+                    <Link className={styles.link} to={`/podcast/${audio.podcastID}/episode/${audio.episodeID}`}>{audio.podcastTitle} - {audio.episodeTitle}</Link>
+                </div>
+                <button className={styles.closeAudioPlayer} onClick={onClick}>✖</button>
             </div>
             <audio controls preload="auto" className={styles.audio}>
                 <source src={audio.audioUrl} type="audio/mpeg" />

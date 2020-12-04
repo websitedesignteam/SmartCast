@@ -45,11 +45,11 @@ function Routes(props) {
 			</Route>
 
 			<Route exact path="/podcast/:podcastID/episode/:episodeID"> 
-				<Episode openAudioPlayer={props.openAudioPlayer} />
+				<Episode openAudioPlayer={props.openAudioPlayer} user={props.user} validateToken={props.validateToken} />
 			</Route> 
 
 			<Route exact path="/podcast/:podcastID">
-				<Podcast user={props.user} />
+				<Podcast user={props.user} setUser={props.setUser} validateToken={props.validateToken} />
 			</Route>
 		</Switch>
 	);

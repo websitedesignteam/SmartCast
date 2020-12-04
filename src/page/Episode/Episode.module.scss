@@ -12,6 +12,15 @@ div.dataTitle {
 	display: block;
 }
 
+div.episodeTitle {
+	font-size: 1.25rem;
+	margin-bottom: 0.5rem;
+}
+
+.link {
+	text-decoration: none;
+}
+
 div.error {
 	font-size: 1.2rem;
 }
@@ -20,22 +29,9 @@ div.error {
 	display: block;
 	position: relative;
 	margin: 0 auto 1rem;
-	width: auto;
+	width: 100%;
 	height: auto; 
 	// min-width: 12rem;
-	@media screen and (min-width: 768px) {
-	  max-width: 30rem;
-	  margin: 0;
-	}
-}
-
-.header {
-	display: flex;
-	flex-direction: row;
-	align-content: flex-start;
-	justify-content: space-between;
-	max-width: 50rem;
-	//TODO: different rendering with desktop, will remove header
 }
 
 .episodeData {
@@ -43,13 +39,19 @@ div.error {
 }
 
 .episodeButtons {
-	width: auto;
-	flex-shrink: 0;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
 	button {
 		display: inline-block;
 		border: black;
 		position: relative;
 		border-radius: 50%;
+		width: 5rem;
+		height: 5rem;	
+		margin-left: 1rem;
 		img {
 			width: 3rem; 
 			height: 3rem;
@@ -57,16 +59,35 @@ div.error {
 			left: 50%;
 			top: 50%; 
 			transform: translate(-50%, -50%);
-		// 	margin-left: .6rem;
 		}
+	}
+	.episodeStatus {
+		display: inline-block;
+		border-radius: 50%;
+		background-color: $medium-gray;
 		width: 5rem;
-		height: 5rem;	
-		margin-left: 1rem;
-		// top: -1rem;
+		height: 5rem;
+		position: relative;	
+		img {
+			width: 3rem; 
+			height: 3rem;
+			position: absolute;
+			left: 50%;
+			top: 50%; 
+			transform: translate(-50%, -50%);
+		}
+		@media screen and (min-width: 400px) {
+		}
 	}
 	div:last-child {
 		display: inline-block;
 		margin-left: 1rem;
+	}
+	@media screen and (min-width: 568px) and (max-width: 768px) {
+		flex-direction: column;	
+		button {
+			margin: 0 0 1rem;
+		}	
 	}
 }
 
@@ -75,10 +96,11 @@ button.editTranscription {
 	border: none;
 	border-radius: 0.2rem;
 	display: inline-flexbox;
+	margin-left: 0.5rem;
 	img {
 		width: 1.1rem;
 		height: 1.1rem;
-		margin: 0 0 -0.15rem 0;
+		margin: 0 0 -0.15rem 0.2rem;
 		padding: 0;
 	}
 }
@@ -86,3 +108,34 @@ button.editTranscription {
 .loaderSmall {
 	display: inline-block;
 }
+
+.episodeContainer {
+	@media screen and (min-width: 568px) {
+		display: flex;
+		align-items: stretch;
+	}
+}
+
+.desktopLeft {
+	@media screen and (min-width: 568px) {
+		border-right: 3px $gray solid;
+		padding-right: 1.5rem;
+	}
+
+	@media screen and (min-width: 768px) {
+		width: 30%;
+		max-width: 30rem;
+	}
+}
+
+.desktopRight {
+	@media screen and (min-width: 568px) {
+		padding-left: 1.5rem;
+	}
+}
+
+.desktopRight, .desktopLeft {
+	@media screen and (min-width: 568px) {
+	}
+}
+

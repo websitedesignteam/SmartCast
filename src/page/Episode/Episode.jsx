@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import { getEpisode, postTranscribeEpisode, getTranscribeUpdate } from '../../utils/api';
+import { 
+    getEpisode, 
+    getTranscribeUpdate, 
+    postRequestTranscription, 
+    postEditTranscription, 
+} from '../../utils/api';
 import { useIsActive } from '../../hooks';
-import { baseUrl, errorEpisode, errorTranscribe } from "../../utils/constants";
+import { baseUrl, errorEpisode } from "../../utils/constants";
 import styles from "./Episode.module.scss";
 
 function Episode(props) {
     //vars
     const { episodeID, podcastID } = useParams();
+    const { access_token } = props.user;
 
     //states
+    const [isLoading, setIsLoading] = useState(false);
     const [currentEpisode, setCurrentEpisode] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
     const [editTranscription, setEditTranscription] = useState("");
@@ -25,14 +32,11 @@ function Episode(props) {
         getEpisode(data)
         .then((response) => {
             const episodeData = response.data.Data;
-            const isTooLong = (episodeData.episodeAudioLength > 420);
-            setCurrentEpisode({ 
-                ...episodeData,
-                isTooLong
-            });
-            if (episodeData.transcribedText) {
+        
+            if (episodeData?.transcribedStatus === "COMPLETED") {
                 setEditTranscription(episodeData.transcribedText);
             }
+            setCurrentEpisode(episodeData);
         })
         .catch((error) => {
             console.log(error);
@@ -48,13 +52,18 @@ function Episode(props) {
 
             const transcribedStatus = transcribeUpdateData.transcribedStatus;
             
-            setCurrentEpisode({
-                ...currentEpisode,
-                transcribedStatus,
-            });
+            if (transcribedStatus !== currentEpisode?.transcribedStatus) {
+                setCurrentEpisode({
+                    ...currentEpisode,
+                    transcribedStatus,
+                });
+            }
 
-            if (transcribedStatus === "IN PROGRESS") {
-                setTimeout(getTranscribeUpdateAPI, 3000);
+            if (transcribedStatus === "AWAITING TRANSCRIPTION APPROVAL") {
+                setTimeout(getTranscribeUpdateAPI, 90000);
+            } 
+            else if (transcribedStatus === "TRANSCRIBING") {
+                setTimeout(getTranscribeUpdateAPI, 5000);
             } 
             else if (transcribedStatus === "COMPLETED") {
                 const transcribedText = transcribeUpdateData.transcribedText;
@@ -76,25 +85,66 @@ function Episode(props) {
             setErrorMessage(error.message);
         });        
     }
-    
-    const postTranscribeEpisodeAPI = (audioLink) => {
-        const data = { episodeID, podcastID, audioLink }
+
+    const requestTranscriptionAPI = () => {
+        setIsLoading(true);
+
+        const data = { 
+            podcastID, 
+            episodeID, 
+            episodeLength : currentEpisode.episodeAudioLength, 
+            access_token 
+        }
+
+        postRequestTranscription(data)
+        .then((response) => {
+            setIsLoading(false);
+            if (response.data.Success) {
+                setCurrentEpisode({
+                    ...currentEpisode,
+                    transcribedStatus : "AWAITING TRANSCRIPTION APPROVAL",
+                });
+            }
+            else if (response?.data?.Error) {
+                alert(response.data.Error);
+            }
+        })
+        .catch((error) => {
+            setIsLoading(false);
+            console.log(error);
+            if (error?.data?.Error) {
+                alert(error.data.Error);
+            }
+        });
+    }
+
+    const requestEditTranscriptionAPI = () => {
+        openEditor.deactivate();
         setCurrentEpisode({
             ...currentEpisode,
-            transcribedStatus : "IN PROGRESS",
+            transcribedStatus : "EDIT IN PROGRESS",
         });
-        postTranscribeEpisode(data)
+        const data = { 
+            podcastID, 
+            episodeID, 
+            editedTranscriptionText: editTranscription,
+            access_token, 
+        }
+
+        postEditTranscription(data)
         .then((response) => {
-            if (response.data.Success) {
-                getTranscribeUpdateAPI();
+            if (response?.data?.Success) {
+                alert(response.data.Success);
             }
-            else if (response.data.Error) {
-                setErrorMessage(errorTranscribe);
+            else if (response?.data?.Error) {
+                alert(response.data.Error);
             }
         })
         .catch((error) => {
             console.log(error);
-            setErrorMessage(error.message);
+            if (error?.Error) {
+                alert(error.Error);
+            }
         });
     }
 
@@ -109,11 +159,15 @@ function Episode(props) {
        openEditor.activate();
     }
 
-    const closeTranscription = () => {
+    const saveTranscription = () => {
         setCurrentEpisode({ 
             ...currentEpisode, 
             transcribedText : editTranscription,
         });
+        openEditor.deactivate();
+    }
+
+    const closeTranscription = () => {
         openEditor.deactivate();
      }
 
@@ -123,6 +177,8 @@ function Episode(props) {
 
     const openAudio = () => {
         const audio = {
+            podcastID: currentEpisode.podcastID,
+            episodeID: currentEpisode.episodeID,
             episodeTitle: currentEpisode.episodeTitle,
             podcastTitle: currentEpisode.podcastTitle,
             podcastPublisher: currentEpisode.podcastPublisher,
@@ -136,36 +192,51 @@ function Episode(props) {
         getEpisodeAPI();
     }, []);
 
+    useEffect(() => {
+        if (!!currentEpisode?.transcribedStatus && 
+            (currentEpisode?.transcribedStatus !== "NOT TRANSCRIBED" 
+            && currentEpisode?.transcribedStatus !== "COMPLETED")){ 
+            getTranscribeUpdateAPI();
+        }
+    }, [currentEpisode]);
+
     return (
         <div className={styles.episodeContainer}>
             { (currentEpisode && !errorMessage) 
             ? <> 
-                <img className={styles.episodeImage} src={currentEpisode.episodeImage} alt="Episode" />
-                
-                <div className={styles.episodeData}>
-                    <div className={styles.header}>
-                        <div className={styles.dataTitle}>
-                            <strong>{currentEpisode.episodeTitle}</strong>
-                        </div> 
-
+                <div className={styles.desktopLeft}>
+                    <img className={styles.episodeImage} src={currentEpisode.episodeImage} alt="Episode" />
+                    
+                    <div className={styles.episodeData}>
                         <div className={styles.episodeButtons}>
-                            <button className={styles.episodePlayButton} onClick={openAudio}>
-                                <img src={baseUrl + "/assets/button/play.svg"} alt="play episode button" title="Play Episode"/>
+                            <button className={styles.episodePlayButton} onClick={openAudio} title="Play Episode">
+                                <img src={baseUrl + "/assets/button/play.svg"} alt="play episode button" />
                             </button>
                             
-                            { currentEpisode.transcribedStatus === "NOT TRANSCRIBED" && 
-                            <button className={styles.episodeTranscribeButton} onClick={() => postTranscribeEpisodeAPI(currentEpisode.episodeAudioLink)} disabled={currentEpisode.isTooLong} > 
-                                <img src={baseUrl + "/assets/button/transcribe.png"} alt="transcribe episode button" title={currentEpisode.isTooLong ? "Episode is too long to transcribe" : "Transcribe Episode"}/>
+                            { (currentEpisode.transcribedStatus === "NOT TRANSCRIBED" && isLoading === false) && 
+                            <button className={styles.episodeTranscribeButton} onClick={requestTranscriptionAPI} title="Request Episode Transcription"> 
+                                <img src={baseUrl + "/assets/button/transcribe.png"} alt="transcribe episode button" />
                             </button>}
 
-                            { currentEpisode.transcribedStatus === "IN PROGRESS" && 
+                            { (currentEpisode.transcribedStatus === "AWAITING TRANSCRIPTION APPROVAL") && 
+                            <div className={styles.episodeStatus} title="Episode Transcription Requested, Awaiting Approval" >
+                                <img src={baseUrl + "/assets/button/wait.png"} alt="waiting for transcription approval" />
+                            </div>}
+
+                            { (currentEpisode.transcribedStatus === "TRANSCRIBING" || isLoading === true) && 
                             <div className="loaderSmall"></div>}
                         </div>
                     </div>
+                </div>
+
+                <div className={styles.desktopRight}>
+                    <div className={styles.episodeTitle}>
+                        <strong>{currentEpisode.episodeTitle}</strong>
+                    </div> 
 
                     <div className={styles.dataSection}>
                         <div className={styles.dataTitle}><strong>Podcast</strong></div>
-                        {currentEpisode.podcastTitle}
+                        <Link to={`/podcast/${currentEpisode.podcastID}`} className={styles.link}>{currentEpisode.podcastTitle}</Link>
                     </div>
 
                     { currentEpisode.podcastPublisher &&
@@ -187,17 +258,38 @@ function Episode(props) {
                     <div className={styles.dataSection}>
                         <div className={styles.header}>
                             <strong>Transcription</strong>
-                            { openEditor.isActive 
-                            ? <button className={styles.editTranscription} onClick={closeTranscription}>Save <img src={baseUrl + "/assets/button/save.svg"} alt="" title="Save Episode Transcription"/></button> 
-                            : <button className={styles.editTranscription} onClick={openTranscription}>Edit <img src={baseUrl + "/assets/button/edit.svg"} alt="" title="Edit Episode Transcription"/></button> }
+                            {(!!currentEpisode.transcribedText) && 
+                            <>
+                            {(!!currentEpisode.transcribedText && openEditor.isActive && !!props.user.access_token)
+                            ? <div className={styles.editTranscriptionButtons}>
+                                <button className={styles.editTranscription} onClick={closeTranscription} title="Close Editor and Remove Changes">Cancel</button> 
+                                <button className={styles.editTranscription} onClick={saveTranscription} title="Save Your Current Changes on This Page">Save <img src={baseUrl + "/assets/button/save.svg"} alt=""/></button> 
+                                <button className={styles.editTranscription} onClick={requestEditTranscriptionAPI} title="Submit Your Edit Request">Submit 
+                                    <img src={baseUrl + "/assets/button/submit.svg"} alt=""/>
+                                </button> 
+                            </div>
+                            : <button 
+                                className={styles.editTranscription} 
+                                onClick={openTranscription} 
+                                disabled={!props.user.access_token || currentEpisode.transcribedStatus === "EDIT IN PROGRESS"} 
+                                title={(!props.user.access_token) 
+                                    ? "Login to Edit Transcription" 
+                                    : (currentEpisode.transcribedStatus === "EDIT IN PROGRESS") 
+                                    ? "Transcription Edit in Progress Already"
+                                    : "Edit Episode Transcription"}
+                            >
+                                Edit 
+                                <img src={baseUrl + "/assets/button/edit.svg"} alt=""/>
+                                </button>} 
+                            </>}
                         </div>
                         {/* <br/> */}
                         { !openEditor.isActive && 
-                            <p dangerouslySetInnerHTML={{__html: currentEpisode.transcribedText || "No Transcription Available" }}></p>
+                            <p dangerouslySetInnerHTML={{__html: currentEpisode.transcribedText || "No Transcription Available Yet" }}></p>
                         }                       
                     </div>
 
-                    { openEditor.isActive &&
+                    { (openEditor.isActive && !!props.user.access_token) &&
                     <ReactQuill 
                         name="editTranscription"
                         value={editTranscription}

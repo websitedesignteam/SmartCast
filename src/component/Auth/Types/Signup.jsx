@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import AuthInput from '../AuthInput/AuthInput';
+import Input from '../../../element/Input/Input';
 import { postSignup } from '../../../utils/api';
 import { isFormComplete } from '../../../utils/helper';
 import { errorDefault } from "../../../utils/constants";
@@ -43,7 +43,7 @@ function Signup(props) {
                     <div className={styles.error}>Please fill in all fields</div> } */}
                 { (errorMessage) && <div className={styles.error}>{errorMessage}</div> }     
                 
-                <AuthInput 
+                <Input 
                     id="signup-name" 
                     name="name" 
                     value={input.name} 
@@ -51,7 +51,7 @@ function Signup(props) {
                     placeholder="Enter Name" 
                     onChangeInput={onChangeInput} 
                 />
-                <AuthInput 
+                <Input 
                     id="signup-email" 
                     name="email" 
                     value={input.email} 
@@ -60,7 +60,7 @@ function Signup(props) {
                     type="email" 
                     onChangeInput={onChangeInput} 
                 />
-                <AuthInput 
+                <Input 
                     id="signup-password" 
                     name="password" 
                     value={input.password} 

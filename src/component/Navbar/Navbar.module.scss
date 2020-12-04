@@ -1,7 +1,7 @@
 @import "../../styles/variables";
 
 .navbarContainer{
-	background-image: linear-gradient(to right, #895cf2 0%, #ffabf4 200%, #895cf2 100%);
+	background-image: linear-gradient(to right, $purple 0%, $pink 150%, $purple 100%);
 	-webkit-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.37);
 	-moz-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.37);
 	box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.37);
@@ -12,10 +12,15 @@
 	justify-content: space-between;
 }
 
-.link {
+.link, .appLink {
 	text-decoration: none;
 	font-size: 1.2rem;
-	margin: 0 1rem 0 0;
+	white-space: nowrap;
+}
+
+
+.link {
+	margin-left: 1rem;
 }
 
 .logoText{
@@ -36,6 +41,8 @@
 .userAction {
 	background: none;
 	font-size: 1.2rem;
+	margin: 0 0 0 1rem;
+	padding: 0;
 }
 
 .userAction:hover, .userAction:hover:not([disabled]) {

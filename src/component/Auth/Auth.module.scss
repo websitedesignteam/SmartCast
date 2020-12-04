@@ -16,7 +16,6 @@
     background-color: $light-gray;
     box-shadow: $box-shadow;
     border-radius: 1rem;
-    z-index: 2;
     @media (orientation: landscape) {
         position: relative;
         left: 0;
@@ -24,6 +23,9 @@
         transform: none;
         margin: 0 auto;
     }
+}
+
+.authModal {
 }
 
 .logo {
