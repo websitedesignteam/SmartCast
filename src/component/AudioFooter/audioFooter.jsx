@@ -15,7 +15,7 @@ function AudioFooter({audio, closeAudioPlayer}) {
                 </div>
                 <button className={styles.closeAudioPlayer} onClick={onClick}>✖</button>
             </div>
-            <audio controls preload="auto" className={styles.audio}>
+            <audio controls autoplay="" preload="auto" name="media" className={styles.audio}>
                 <source src={audio.audioUrl} type="audio/mpeg" />
                 Your browser does not support the audio tag.
             </audio>

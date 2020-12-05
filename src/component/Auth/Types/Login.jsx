@@ -6,7 +6,7 @@ import { isFormComplete } from '../../../utils/helper';
 import { errorDefault } from "../../../utils/constants";
 import styles from "../Auth.module.scss";
 
-function Login({loginUser, onClickForgotPassword}) {
+function Login({loginUser, onClickForgotPassword, stayLoggedIn}) {
     //vars
     const history = useHistory();
     const { authType } = useParams();
@@ -39,6 +39,10 @@ function Login({loginUser, onClickForgotPassword}) {
         });
     }
 
+    const handleCheckbox = () => {
+        stayLoggedIn.toggle();
+    }
+
     return (
         <form id="login-form" onSubmit={handleSubmit} className="container">
             <div className={styles.formContainer}>
@@ -66,6 +70,15 @@ function Login({loginUser, onClickForgotPassword}) {
                     type="password" 
                     onChangeInput={onChangeInput} 
                 />
+                <label>
+                    <input 
+                        type="checkbox" 
+                        name="stay-logged-in" 
+                        onChange={handleCheckbox} 
+                        checked={stayLoggedIn.isActive}
+                    />
+                    Stay logged in
+                </label>
 
                 <button className={styles.forgotPassword} onClick={onClickForgotPassword}>Forgot password?</button>
                 

@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react'
 import { Link, useParams } from "react-router-dom"
-import {searchEpisodes, searchPodcasts} from '../../utils/api'
+import { searchEpisodes, searchPodcasts, searchTags } from '../../utils/api'
 import PodcastContainer from "component/PodcastContainer/PodcastContainer"
 import EpisodeContainer from "component/EpisodeContainer/EpisodeContainer"
-import styles from './SearchPage.module.css'
+import styles from './SearchPage.module.scss'
+import {baseUrl, errorSearch} from "../../utils/constants";
 
 function SearchPage(props) {
 	const { searchTerm, searchType } = useParams();
@@ -14,7 +15,7 @@ function SearchPage(props) {
 
 	useEffect(() => {
 		let body = {"searchString": searchTerm}
-		if(searchType === 'episodes'){
+		if (searchType === 'episodes'){
 			searchEpisodes(body, 1) 
 			.then((response) => {
 				setIsLoading(false)
@@ -23,13 +24,24 @@ function SearchPage(props) {
 			.catch((error) => {
 				console.log(error);
 			});
-		}else if (searchType === 'podcasts'){
+		} else if (searchType === 'podcasts'){
 			searchPodcasts(body, 1) 
 			.then((response) => {
-				setIsLoading(false)
+				setIsLoading(false);
 				setPodcasts(response.data.Data.podcasts)
 			})
 			.catch((error) => {
+				setIsLoading(false);
+				console.log(error);
+			});
+		} else if (searchType === 'tags'){
+			searchTags(body) 
+			.then((response) => {
+				setIsLoading(false);
+				setPodcasts(response.data.Data)
+			})
+			.catch((error) => {
+				setIsLoading(false);
 				console.log(error);
 			});
 		}
@@ -67,9 +79,19 @@ function SearchPage(props) {
 					)
 				})}</p>
 			</div>)
+
+		} else {
+			return (
+			<div className={styles.error}>
+				<div className={styles.errorText}>
+					{errorSearch}
+				</div>
+				<img className={styles.errorImg} src={baseUrl+'/assets/empty_search.gif'} alt=""/>
+			</div>
+		);
 		}
-	} else if (isLoading === true){
-			return (<div className="loader" />)
+	} else {
+		return (<div className="loader" />)
 	}
 }
 

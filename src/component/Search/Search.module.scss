@@ -24,7 +24,7 @@ select:-webkit-autofill:focus {
 	justify-content: flex-start;
 }
 
-.searchBar:hover {
+.searchBar:hover, .searchBar:focus {
 	box-shadow:0 1px 6px rgba(32,33,36,.28)
 }
 
@@ -63,7 +63,12 @@ select:-webkit-autofill:focus {
 .checkboxes{
 	display: flex;
 	flex-direction: row;
-	margin-top: 1rem;
+	margin-top: 0;
+	margin-bottom: 1rem;
+	label {
+		margin-right: 0.5rem;
+		white-space: nowrap;
+	}
 }
 
 

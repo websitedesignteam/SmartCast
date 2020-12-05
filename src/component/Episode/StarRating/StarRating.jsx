@@ -1,23 +1,28 @@
 import React from 'react';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import styles from "./StarRating.module.scss";
+import { yellow, gray } from "../../../utils/constants";
 
 function Rating(props) {
   const [currentRating, setCurrentRating] = useState(0);
+  const [data, setData] = useState([]);
   const ratingRef = useRef();
+  const starRef = useRef([]);
 
   const hoverHandler = (event) => {
-    const stars = event.target.parentElement.getElementsByClassName('star');
+    const el = starRef.current;
     const hoverValue = event.target.dataset.value;
-    Array.from(stars).forEach(star => {
-      star.style.color = hoverValue >= star.dataset.value ? 'yellow' : 'gray';
+    Array.from(el).forEach(star => {
+      star.style.color = hoverValue >= star.dataset.value ? yellow : gray;
     });
   };
 
   const setRating = (event) => {
-    Array.from(ratingRef).forEach(star => {
+    const el = starRef.current;
+    if (!el) return;
+    Array.from(el).forEach(star => {
     star.style.color =
-        currentRating >= star.dataset.value ? 'yellow' : 'gray';
+        currentRating >= star.dataset.value ? yellow : gray;
     });
   };
 
@@ -29,28 +34,33 @@ function Rating(props) {
     }
   };
 
+  useEffect( () => {
+    let data = ["star", "star", "star", "star", "star"];
+    starRef.current = new Array(data.length);
+    setData(data);
+
+}, []);
+
 
   return (
     <div
       className={styles["rating"]}
-      ref="rating"
+      ref={ratingRef}
       data-rating={currentRating}
       onMouseOut={setRating}
     >
-      {[...Array(+props.numberOfStars).keys()].map(n => {
-        return (
+      {data.map((element, i) => 
           <span
             className={styles["star"]}
-            ref={ratingRef}
-            key={n+1}
-            data-value={n+1}
+            ref={el => starRef.current[i] = el}
+            key={i+1}
+            data-value={i+1}
             onMouseOver={hoverHandler}
             onClick={starClickHandler}
           >
             &#9733;
           </span>
-        );
-      })}
+      )}
     </div>
   );
 }

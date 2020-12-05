@@ -2,6 +2,8 @@
 
 .episodeContainer {
 	padding-top: 2rem;
+	display: flex;
+	flex-direction: column;
 }
 
 div.dataSection {
@@ -9,7 +11,9 @@ div.dataSection {
 }
 
 div.dataTitle {
-	display: block;
+	display: flex;
+	align-items: center;
+	width: 100%;
 }
 
 div.episodeTitle {
@@ -31,7 +35,6 @@ div.error {
 	margin: 0 auto 1rem;
 	width: 100%;
 	height: auto; 
-	// min-width: 12rem;
 }
 
 .episodeData {
@@ -39,6 +42,7 @@ div.error {
 }
 
 .episodeButtons {
+	margin-bottom: 0.5rem;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -91,6 +95,28 @@ div.error {
 	}
 }
 
+.showMore {
+	border-radius: 100%;
+	margin-right: 0.4rem;
+	padding: 0;
+	height: 1rem;
+	width: 1rem;
+  
+	> img.rotate {
+	  transform: rotate(45deg);
+	  -ms-transform: rotate(45deg);
+	  -webkit-transform: rotate(45deg);
+	  -moz-transform: rotate(45deg);
+	}
+  
+	> img {
+	  height: 1rem;
+	  width: 1rem;
+	  margin: 0;
+	  padding: 0;
+	}
+}
+
 button.editTranscription {
 	font: bold 1rem Cairo, sans-serif;
 	border: none;
@@ -105,14 +131,20 @@ button.editTranscription {
 	}
 }
 
+.episodeTranscription {
+	max-height: 50rem;
+	overflow-y: auto;
+}
+
 .loaderSmall {
 	display: inline-block;
 }
 
-.episodeContainer {
+.desktopTop {
 	@media screen and (min-width: 568px) {
 		display: flex;
 		align-items: stretch;
+		margin-bottom: 1.5rem;
 	}
 }
 
@@ -120,6 +152,7 @@ button.editTranscription {
 	@media screen and (min-width: 568px) {
 		border-right: 3px $gray solid;
 		padding-right: 1.5rem;
+		width: 30%;
 	}
 
 	@media screen and (min-width: 768px) {
@@ -131,6 +164,7 @@ button.editTranscription {
 .desktopRight {
 	@media screen and (min-width: 568px) {
 		padding-left: 1.5rem;
+		width: 70%;
 	}
 }
 

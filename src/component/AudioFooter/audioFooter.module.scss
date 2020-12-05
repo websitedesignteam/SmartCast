@@ -1,3 +1,5 @@
+@import "../../styles/variables";
+
 .closeAudioPlayer {
 	border: none;
 	width: 2rem;
@@ -14,7 +16,7 @@
 	padding: 0;
 	display: flex;
 	flex-direction: column;
-	background-color: #f3f3f3;
+	background-color: $light-gray;
 	z-index: 10;
 }
 

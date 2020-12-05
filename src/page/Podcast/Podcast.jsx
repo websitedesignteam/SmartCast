@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams } from "react-router-dom";
-import { getPodcast, getUser, postFavoritePodcast } from '../../utils/api';
+import { getPodcast, postFavoritePodcast } from '../../utils/api';
 import { useIsActive, useOnClickOutside } from 'hooks';
 import styles from "./Podcast.module.scss";
 import { isInFavoritePodcasts, getNameInFavoritePodcasts } from "../../utils/helper";
@@ -9,10 +9,10 @@ import Modal from "../../component/Podcast/Modal";
 
 import { baseUrl, errorPodcast } from "../../utils/constants";
 
-function Podcast({user, validateToken, getUserAPI, ...props}) {
+function Podcast({user, validateToken, ...props}) {
 	//vars
 	const { podcastID } = useParams();
-	let { access_token, favoritePodcasts } = user;
+	const { access_token, favoritePodcasts } = user;
 
 	//states
 	const [isLoading, setIsLoading] = useState(false);
@@ -210,20 +210,22 @@ function Podcast({user, validateToken, getUserAPI, ...props}) {
 								<strong>Episodes</strong> 
 							</div>
 							{ showEpisodes.isActive && 
-							<ul className={styles.episodeList}>
-							{ currentPodcast.episodes.map((episode, index) => 
-								<li key={index} className={styles.episodeLink}>
-									<Link to={`/podcast/${podcastID}/episode/${episode.episodeID}`}>{episode.episodeTitle}</Link>
-								</li> 
-							)}
-							</ul> }
-						</div>
-						<div className={styles.episodePageButtons}>
-							{ currentEpisodePageIndex > -1 &&
-							<button onClick={gotoLastPage}><img src={baseUrl + "/assets/button/page-back.png"} alt="Previous Page" title="Go to previous page"/></button>}
-							{ currentEpisodePageIndex < episodePageList.length-1 &&
-							<button onClick={gotoNextPage}><img src={baseUrl + "/assets/button/page-next.png"} alt="Next Page" title="Go to next page"/></button>}
+							<>
+								<ul className={styles.episodeList}>
+								{ currentPodcast.episodes.map((episode, index) => 
+									<li key={index} className={styles.episodeLink}>
+										<Link to={`/podcast/${podcastID}/episode/${episode.episodeID}`}>{episode.episodeTitle}</Link>
+									</li> 
+								)}
+								</ul> 
 
+								<div className={styles.episodePageButtons}>
+									{ currentEpisodePageIndex > -1 &&
+									<button onClick={gotoLastPage}><img src={baseUrl + "/assets/button/page-back.png"} alt="Previous Page" title="Go to previous page"/></button>}
+									{ currentEpisodePageIndex < episodePageList.length-1 &&
+									<button onClick={gotoNextPage}><img src={baseUrl + "/assets/button/page-next.png"} alt="Next Page" title="Go to next page"/></button>}
+								</div>
+							</>}
 						</div>
 					</div>
 				</>

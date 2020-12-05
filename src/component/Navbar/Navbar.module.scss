@@ -2,14 +2,18 @@
 
 .navbarContainer{
 	background-image: linear-gradient(to right, $purple 0%, $pink 150%, $purple 100%);
-	-webkit-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.37);
-	-moz-box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.37);
-	box-shadow: 0px 3px 5px 0px rgba(0,0,0,0.37);
+	-webkit-box-shadow: $box-shadow-nav;
+	-moz-box-shadow: $box-shadow-nav;
+	box-shadow: $box-shadow-nav;
 	display: flex;
 	height: 4rem;
 	padding: 0 1.5rem;
 	align-items: center;
 	justify-content: space-between;
+}
+
+.linksContainer {
+
 }
 
 .link, .appLink {
@@ -18,9 +22,37 @@
 	white-space: nowrap;
 }
 
+.appLink {
+	display: flex;
+	align-items: center;
+	background-color: $white;
+	border-radius: 0.2rem;
+	padding: 0 0.2rem;
+	height: 1.7rem;
+	overflow: hidden;
+	img {
+		height: 1.7rem;
+		width: 1.7rem;
+	}
+}
 
-.link {
+.appLink, .link, .userAction {
+	box-shadow: $box-shadow-nav-link;
+}
+
+.link, .userAction {
 	margin-left: 1rem;
+	display: flex;
+	align-items: center;
+	img.navIcon {
+		width: 1.3rem;
+		height: 1.3rem;
+		margin-left: 0.2rem;
+	}
+	border-radius: 0.2rem;
+	background-color: $white;
+	height: 1.7rem;
+	width: 1.7rem;
 }
 
 .logoText{
@@ -39,13 +71,15 @@
 }
 
 .userAction {
-	background: none;
 	font-size: 1.2rem;
 	margin: 0 0 0 1rem;
 	padding: 0;
 }
 
-.userAction:hover, .userAction:hover:not([disabled]) {
-	background: none;
-	outline: none;
+.userAction:focus {
+	outline: 5px auto 
+}
+
+.link:hover {
+	background-color: $gray;
 }

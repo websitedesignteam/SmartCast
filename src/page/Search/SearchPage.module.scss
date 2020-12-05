@@ -1,0 +1,21 @@
+@import "../../styles/variables";
+
+.link {
+    text-decoration: none;
+    color: black;
+}
+
+.errorText {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    background-color: $light-gray;
+    font-weight: 700;
+    
+}
+
+.errorImg {
+    width: 100%;
+    max-width: 30rem;
+}

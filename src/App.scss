@@ -9,6 +9,7 @@
 
 .App-content {
   padding: 1.5rem;
+  min-height: 100vh;
 }
 
 .App-blur {
@@ -20,12 +21,12 @@
   backdrop-filter: blur(0.1rem);
   padding: 0;
   min-width: 100vw;
-  @media (orientation: landscape) {
-    min-height: 170vh;
-  }
-  @media screen and (min-width: 400px) and (orientation: landscape) {
-    min-height: 80vh;
-  }
+  // @media (orientation: landscape) {
+  //   min-height: 170vh;
+  // }
+  // @media screen and (min-width: 400px) and (orientation: landscape) {
+  //   min-height: 80vh;
+  // }
 }
 
 .App-background {
@@ -76,6 +77,19 @@
   visibility: visible !important;	
 }
 
+.App-footer-audio, .App-footer {
+  text-align: center;
+  padding-bottom: 1.5rem;
+}
+
+.App-footer-audio {
+  padding-bottom: 7rem;
+}
+
+.listenNotesLogo {
+  max-width: 15rem;
+}
+
 .logo {
   width: 15rem;
   height: 15rem;
@@ -118,6 +132,7 @@ button:hover:not([disabled]) {
   cursor: pointer;
 }
 
+//loaders
 .loader, .loaderSmall, .loaderTiny {
   border-radius: 100%;
   animation: spin 1.8s linear infinite;

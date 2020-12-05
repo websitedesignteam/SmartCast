@@ -19,13 +19,16 @@ import { withSearchContext } from "state/Search/withSearchContext";
 import AudioFooter from './component/AudioFooter/audioFooter';
 import { useIsActive, useOnClickOutside } from 'hooks';
 import { getUser, getTokenValidation, getNewToken } from "./utils/api";
+import { baseUrl, errorSessionExpired } from 'utils/constants';
 
 function App() {
   //global app states
   const [isLoading, setIsLoading] = useState(true);
+  const [appHeight, setAppHeight] = useState(null);
   const [audio, setAudio] = useState(() => JSON.parse(localStorage.getItem('audio')) || {}); // audio = {podcastName, episodeName, podcastPublisher, audio}
   const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user')) || {}); //user = {username, authToken, refreshToken}
   const authModalState = useIsActive();
+  const stayLoggedIn = useIsActive();
 
   //audioplayer
   const openAudioPlayer = (newAudio) => {
@@ -68,26 +71,33 @@ function App() {
     if (!!access_token && !!refresh_token && !!username) {
       getTokenValidation({access_token})
         .catch(() => {
-          const data = {
-            refresh_token,
-            username,
-          }
+          if (stayLoggedIn.isActive) {
+            const data = {
+              refresh_token,
+              username,
+            };
 
-          //if user wants to stay logged in for 30 days
-          getNewToken(data)
-          .then((response) => {
-              const allUserData = {
-                ...user,
-                ...response.data,
-              }
-              localStorage.setItem("user", JSON.stringify(allUserData));
-              setUser(allUserData);
-          })
-          .catch((error)=> {
-            console.log(error);
+            //if user wants to stay logged in for 30 days
+            getNewToken(data)
+            .then((response) => {
+                const allUserData = {
+                  ...user,
+                  ...response.data,
+                }
+                localStorage.setItem("user", JSON.stringify(allUserData));
+                setUser(allUserData);
+            })
+            .catch((error)=> {
+              console.log(error);
+              setUser({});
+              stayLoggedIn.deactivate();
+              localStorage.removeItem("user");
+            })
+          } else {
+            alert(errorSessionExpired);
             setUser({});
             localStorage.removeItem("user");
-          })
+          }
         })
     }
   }
@@ -104,6 +114,20 @@ function App() {
   //refs
   const authModalRef = useRef();
   useOnClickOutside(authModalRef, authModalState.deactivate);
+  const appRef = useRef();
+
+  const getAppHeight = () => {
+    const el = appRef.current;
+    if (!el) return
+    const currentAppHeight = el.scrollHeight;
+    setAppHeight(currentAppHeight);
+  }
+
+  useEffect(()=> {
+    getAppHeight();
+  }, [])
+
+
 
   return (
     <div className="App">
@@ -113,55 +137,88 @@ function App() {
         {audio.audioUrl && 
             <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
 
-        <div className="App-content">  
+        <div className="App-content" ref={appRef}>  
           {(authModalState.isActive && !user.access_token) && 
             <>
             <div className="App-modal" ref={authModalRef}>
-              <Auth loginUser={getUserAPI} type="login" onSuccessVerification={closeAuthModal} /> 
+              <Auth loginUser={getUserAPI} type="login" onSuccessVerification={closeAuthModal} stayLoggedIn={stayLoggedIn} /> 
             </div>
-            <div className="App-blur" />
+            <div className="App-blur" style={{height: appHeight}} />
             </>
           }
-          <Search />
+
           <Switch>
-			<Route exact path="/">
-				{/* <img className="logo" src={process.env.PUBLIC_URL + "/assets/logo.png"} alt="Podcast Logo" /> */}
-				<Home />
-			</Route>
+            <Route exact path="/" render={routeProps => 
+              <>
+                <Search {...routeProps} /> 
+                <Home {...routeProps} />
+              </>
+            } />
 
-			<Route exact path="/auth/:authType">
-				{!!user.access_token ? <Redirect to="/" /> : 
-				<div className="App-background">
-					<Auth />
-				</div>}
-			</Route>
+            <Route exact path="/auth/:authType"
+              render={routeProps =>
+              <>
+                {!!user.access_token 
+                ? <Redirect {...routeProps} to="/" /> 
+                :<div className="App-background">
+                  <Auth {...routeProps} />
+                </div>}
+              </>
+              }/>
 
-			<Route exact path="/profile">
-				{!user.access_token ? <Redirect to="/" /> : <UserProfile />}
-			</Route>
+            <Route exact path="/profile" 
+             render={routeProps =>
+              <>
+              {!user.access_token ? <Redirect {...routeProps} to="/" /> : <UserProfile {...routeProps} />}
+              </>
+             }
+            />
 
-			<Route exact path="/genres">
-				<Genres />
-			</Route>
+            <Route exact path="/genres"
+              render={routeProps =>
+              <>
+                <Search {...routeProps} />
+                <Genres {...routeProps} />
+              </>
+            }/>
 
-			<Route exact path="/genres/:genreName2/:genreName" component={Genres}>
-				<Genres />
-			</Route>
+            <Route exact path="/genres/:genreName2/:genreName" component={Genres}
+              render={routeProps =>
+              <>
+              <Search {...routeProps} />
+              <Genres {...routeProps} />
+              </>
+            }/>
 
-			<Route exact path="/search/results/:searchTerm/:searchType">
-				<SearchPage />
-			</Route>
+            <Route exact path="/search/results/:searchTerm/:searchType"
+              render={routeProps =>
+              <>
+              <Search {...routeProps}/>
+              <SearchPage {...routeProps}/>
+              </>
+            }/>
 
-			<Route exact path="/podcast/:podcastID/episode/:episodeID"> 
-				<Episode openAudioPlayer={openAudioPlayer} user={user} validateToken={validateToken} />
-			</Route> 
+            <Route exact path="/podcast/:podcastID/episode/:episodeID" 
+              render={routeProps =>
+              <>
+                <Search {...routeProps} />
+                <Episode {...routeProps} openAudioPlayer={openAudioPlayer} user={user} validateToken={validateToken} />
+              </>
+            }/> 
 
-			<Route exact path="/podcast/:podcastID">
-				<Podcast user={user} validateToken={validateToken} getUserAPI={getUserAPI} />
-			</Route>
-		</Switch>
-          
-        </div>
+            <Route exact path="/podcast/:podcastID"
+              render={routeProps =>
+              <>
+              <Search {...routeProps} />
+              <Podcast {...routeProps} user={user} validateToken={validateToken} />
+              </>
+            }/> 
+          </Switch>
+      </div>
+      <div className={audio.audioUrl ? "App-footer-audio" : "App-footer"}>
+        <img className="listenNotesLogo" src={baseUrl+"/assets/listen-api-logo.png"} alt="This site is powered by Listen Notes" />
+      </div>
+  
       </Router>
     </div>
   );
