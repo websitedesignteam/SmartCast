@@ -57,7 +57,10 @@ def lambda_handler(event, context):
         print("body: ", body)
         if "category" in body:
             category = body["category"]
-            print("category == ", category)
+            if category == "COMMERCIAL ITEM":
+                category = "COMMERCIAL_ITEM"
+                
+            print("Category == ", category)
         
             dynamoDB = boto3.resource('dynamodb')
             ML_Category_Table = dynamoDB.Table("ML_Category")
@@ -78,7 +81,7 @@ def lambda_handler(event, context):
                         'Access-Control-Allow-Credentials': True,
                         'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
                     },
-                    'body': json.dumps(tagsList)
+                    'body': json.dumps({"Data" : tagsList})
                 }
             
     except Exception as e:
