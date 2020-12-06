@@ -17,7 +17,7 @@ import styles from "./Episode.module.scss";
 function Episode({validateToken, ...props}) {
     //vars
     const { episodeID, podcastID } = useParams();
-    const { access_token } = props.user;
+    const { access_token, ratings } = props.user;
 
     //states
     const [isLoading, setIsLoading] = useState(false);
@@ -358,7 +358,7 @@ function Episode({validateToken, ...props}) {
                     </div>
                 </div>
                 
-                {!!access_token &&
+                {(!!access_token && ratings.includes(podcastID+episodeID)) &&
                     <Review submitReview={putSubmitReviewAPI} isLoadingReview={isLoadingReview} />
                 }   
                 <ReviewFeed podcastID={podcastID} episodeID={episodeID} />

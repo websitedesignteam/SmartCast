@@ -5,6 +5,12 @@
     color: black;
 }
 
+.error {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
+
 .errorText {
     margin-top: 1rem;
     margin-bottom: 1rem;
@@ -18,4 +24,52 @@
 .errorImg {
     width: 100%;
     max-width: 30rem;
+    margin: auto;
 }
+
+// @for $i from 1 through 10 {
+//     .cardContainer:nth-child(#{$i})::after{
+//         animation-delay: $i *1s;
+//     }
+// }
+
+// .episodeContainer{
+//     display: flex;
+// 	flex-direction: row;
+// 	border: 0px solid black;
+// 	border-radius: 15px;
+// 	margin-bottom: 1.5rem;
+// 	height: 200px;
+// 	padding: 1.5rem;
+// 	-webkit-box-shadow: $box-shadow;
+// 	-moz-box-shadow: $box-shadow;
+// 	box-shadow: $box-shadow;
+// 	animation-name: slideRight;
+// 	-webkit-animation-name: slideRight;	
+
+// 	animation-duration: 1.3s;	
+// 	-webkit-animation-duration: 1.3s;
+
+// 	animation-timing-function: ease-in;
+// 	-webkit-animation-timing-function: ease-in;		
+
+// 	visibility: visible !important;	
+// }
+
+// @keyframes slideRight {
+// 	0% {
+// 		transform: translateX(-90%);
+// 	}		
+// 	100% {
+// 		transform: translateX(0%);
+// 	}		
+// }
+
+// @-webkit-keyframes slideRight {
+// 	0% {
+// 		-webkit-transform: translateX(-90%);
+// 	}	
+// 	100% {
+// 		-webkit-transform: translateX(0%);
+// 	}
+// }

@@ -15,8 +15,8 @@ const getNewToken = (data) => postAPI(`/refreshtoken`, data);
 //landing
 const getallCategories = () => getAPI(PROXY_URL+API_URL+`/getallcategories`); //CORS
 const getLatestComments = () => getAPI(`/getlatestcomments`);
-const getallTagsofACategory = (data) => postAPI(PROXY_URL+API_URL+'/getalltagsofacategory', data) //CORS
-const getallEpisodesofATag = (data) => postAPI('/getallepisodesofatag', data)
+const getallTagsofACategory = (data) => postAPI(PROXY_URL+API_URL+'/getalltagsofacategory', data); //CORS
+const getallEpisodesofATag = (data) => postAPI(PROXY_URL+API_URL+'/getallepisodesofatag', data); //CORS
 
 //podcast results (search, genre)
 const getGenrePodcasts = (data) => postAPI(`/getallpodcastsofgenre`, data);

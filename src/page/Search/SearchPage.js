@@ -11,14 +11,15 @@ function SearchPage(props) {
 
 	const [episodes, setEpisodes] = useState([])
 	const [podcasts, setPodcasts] = useState([])
-	const [isLoading, setIsLoading] = useState(true)
+	const [isLoading, setIsLoading] = useState(false)
 
 	useEffect(() => {
+		setIsLoading(true);
 		let body = {"searchString": searchTerm}
 		if (searchType === 'episodes'){
 			searchEpisodes(body, 1) 
 			.then((response) => {
-				setIsLoading(false)
+				setIsLoading(false);
 				setEpisodes(response.data.Data.episodes)
 			})
 			.catch((error) => {
@@ -38,7 +39,7 @@ function SearchPage(props) {
 			searchTags(body) 
 			.then((response) => {
 				setIsLoading(false);
-				setPodcasts(response.data.Data)
+				setEpisodes(response.data.Data)
 			})
 			.catch((error) => {
 				setIsLoading(false);
@@ -48,12 +49,25 @@ function SearchPage(props) {
 	}, [searchTerm, searchType])
 
 	if (isLoading === false){
-		if (searchType === 'episodes'){
+		if (searchType === 'episodes' || searchType === 'tags'){
 			return( <div>
 				<h4>Episode Results for: "{searchTerm}"</h4>
-				<p>{episodes.map((episode)=>{
+				<div className={styles.cardContainer}>{episodes.map((episode)=>{
 					return (
-						<Link to={`/podcast/${episode.podcastID}/episode/${episode.episodeID}`} className={styles.link}>
+						(searchType === 'tags') 
+						? <Link to={{
+							pathname: `/podcast/${episode.podcastID}/episode/${episode.episodeID}`,
+							episode,
+							}} 
+							className={styles.link}
+						>
+							<EpisodeContainer 
+								episodeTitle={episode.episodeTitle}
+								episodeDescription={episode.episodeDescription}
+								imgSrc={episode.episodeImage}
+							/>
+						</Link> 
+						: <Link to={`/podcast/${episode.podcastID}/episode/${episode.episodeID}`} className={styles.link}>
 							<EpisodeContainer 
 								episodeTitle={episode.episodeTitle}
 								episodeDescription={episode.episodeDescription}
@@ -61,12 +75,12 @@ function SearchPage(props) {
 							/>
 						</Link> 
 					)
-				})}</p>
+				})}</div>
 				</div>)
-		}else if (searchType === 'podcasts'){
+		} else if (searchType === 'podcasts'){
 			return( <div>
 				<h4>Podcast Results for: "{searchTerm}"</h4>
-				<p>{podcasts.map((podcast)=>{
+				<div>{podcasts.map((podcast)=>{
 					return (
 						<Link to={`/podcast/${podcast.podcastID}`} className={styles.link}>
 							<PodcastContainer 
@@ -77,7 +91,7 @@ function SearchPage(props) {
 							/>
 						</Link>
 					)
-				})}</p>
+				})}</div>
 			</div>)
 
 		} else {
