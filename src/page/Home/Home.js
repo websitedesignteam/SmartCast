@@ -1,18 +1,24 @@
 import React, {useState, useEffect} from 'react';
 import styles from '../Home/Home.module.scss'
 import Thumbnail from '../../component/Home/Thumbnail/Thumbnail'
+import Search from '../../component/Search/Search'
 import TagPill from '../../component/Home/TagPill/TagPill'
 import LiveFeed from '../../component/Home/LiveFeed/LiveFeed'
 import SearchResults from '../../component/Search/SearchResults/SearchResults'
-import { getallCategories, getallTagsofACategory, getallEpisodesofATag } from '../../utils/api';
+import { getallCategories, getallTagsofACategory, getallEpisodesofATag, getUser } from '../../utils/api';
 import Loader from 'react-loader-spinner';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-import {useHistory} from 'react-router-dom'
-
+import axios from 'axios';
+import Axios from 'axios';
+import {Link, useParams, useHistory} from 'react-router-dom'
 function Home(props) {
 
+       const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user')) || {});
+       const [userData, setUserData] = useState([{}])
        const [categories, setCategories] = useState([]);
        const [tags, setTags] = useState([]);
+       const [podcastID, setPodcastID] = useState();
+       const [episodeID, setEpisodeID] = useState();
        const [episodes, setEpisodes] = useState();
        const [isModalOpen, setisModalOpen] = useState(false);
        const [loading, setIsLoading] = useState(false);
@@ -25,7 +31,16 @@ function Home(props) {
 			})
 			.catch((error) => {
                             console.log(error);
-			});
+                     });
+                     
+                     let body = {"access_token": user.access_token}
+                     getUser(body)
+                     .then((response)=>{
+                            setUserData(response.data)
+                     })
+                     .catch((error)=>{
+                            console.log(error)
+                     })
        }, []) 
 
        const getTags=(category)=>{
@@ -55,9 +70,6 @@ function Home(props) {
                      setEpisodes(response.data.Data)
                      openModal()
                      setIsLoading(false)
-                     // setPodcastID(response.data.Data[0].podcastID.toString());
-                     // setEpisodeID(response.data.Data[0].episodeID.toString());
-                     // history.push(`/podcast/${response.data.Data[0].podcastID}/episode/${response.data.Data[0].episodeID}`)
               })
               .catch((error) => {
                      console.log(error);
@@ -95,7 +107,7 @@ function Home(props) {
                                         </div>
                                  </div>
                           </div>
-                          <LiveFeed profilePicture={props.user?.profilePicture} />
+                          <LiveFeed profilePicture={userData.profilePicture} />
                      </div>
               );
 
