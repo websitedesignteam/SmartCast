@@ -1,4 +1,4 @@
-const { getAPI, postAPI } = require("./axios");
+const { getAPI, postAPI , putAPI} = require("./axios");
 
 //auth
 const postLogin = (data) => postAPI(`/login`, data);
@@ -23,8 +23,27 @@ const searchEpisodes = (data) => postAPI(`/searchepisodes`, data);
 //search podcasts
 const searchPodcasts = (data) => postAPI(`/searchpodcasts`, data); 
 
+//search by ML tags
+const searchByTags = (data) => postAPI(`/searchbytags`, data);
+
 //podcast
 const getPodcast = (data) => postAPI(`/getallepisodes`, data);
+
+const getRequestedTranscriptions = (data) => postAPI(`/getrequestedtranscriptions`, data)
+
+const getRequestedEdits = (data) => postAPI(`/getrequestededits`, data)
+
+const getLatestComments = () => getAPI(`/getlatestcomments`)
+
+const changePassword = (data) => postAPI(`/confirmpasswordreset`, data)
+
+const emailPassword = (data) => postAPI(`/forgotpassword`, data)
+
+const favoriteAPodcast = (data) => postAPI(`/favoriteapodcast`, data)
+
+const updateBio = (data)=> putAPI(`/updatebio`, data)
+
+const updateProfilePicture = (data)=> putAPI(`/updateprofilepicture`, data)
 
 //episode
 const getEpisode = (data) => postAPI(`/getepisode`, data);
@@ -48,4 +67,13 @@ export {
     getUser,
     postConfirmPasswordReset,
     postForgotPassword,
+    searchByTags,
+    getRequestedTranscriptions,
+    getRequestedEdits,
+    getLatestComments,
+    changePassword,
+    emailPassword,
+    favoriteAPodcast,
+    updateBio,
+    updateProfilePicture
 }

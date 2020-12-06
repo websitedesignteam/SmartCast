@@ -84,7 +84,7 @@ function App() {
             <div className="App-blur" />
             </>
           }
-          <Search />
+          <Search searchWith='tags' />
           <Routes user={user} openAudioPlayer={openAudioPlayer} />
           
         </div>

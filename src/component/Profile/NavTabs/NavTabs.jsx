@@ -14,7 +14,8 @@ const NavTabs=(props)=> {
               return (
               <div className={styles.container}>
                      <div className={styles.avatarContainer}>
-                            <div className={styles.avatar}>
+                            <div>
+                                   <img className={styles.profilePic} src={props.profilePicUrl} />
                             </div>
                             <div>
                                    {props.name}

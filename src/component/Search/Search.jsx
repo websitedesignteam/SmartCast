@@ -4,6 +4,7 @@ import styles from '../Search/Search.module.scss'
 import { useHistory } from 'react-router-dom'
 import {useSearchContext} from 'state/Search/useSearchContext'
 import { baseUrl } from "../../utils/constants"
+import {searchByTags} from '../../utils/api'
 
 function Search(props) {
 	//vars
@@ -11,23 +12,41 @@ function Search(props) {
 	const history = useHistory();
 
 	//states
-	const [query, setQuery] = useState('')
+       const [query, setQuery] = useState('')
+       const [searchResults, setSearchResults]= useState()
 	
 	//util functions
 	const handleSearch = (event) => {
 		setQuery(event.target.value);
-	}
+       }
+
+       // const handleSearch = (event) => {
+
+       // }
 
 	const handleSubmit = (event) =>{
-		event.preventDefault();
-		if(!searchContext.searchType){
-			alert('Please choose one option');
-		} else if (!!query) {
-			searchContext.setSearchInput(query);
-			history.push(`/search/results/${query}/${searchContext.searchType}`);
-		} else {
-			alert('Please enter a search term');
-		}
+              event.preventDefault();
+              
+              if(props.searchWith==='tags'){
+                     let body = {'searchQuery': query}
+                     searchByTags(body)
+                     .then((response)=>{
+                            setSearchResults(response.data.Data)
+                            alert('sucess')
+                     })
+                     .catch((error)=>{
+                            console.log(error)
+                     })
+              }else{
+                     if(!searchContext.searchType){
+                            alert('Please choose one option');
+                     } else if (!!query) {
+                            searchContext.setSearchInput(query);
+                            history.push(`/search/results/${query}/${searchContext.searchType}`);
+                     } else {
+                            alert('Please enter a search term');
+                     }
+              }
 	}
 
 	const handleCheckboxes = (value) => {

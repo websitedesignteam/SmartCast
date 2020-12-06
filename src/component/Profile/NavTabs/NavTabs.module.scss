@@ -7,6 +7,7 @@
        -webkit-box-shadow: 20px 1px 8px -19px rgba(0,0,0,0.11);
        -moz-box-shadow: 20px 1px 8px -19px rgba(0,0,0,0.11);
        box-shadow: 20px 1px 8px -19px rgba(0,0,0,0.11);
+       margin-left: -25px;
 }
 
 .navButtons{
@@ -31,4 +32,10 @@
        flex-direction: column;
        justify-content: center;
        align-items: center;
+}
+
+.profilePic{
+       border-radius: 50%;
+       width: 100px;
+       height: 100px;
 }

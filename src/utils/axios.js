@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 //check env for baseUrl
-const API_URL =  "https://g0rjpqharl.execute-api.us-east-1.amazonaws.com/test/"; //put api url here
+const API_URL =  "https://g0rjpqharl.execute-api.us-east-1.amazonaws.com/test"; //put api url here
 const API_KEY = process.env.REACT_APP_API_KEY;
 const PROXY_URL= 'https://cors-anywhere.herokuapp.com/'
 //create instance
@@ -17,7 +17,7 @@ const AxiosInstance = axios.create({
 });
 
 
-const getAPI = (apiUrl) => AxiosInstance.get(PROXY_URL + API_URL + apiUrl);
+const getAPI = (apiUrl) => AxiosInstance.get( PROXY_URL+ API_URL + apiUrl);
 
 const postAPI = (apiUrl, data) => AxiosInstance.post(PROXY_URL + API_URL + apiUrl, data);
 

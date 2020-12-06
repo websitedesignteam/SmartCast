@@ -21,10 +21,10 @@ const Modal=(props)=> {
                             </div>
                             <div className={styles.editsContainer}>
                                    <div className={styles.beforeContainer}>
-                                   before
+                                          {props.beforeText}
                                    </div>
                                    <div className={styles.afterContainer}>
-                                   after
+                                          {props.afterText}
                                    </div>
                             </div>
                             <div className={styles.buttons}>

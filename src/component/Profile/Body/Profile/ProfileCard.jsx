@@ -5,11 +5,12 @@ function ProfileCard(props) {
               <div className={styles.innerContainer}>
                      <div className={styles.wrapper}>
                             <div className={styles.leftSide}>
+                                   <img className={styles.profilePicture} src={props.profilePicture}/>
                             </div>
                             <div className={styles.rightSide}>
-                                   <p>Name:</p>
-                                   <p>Joined Date:</p>
-                                   <p>Bio:</p>
+                                   <p>Name: {props.name}</p>
+                                   <p>Joined Date: {props.dateJoined}</p>
+                                   <p>Bio: {props.bio}</p>
                             </div>
                      </div>
               </div> 

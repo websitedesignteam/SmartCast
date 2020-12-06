@@ -15,7 +15,7 @@ const Edits=(props)=> {
        if (isExpand === true){
               return (
                      <div >
-                            <Modal exitModal={()=>exitModal()}/>
+                            <Modal exitModal={()=>exitModal()} beforeText={props.beforeText} afterText={props.afterText}/>
                      </div>
                      // <div className={styles.editsContainer}>
                      //        <div className={styles.contentContainer}>
