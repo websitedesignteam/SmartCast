@@ -18,7 +18,7 @@ function Routes(props) {
 		<Switch>
 			<Route exact path="/">
 				{/* <img className="logo" src={process.env.PUBLIC_URL + "/assets/logo.png"} alt="Podcast Logo" /> */}
-				<Home />
+				<Home user={props.user}/>
 			</Route>
 
 			<Route exact path="/auth/:authType">
@@ -29,7 +29,7 @@ function Routes(props) {
 			</Route>
 
 			<Route exact path="/profile">
-				{!props.user.access_token ? <Redirect to="/" /> : <UserProfile />}
+				{!props.user.access_token ? <Redirect to="/" /> : <UserProfile userData={props.user} />}
 			</Route>
 
 			<Route exact path="/genres">

@@ -8,13 +8,17 @@ const NavTabs=(props)=> {
               props.changeTab(tab)
        }
 
-       return (
+       // const [userStatus, setUserStatus] = useState(props.userStatus)
+
+       if (props.userStatus === 'admin'){
+              return (
               <div className={styles.container}>
                      <div className={styles.avatarContainer}>
-                            <div className={styles.avatar}>
+                            <div>
+                                   <img className={styles.profilePic} src={props.profilePicUrl} />
                             </div>
                             <div>
-                                   Ali Belaj
+                                   {props.name}
                             </div>
                             <div className={styles.bio}>
                                    {props.bio}
@@ -28,11 +32,34 @@ const NavTabs=(props)=> {
                                    <NavButton label="Settings" />
                             </div>
                             <div className={styles.moderatorDashboardButton} onClick={()=> changeTab('Moderator Dashboard')}>
-                                   <NavButton label="Moderator Dashboard" />
+                                   <NavButton label="Moderator Dashboard" /> 
                             </div>
                      </div>
               </div>
        )
+}else {
+              return( <div className={styles.container}>
+                     <div className={styles.avatarContainer}>
+                            <div className={styles.avatar}>
+                            </div>
+                            <div>
+                                   {props.name}
+                            </div>
+                            <div className={styles.bio}>
+                                   {props.bio}
+                            </div>
+                     </div>
+                     <div className={styles.navButtons}>
+                            <div className={styles.profileButton} onClick={()=> changeTab('My Profile')}>
+                                   <NavButton label="My Profile" />
+                            </div>
+                            <div className={styles.settingsButton} onClick={()=> changeTab('Settings')}>
+                                   <NavButton label="Settings" />
+                            </div>
+                     </div>
+              </div>
+              )
+       }
 }
 
 export default NavTabs

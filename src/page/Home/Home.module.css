@@ -31,6 +31,8 @@
 }
 
 .tags{
-       text-align: center;
-       padding-top: 0.5rem;
+       display: flex;
+       flex-direction: row;
+       justify-content: center;
+       flex-wrap: wrap;
 }

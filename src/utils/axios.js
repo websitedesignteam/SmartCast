@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 //check env for baseUrl
-const API_URL =  "https://g0rjpqharl.execute-api.us-east-1.amazonaws.com/test/"; //put api url here
+const API_URL =  "https://g0rjpqharl.execute-api.us-east-1.amazonaws.com/test"; //put api url here
 const API_KEY = process.env.REACT_APP_API_KEY;
 const PROXY_URL= 'https://young-lowlands-54841.herokuapp.com/';
 //create instance

@@ -31,6 +31,15 @@ const getPodcast = (data) => postAPI(`/getallepisodes`, data);
 const postFavoritePodcast = (data) => postAPI(`/favoriteapodcast`, data);
 const getAllReviews = (data) => postAPI(`/getallreviews`, data);
 
+//profile
+const getRequestedTranscriptions = (data) => postAPI(`/getrequestedtranscriptions`, data)
+const getRequestedEdits = (data) => postAPI(`/getrequestededits`, data)
+const changePassword = (data) => postAPI(`/confirmpasswordreset`, data)
+const emailPassword = (data) => postAPI(`/forgotpassword`, data)
+const favoriteAPodcast = (data) => postAPI(`/favoriteapodcast`, data)
+const updateBio = (data)=> putAPI(`/updatebio`, data)
+const updateProfilePicture = (data)=> putAPI(`/updateprofilepicture`, data)
+
 //episode
 const getEpisode = (data) => postAPI(`/getepisode`, data);
 const postTranscribeEpisode = (data) => postAPI(`/posttranscribeepisode`, data);
@@ -67,4 +76,11 @@ export {
     getLatestComments,
     getAllReviews,
     searchTags,
+    getRequestedTranscriptions,
+    getRequestedEdits,
+    changePassword,
+    emailPassword,
+    favoriteAPodcast,
+    updateBio,
+    updateProfilePicture
 }

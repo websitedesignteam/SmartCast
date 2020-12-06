@@ -16,7 +16,11 @@ function Search(props) {
 	//util functions
 	const handleSearch = (event) => {
 		setQuery(event.target.value);
-	}
+       }
+
+       // const handleSearch = (event) => {
+
+       // }
 
 	const handleSubmit = (event) =>{
 		event.preventDefault();
