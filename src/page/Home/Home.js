@@ -25,6 +25,7 @@ function Home(props) {
        let history = useHistory();
 
        useEffect(() => {
+                     setIsLoading(true)
 			getallCategories()
 			.then((response) => {
                             setCategories(response.data.Data);
@@ -37,6 +38,7 @@ function Home(props) {
                      getUser(body)
                      .then((response)=>{
                             setUserData(response.data)
+                            setIsLoading(false)
                      })
                      .catch((error)=>{
                             console.log(error)
@@ -100,7 +102,7 @@ function Home(props) {
                                           {categories.map((category, index)=><div key={category} onClick={() => getTags(category)}><TagPill key={category} label={category}/></div>)}
                                         </div>
                                         <div className={styles.tags}>
-                                          {tags ? tags.map((category, index)=><div key={category} onClick={()=> {getEpisodeData(category.tag)}}><TagPill key={category} label={category.tag} count= {category.episodeCount}/></div>):null}
+                                          {tags ? tags.map((category, index)=><div key={category} onClick={()=> {getEpisodeData(category.tag)}}><TagPill key={category} label={category.tag} count={category.episodeCount}/></div>):null}
                                         </div>
                                         <div className={styles.tags}>
                                           {loading? <div><Loader type="TailSpin" color="#00BFFF" height={30} width={30} /></div>:null}

@@ -36,9 +36,6 @@ const ResultsPill=(props)=> {
                                           <div className={styles.label}>
                                                  Podcast: {props.podcastTitle}
                                           </div>
-                                          <div className={styles.countResult}>
-                                                 Episode: {props.label}
-                                          </div>
                                    </div>
                             </div>
                      </div>
