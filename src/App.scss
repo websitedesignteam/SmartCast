@@ -1,5 +1,9 @@
 @import "styles/variables";
 
+body {
+  max-width: 100vw;
+}
+
 .App {
   min-height: 100vh;
   display: flex;
