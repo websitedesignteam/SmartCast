@@ -307,7 +307,8 @@ function Episode({validateToken, ...props}) {
                         </div> 
                     
                         <div className={styles.dataSection}>
-                            <div className={styles.dataTitle}>
+                            <div className={styles.dataTitleTranscription}>
+                                <div className={styles.dataTitleLeft}>
                                 <button className={styles.showMore} onClick={()=> showTranscription.toggle()}>
 									<img 
 										src={baseUrl + "/assets/button/show-more.png"} 
@@ -316,34 +317,35 @@ function Episode({validateToken, ...props}) {
 									/>
 								</button>
                                 <strong>Transcription</strong>
-                            </div>
-                                {(!!currentEpisode.transcribedText) && 
-                                <>
-                                <div className={styles.editTranscriptionButtons}>
-                                {(!!currentEpisode.transcribedText && openEditor.isActive && !!props.user.access_token)
-                                ? <>
-                                    <button className={styles.editTranscription} onClick={closeTranscription} title="Close Editor and Remove Changes">Cancel</button> 
-                                    <button className={styles.editTranscription} onClick={saveTranscription} title="Save Your Current Changes on This Page">Save <img src={baseUrl + "/assets/button/save.svg"} alt=""/></button> 
-                                    <button className={styles.editTranscription} onClick={requestEditTranscriptionAPI} title="Submit Your Edit Request">Submit 
-                                        <img src={baseUrl + "/assets/button/submit.svg"} alt=""/>
-                                    </button> 
-                                </>
-                                : <button 
-                                    className={styles.editTranscription} 
-                                    onClick={openTranscription} 
-                                    disabled={!props.user.access_token || currentEpisode.transcribedStatus === "EDIT IN PROGRESS"} 
-                                    title={(!props.user.access_token) 
-                                        ? "Login to Edit Transcription" 
-                                        : (currentEpisode.transcribedStatus === "EDIT IN PROGRESS") 
-                                        ? "Transcription Edit in Progress Already"
-                                        : "Edit Episode Transcription"}
-                                >
-                                    Edit 
-                                    <img src={baseUrl + "/assets/button/edit.svg"} alt=""/>
-                                </button> 
-                                }
                                 </div>
-                                </>}
+                                {(!!currentEpisode.transcribedText) && 
+                                <div className={styles.dataTitleRight}>
+                                    <div className={styles.editTranscriptionButtons}>
+                                    {(!!currentEpisode.transcribedText && openEditor.isActive && !!props.user.access_token)
+                                    ? <>
+                                        <button className={styles.editTranscription} onClick={closeTranscription} title="Close Editor and Remove Changes">Cancel</button> 
+                                        <button className={styles.editTranscription} onClick={saveTranscription} title="Save Your Current Changes on This Page">Save <img src={baseUrl + "/assets/button/save.svg"} alt=""/></button> 
+                                        <button className={styles.editTranscription} onClick={requestEditTranscriptionAPI} title="Submit Your Edit Request">Submit 
+                                            <img src={baseUrl + "/assets/button/submit.svg"} alt=""/>
+                                        </button> 
+                                    </>
+                                    : <button 
+                                        className={styles.editTranscription} 
+                                        onClick={openTranscription} 
+                                        disabled={!props.user.access_token || currentEpisode.transcribedStatus === "EDIT IN PROGRESS"} 
+                                        title={(!props.user.access_token) 
+                                            ? "Login to Edit Transcription" 
+                                            : (currentEpisode.transcribedStatus === "EDIT IN PROGRESS") 
+                                            ? "Transcription Edit in Progress Already"
+                                            : "Edit Episode Transcription"}
+                                    >
+                                        Edit 
+                                        <img src={baseUrl + "/assets/button/edit.svg"} alt=""/>
+                                    </button> 
+                                    }
+                                    </div>
+                                </div>}
+                            </div>
                             { (showTranscription.isActive && !openEditor.isActive) && 
                                 <p className={styles.episodeTranscription} dangerouslySetInnerHTML={{__html: currentEpisode.transcribedText || "No Transcription Available Yet" }}></p>
                             }                       

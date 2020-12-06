@@ -4,7 +4,7 @@ import StarRating from '../StarRating/StarRating';
 import styles from "./Review.module.scss";
 import { isFormComplete } from "../../../utils/helper"; 
 
-function Review({isLoadingReview, submitReview, ...props}) {
+function Review({isLoadingReview=false, submitReview, ...props}) {
   	//states
     const [userReview, setUserReview] = useState({rating: 0, review: ""});
 
@@ -46,7 +46,7 @@ function Review({isLoadingReview, submitReview, ...props}) {
 			/>
 			</div>
 			<div className={styles["form-bottom"]}>
-			{!isLoadingReview
+			{(isLoadingReview === false)
 				? <button 
 					className={styles["form-bottom--submit"]} 
 					type="submit" 

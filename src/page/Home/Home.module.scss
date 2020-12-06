@@ -1,3 +1,5 @@
+@import "../../styles/variables";
+
 .homeContainer {
 	display: flex;
 	flex-direction: column;
@@ -28,6 +30,21 @@
        margin: 0 auto;
        padding: 0.5rem;
        justify-content: center;
+
+}
+
+.thumbnailContainer::-webkit-scrollbar {
+	width: 20px;
+	background-color: transparent;
+	&-thumb {
+		background-color: $medium-gray;
+		border-radius: 20px;
+		border: 6px solid transparent;
+		background-clip: content-box;
+	}
+	&-thumb:hover {
+		background-color: $gray;
+	}
 }
 
 .tags{

@@ -10,10 +10,20 @@ div.dataSection {
 	margin-bottom: 1rem;
 }
 
-div.dataTitle {
+div.dataTitle, .dataTitleTranscription {
 	display: flex;
 	align-items: center;
 	width: 100%;
+}
+
+.dataTitleTranscription {
+	justify-content: space-between;
+}
+
+.dataLeft {
+}
+
+.dataRight {
 }
 
 div.episodeTitle {
@@ -134,6 +144,21 @@ button.editTranscription {
 .episodeTranscription {
 	max-height: 50rem;
 	overflow-y: auto;
+
+}
+
+.episodeTranscription::-webkit-scrollbar {
+	width: 20px;
+	background-color: transparent;
+	&-thumb {
+		background-color: $medium-gray;
+		border-radius: 20px;
+		border: 6px solid transparent;
+		background-clip: content-box;
+	}
+	&-thumb:hover {
+		background-color: $gray;
+	}
 }
 
 .loaderSmall {

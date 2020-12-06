@@ -1,69 +1,47 @@
-import React from 'react';
-import { useState } from 'react';
-import styles from "./ReviewFeed.module.scss";
+//CREDIT: alibelaj 
+//just changing the logic to LiveFeed to be reused for Episode ReviewFeed
+
+import React, {useState, useEffect} from 'react';
 import { getAllReviews } from "../../../utils/api";
-import { useEffect } from 'react';
+import SectionContainer from '../../Profile/SectionContainer/SectionContainer'
+import LiveFeedPill from "../../Home/LiveFeed/LiveFeedPill/LiveFeedPill";
+import styles from '../../Home/LiveFeed/LiveFeedPill/LiveFeedPill.module.scss'
+import Loader from 'react-loader-spinner';
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
-function ReviewFeed({podcastID, episodeID, ...props}) {
-    //states
-    const [allReviews, setAllReviews] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
+const ReviewFeed=({podcastID, episodeID, ...props})=> {
 
-    //api call
-    const getAllReviewsAPI = () => {
-        setIsLoading(true);
-        const data = {
+const [commentData, setCommentData] = useState([])
+const [loading, setIsLoading] = useState(false)
+
+	const getAllReviewsAPI = () => {
+		setIsLoading(true);
+		const data = {
             podcastID,
             episodeID,
-        }
-
-        getAllReviews(data)
-        .then((response) => {
-            setIsLoading(false);
-            setAllReviews(response.data.Data);
-        })
-		.catch((error) => {
-            setIsLoading(false);
-			if (error?.data?.Error) {
-				alert(error.data.Error);
-			} else {
-				alert(error);
-			}
+		}
+		
+		getAllReviews(data)
+		.then((response)=>{
+			setIsLoading(false)
+			setCommentData(response.data.Data);
 		})
-    }
+		.catch((error)=>{
+			console.log(error)
+		})
+	}
 
-    useEffect(()=>{
-        getAllReviewsAPI();
-    }, [])
+	useEffect(()=>{
+		getAllReviewsAPI()
+	}, [])
 
-    return (
-        <div className={styles["review"]}>
-            {!isLoading 
-            ? (allReviews.length > 1) && allReviews.map((review, index) => 
-                <div className={styles["review-item"]} key={index}>
-                    { review.profilePicture &&
-                    <div className={styles["review-item--profile-pic"]}>
-                        <img src={review.profilePicture} alt="" />
-                    </div>
-                    }
-                    <div className={styles["review-item--name"]}>
-                        {review.name}
-                    </div>
-
-                    <div className={styles["review-item--rating"]}>
-                        {review.rating}
-                    </div>
-                    <div className={styles["review-item--review"]}>
-                        {review.review}
-                    </div>
-                    <div className={styles["review-item--comment-age"]}>
-                        {review.commentAge}
-                    </div>
-                </div>
-            )
-            : <div className="loaderSmall"/>}
-        </div>
-    );
+	return (
+		<div className={styles.sectionWrapper}>
+		<SectionContainer label="Most Recent Comments">
+		{loading? <div className={styles.loader}><Loader type="TailSpin" color="#00BFFF" height={30} width={30}/></div>: commentData.map((comment, index)=><div ><LiveFeedPill profilePicture={comment.profilePicture} name={comment.name} comment={comment.review} rating={comment.rating} commentAge={comment.commentAge}/></div>)}
+		</SectionContainer>
+		</div>
+	)
 }
-    
+
 export default ReviewFeed;

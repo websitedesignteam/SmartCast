@@ -105,15 +105,19 @@ function App() {
   //modal
   const openAuthModal = () => {
     authModalState.activate();
+    document.body.style.position = 'fixed';
+    document.body.style.overflowY = "scroll";
   }
 
   const closeAuthModal = () => {
     authModalState.deactivate();
+    document.body.style.position = 'static';
+    document.body.style.overflowY = 'auto';
   }
 
   //refs
   const authModalRef = useRef();
-  useOnClickOutside(authModalRef, authModalState.deactivate);
+  useOnClickOutside(authModalRef, closeAuthModal);
   const appRef = useRef();
 
   const getAppHeight = () => {

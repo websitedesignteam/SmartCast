@@ -16,12 +16,11 @@ select:-webkit-autofill:focus {
 
 .searchBar{
 	position : relative;
-       height: 35px;
-       border: 3px solid rgb(139, 188, 226);
+	height: 35px;
+	border: 3px solid rgb(139, 188, 226);
 	border-radius: 1.5rem;
-       // background-color: $gray;
-       -webkit-box-shadow: inset 0px 0px 16px -14px #000000; 
-       box-shadow: inset 0px 0px 16px -14px #000000;
+	-webkit-box-shadow: inset 0px 0px 16px -14px #000000; 
+	box-shadow: inset 0px 0px 16px -14px #000000;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -41,10 +40,19 @@ select:-webkit-autofill:focus {
 
 .searchInput {
 	background: transparent;
+	background-color: transparent;
 	border: none;
 	height: 95%;
-	border-radius: 1.5rem;
-	width: 95%;
+	width: 100%;
+	margin-right: 1.5rem;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-transition: "color 9999s ease-out, background-color 9999s ease-out";
+    -webkit-transition-delay: 9999s;
 }
 
 .searchInput::placeholder,
@@ -53,7 +61,7 @@ select:-webkit-autofill:focus {
 .searchInput:-ms-input-placeholder,
 .searchInput:-moz-placeholder {
 	font-family: "Cairo";
-	color: $dark-gray;
+	// color: $dark-gray;
 }
 
 .searchInput:focus {

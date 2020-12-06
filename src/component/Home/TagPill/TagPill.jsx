@@ -27,7 +27,7 @@ const TagPill=(props)=> {
               )
        } if (props.podcastTitle){
               return (
-                     <div className={styles.pillContainerResult}>
+                     <div className={styles.pillContainerResultCard}>
                             <div className={styles.contentContainerResult}>
                                    <div className={styles.label}>
                                           Podcast: {props.podcastTitle}
