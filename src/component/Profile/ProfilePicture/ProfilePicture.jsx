@@ -7,20 +7,23 @@ const ProfilePicture=(props)=> {
        const [b64, setB64]= useState('')
        const [errorMsg, setErrorMsg] = useState('')
 
-       const imgToB64 = (file)=>{
+       const imgToB64 = (file, type)=>{
               var reader = new FileReader()
               reader.readAsDataURL(file)
               reader.onload = () =>{
                      var base64= reader.result.replace(/^data:image.+;base64,/, '')
-                     console.log(base64)
                      setB64(base64);
-                     props.grabB64(base64)
+                     props.grabB64(base64, type)
               }
        };
 
        const handleChoice =(e)=>{
-              if (e.target.files[0].type === 'image/png' || 'image/jpg'){
-                     imgToB64(e.target.files[0])
+              console.log(e.target.files[0].type)
+              if (e.target.files[0].type == 'image/png'){
+                     imgToB64(e.target.files[0], '.png')
+                     props.updateError('')
+              }else if (e.target.files[0].type =='image/jpeg'){
+                     imgToB64(e.target.files[0], '.jpg')
                      props.updateError('')
               }else{
                      props.updateError('Please upload either .png or .jpg!')
