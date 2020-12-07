@@ -3,6 +3,7 @@ import {getRequestedTranscriptions, getRequestedEdits, getAllUsers, changeStatus
 import Transcriptions from '../../Transcriptions/Transcripions'
 import Edits from '../../Edits/Edits'
 import UserPill from '../SpecialUserPanel/UserPill/UserPill'
+import Loader from 'react-loader-spinner'
 import styles from '../SpecialUserPanel/SpecialUserPanel.module.scss'
 const SpecialUserPanel=(props)=> {
 
@@ -126,9 +127,6 @@ const SpecialUserPanel=(props)=> {
                                    <div className={styles.buttons} onClick={()=>changeTab('Transcription Edits')}>
                                           Transcription Edits
                                    </div>
-                                   <div className={styles.buttons} onClick={()=>changeTab('Promote/Demote Users')}>
-                                                 Promote/Demote Users
-                                   </div>
                                    </div>
                                    <div className={styles.bottomSection}>
                                    {transcriptionRequests.map((transcriptionRequest, index)=>{return <Transcriptions key={index} time={transcriptionRequest.episodeLength} episodeID={transcriptionRequest.episodeID} podcastID={transcriptionRequest.podcastID} access_token={user.access_token}/>})}
@@ -146,9 +144,6 @@ const SpecialUserPanel=(props)=> {
                                    <div className={styles.buttons} onClick={()=>changeTab('Transcription Edits')}>
                                           Transcription Edits
                                    </div>
-                                   <div className={styles.buttons} onClick={()=>changeTab('Promote/Demote Users')}>
-                                                 Promote/Demote Users
-                                   </div>
                                    </div>
                                    <div className={styles.bottomSection}>
                                    {transcriptionEdits.map((edit, index)=>{return <Edits key={index} podcastID={edit.podcastID} episodeID={edit.episodeID} beforeText={edit.transcribedText} afterText={edit.requestedEdit}/>})}
@@ -157,7 +152,7 @@ const SpecialUserPanel=(props)=> {
                      )
               }
        }else{
-              return <div>Loading...</div>
+              return <div className={styles.loader}><Loader type="TailSpin" color="#00BFFF" height={30} width={30} /></div>
        }
               
 }

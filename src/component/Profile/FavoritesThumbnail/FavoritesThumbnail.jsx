@@ -1,4 +1,5 @@
 import React from 'react'
+import { baseUrl } from '../../../utils/constants'
 import styles from '../FavoritesThumbnail/FavoritesThumbnail.module.scss'
 function FavoritesThumbnail(props) {
        
@@ -8,9 +9,11 @@ function FavoritesThumbnail(props) {
               <div className={styles.thumbnailWrapper}>
                     <div className={styles.content}>
                            <p className={styles.podcastName} onClick={props.sendToPodcast}>{props.podcastName}</p>
-                           <p className={styles.removeButton} onClick={props.unFavoritePodcast}>
-                                  X
-                           </p>
+                           <div className={styles.removeButton} onClick={props.unFavoritePodcast}>
+                                  <div className={styles.trashCanContainer}>
+                                          <img id={styles.trashCan}src={baseUrl+"/assets/trash.svg"}/>
+                                  </div>
+                            </div>
                     </div>
                     <div className={styles.fancyBottom}>
                     </div>

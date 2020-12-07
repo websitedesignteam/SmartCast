@@ -19,11 +19,11 @@ const ProfilePicture=(props)=> {
        };
 
        const handleChoice =(e)=>{
-              if (e.target.files[0].type != 'image/png'){
-                     props.updateError('Please upload either .png or .jpg!')
-              }else{
+              if (e.target.files[0].type === 'image/png' || 'image/jpg'){
                      imgToB64(e.target.files[0])
                      props.updateError('')
+              }else{
+                     props.updateError('Please upload either .png or .jpg!')
               }
        }
       

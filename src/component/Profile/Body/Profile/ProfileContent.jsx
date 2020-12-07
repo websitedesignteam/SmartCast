@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import SectionContainer from '../../SectionContainer/SectionContainer'
 import ProfileCard from '../Profile/ProfileCard'
 import FavoritesThumbnail from '../../FavoritesThumbnail/FavoritesThumbnail'
+import Loader from 'react-loader-spinner'
 import styles from '../Profile/ProfileContentContainer.module.scss'
 import {getUser, favoriteAPodcast} from '../../../../utils/api'
 import {useHistory} from 'react-router-dom'
@@ -10,6 +11,7 @@ function ProfileContent(props) {
        const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user')) || {});
        const [userData, setUserData] = useState({})
        const [favorites, setFavorites] = useState([])
+       const [isLoading, setIsLoading]= useState(true)
        let history= useHistory()
 
        const sendToPodcastPage =(podcastID)=>{
@@ -34,6 +36,7 @@ function ProfileContent(props) {
               .then((response)=>{
                      setUserData(response.data)
                      setFavorites(response.data.favoritePodcasts)
+                     setIsLoading(false)
               })
               .catch((error)=>{
                      console.log(error)
@@ -41,7 +44,7 @@ function ProfileContent(props) {
 
        }, [])
 
-       if(favorites.length !=0){
+       if(isLoading){
               return (
                      <div className={styles.container}>
                             <SectionContainer label='Profile Card'>
@@ -49,12 +52,12 @@ function ProfileContent(props) {
                             </SectionContainer>
                             <SectionContainer label='My Favorites'>
                                    <div className={styles.disclaimerContainer}>
-                                          {favorites.map((favorite, index)=><div className={styles.favoritesContainer}> <FavoritesThumbnail unFavoritePodcast={()=>unFavorite(favorite.podcastID, favorite.podcastName)} podcastName={favorite.podcastName} sendToPodcast={()=>sendToPodcastPage(favorite.podcastID)}/></div>)}
+                                          <Loader type="TailSpin" color="#00BFFF" height={30} width={30} />
                                    </div>
                             </SectionContainer>
                      </div>
               )
-       }else if (favorites.length === 0){
+       }else{
               return (
                      <div className={styles.container}>
                             <SectionContainer label='Profile Card'>
@@ -62,12 +65,11 @@ function ProfileContent(props) {
                             </SectionContainer>
                             <SectionContainer label='My Favorites'>
                                    <div className={styles.disclaimerContainer}>
-                                          <p>You have no favorites yet :(</p>
-                                          <p> Browse our transcribed podcasts, here.</p>
+                                          {(favorites.length != 0)?favorites.map((favorite, index)=><div className={styles.favoritesContainer}> <FavoritesThumbnail unFavoritePodcast={()=>unFavorite(favorite.podcastID, favorite.podcastName)} podcastName={favorite.podcastName} sendToPodcast={()=>sendToPodcastPage(favorite.podcastID)}/></div>):<div>no favorites</div>}
                                    </div>
                             </SectionContainer>
                      </div>
-              )
+              )  
        }
 
 }

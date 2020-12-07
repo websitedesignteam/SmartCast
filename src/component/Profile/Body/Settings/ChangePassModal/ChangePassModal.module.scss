@@ -72,10 +72,37 @@
 .form{
        display: flex;
        flex-direction: column;
+       align-items: center;
+}
+
+.containers{
+       display: flex;
+       flex-direction: column;
+       line-height: 25px;
+       align-items: flex-start;
+       font-size: 14px;
 }
 
 .submitButton{
-       border: 1px solid black;
+       display: inline-block;
+       width: 150px;
+       margin-left: 5px;
+       margin-top: 15px;
+       text-decoration: none;
+       text-align: center;
+       color: white;
+       border-radius: 5px;
        cursor: pointer;
-       margin-top: 10px;
+       opacity: .5;
+       box-shadow: 0 4px 6px rgba(50,50,93,.11), 0 1px 3px rgba(0,0,0,.08);
+       background-image: linear-gradient(to right, #895cf2 0%, #6aaae1 100%, #bcd9ef 200%);
+    &:hover {
+           opacity: 1;
+      background-position: right center;
+    }  
+}
+
+.buttonContainer{
+       display: flex;
+       justify-content: center;
 }
