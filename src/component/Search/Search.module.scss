@@ -14,8 +14,12 @@ select:-webkit-autofill:focus {
        margin-bottom:10px;
 }
 
+.checkboxes {
+	margin-left: 1.5rem;
+}
+
 .searchBar{
-       margin: 25px 25px 0px 25px;
+	margin: 25px 25px 0px 25px;
 	position : relative;
 	height: 35px;
 	border: 3px solid rgb(139, 188, 226);

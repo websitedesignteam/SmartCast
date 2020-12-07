@@ -20,6 +20,7 @@ const LiveFeed=(props)=> {
               .then((response)=>{
                      setIsLoading(false)
                      setCommentData(response.data.Data);
+                     setTimeout(fetchLiveData, 50000);
               })
               .catch((error)=>{
                      console.log(error)

@@ -45,13 +45,13 @@ function Podcast({user, validateToken, setUser, ...props}) {
 			setIsLoading(false);
 			const podcastData = response.data.Data;
 			setEpisodePageList(episodePageList.concat([podcastData.nextPageNumber]));
-			const podcastCommand = isInFavoritePodcasts(podcastID, favoritePodcasts) ? "unfavorite" : "favorite";
+			const podcastCommand = isInFavoritePodcasts(podcastID, favoritePodcasts) ? "remove" : "add";
 			const podcastNameInFavorites = getNameInFavoritePodcasts(podcastID, favoritePodcasts);
 			setInputFavoritePodcast({
 				podcastName: podcastNameInFavorites ?? podcastData.podcastTitle,
-				command: podcastCommands[podcastCommand],
+				command: podcastCommand,
 			});
-			(podcastCommand === "unfavorite") ? favoritePodcast.activate() : favoritePodcast.deactivate();
+			(podcastCommand === "remove") ? favoritePodcast.activate() : favoritePodcast.deactivate();
 			setCurrentPodcast(podcastData);
 		})
 		.catch((error) => {
@@ -74,7 +74,7 @@ function Podcast({user, validateToken, setUser, ...props}) {
 		postFavoritePodcast(data)
 		.then((response) => {
 			setIsLoadingFavorite(false);
-			const podcastCommand = (inputFavoritePodcast.command === "favorite") ? "unfavorite" : "favorite";
+			const podcastCommand = (inputFavoritePodcast.command === "add") ? "remove" : "add";
 			setInputFavoritePodcast({
 				...inputFavoritePodcast,
 				command: podcastCommands[podcastCommand]
@@ -193,7 +193,7 @@ function Podcast({user, validateToken, setUser, ...props}) {
 									? "Sign in to add to your Favorites" 
 									: favoritePodcast.isActive
 									? "Remove from Favorites" 
-									: "Favorite Podcast"
+									: "add Podcast"
 								}
 								disabled={!access_token || !!isLoadingFavorite}
 							>

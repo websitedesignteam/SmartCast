@@ -17,7 +17,6 @@ import { Modal, SectionContainer } from "../../component/Podcast"
 import { 
     baseUrl, 
     errorEpisode, 
-    podcastCommands, 
     podcastDisclaimer, 
     errorFavoritePodcast,
     errorTooBusy,
@@ -65,13 +64,13 @@ function Episode({validateToken, user, setUser, ...props}) {
         .then((response) => {
             setIsLoading(false);
             const episodeData = response.data.Data;
-            const podcastCommand = isInFavoritePodcasts(podcastID, favoritePodcasts) ? "unfavorite" : "favorite";
+            const podcastCommand = isInFavoritePodcasts(podcastID, favoritePodcasts) ? "remove" : "add";
             const podcastNameInFavorites = getNameInFavoritePodcasts(podcastID, favoritePodcasts);
 			setInputFavoritePodcast({
 				podcastName: podcastNameInFavorites ?? episodeData.podcastTitle,
-				command: podcastCommands[podcastCommand],
+				command: podcastCommand,
             });
-            (podcastCommand === "unfavorite") ? favoritePodcast.activate() : favoritePodcast.deactivate();
+            (podcastCommand === "remove") ? favoritePodcast.activate() : favoritePodcast.deactivate();
             if (episodeData?.transcribedStatus === "COMPLETED") {
                 setEditTranscription(episodeData.transcribedText);
             }
@@ -100,10 +99,10 @@ function Episode({validateToken, user, setUser, ...props}) {
 		postFavoritePodcast(data)
 		.then((response) => {
 			setIsLoadingFavorite(false);
-			const podcastCommand = (inputFavoritePodcast.command === "favorite") ? "unfavorite" : "favorite";
+			const podcastCommand = (inputFavoritePodcast.command === "add") ? "remove" : "add";
 			setInputFavoritePodcast({
 				...inputFavoritePodcast,
-				command: podcastCommands[podcastCommand]
+				command: podcastCommand
 			})
 			alert(response.data.Data);
 			favoritePodcast.toggle();
@@ -423,12 +422,12 @@ function Episode({validateToken, user, setUser, ...props}) {
                                         ? "Sign in to add to your Favorites" 
                                         : favoritePodcast.isActive 
                                         ? "Remove from Favorites" 
-                                        : "Favorite Podcast"
+                                        : "add Podcast"
                                     }
                                     disabled={!access_token || !!isLoadingFavorite}
                                 >
                                     <img 
-                                        src={baseUrl + ((favoritePodcast.isActive || inputFavoritePodcast["command"] === "unfavorite") ? "/assets/button/heart-fill.svg" : "/assets/button/heart.svg")} 
+                                        src={baseUrl + ((favoritePodcast.isActive || inputFavoritePodcast["command"] === "remove") ? "/assets/button/heart-fill.svg" : "/assets/button/heart.svg")} 
                                         alt=""
                                     />
                                 </button>
@@ -494,7 +493,7 @@ function Episode({validateToken, user, setUser, ...props}) {
                     </div>
                 </div>
                 
-                {(!!access_token && !ratings.includes(String(podcastID+episodeID))) &&
+                {(!!access_token && !ratings.includes(String(podcastID+episodeID)) && !submittedReview) &&
                     <Review submitReview={putSubmitReviewAPI} isLoadingReview={isLoadingReview} />
                 }   
                 <ReviewFeed podcastID={podcastID} episodeID={episodeID} />
