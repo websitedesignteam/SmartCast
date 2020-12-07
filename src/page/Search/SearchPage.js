@@ -1,18 +1,21 @@
 import React, {useEffect, useState} from 'react'
-import { Link, useParams } from "react-router-dom"
+import { Link, useHistory, useParams } from "react-router-dom"
 import { searchEpisodes, searchPodcasts, searchTags } from '../../utils/api'
 import PodcastContainer from "component/PodcastContainer/PodcastContainer"
 import EpisodeContainer from "component/EpisodeContainer/EpisodeContainer"
 import styles from './SearchPage.module.scss'
 import {baseUrl, errorSearch} from "../../utils/constants";
+import {useSearchContext} from '../../state/Search/useSearchContext';
 
 function SearchPage(props) {
 	const { searchTerm, searchType } = useParams();
-
+	const searchContext = useSearchContext();
 	const [episodes, setEpisodes] = useState([]);
 	const [podcasts, setPodcasts] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [podcastPage, setPodcastPage] = useState(1);
+
+	const history = useHistory();
 
 	useEffect(() => {
 		setIsLoading(true);
@@ -56,6 +59,12 @@ function SearchPage(props) {
 	const onClickNextPage = () => {
 		setPodcastPage(podcastPage+1);
 		setIsLoading(true);
+	}
+
+	const onClickShowMore = () => {
+		searchContext.setSearchType("episodes");
+		history.push(`/search/results/${searchTerm}/episodes`);
+		searchContext.setDisableCheckbox(false);
 	}
 
 	if (isLoading === false){
@@ -122,8 +131,13 @@ function SearchPage(props) {
 		} else {
 			return (
 			<div className={styles.error}>
-				<div className={styles.errorText}>
-					{errorSearch}
+				<div className={styles.errorContent}>
+					<div className={styles.errorText}>{errorSearch}</div>
+					{!!searchContext.disableCheckbox && 
+						<button className={styles.errorShowMore} onClick={onClickShowMore}>
+							Click here to show more results
+						</button>
+					}
 				</div>
 				<img className={styles.errorImg} src={baseUrl+'/assets/empty_search.gif'} alt=""/>
 			</div>

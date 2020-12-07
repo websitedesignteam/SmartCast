@@ -16,7 +16,7 @@ function Search(props) {
 	//util functions
 	const handleSearch = (event) => {
 		setQuery(event.target.value);
-       }
+	}
 
        // const handleSearch = (event) => {
 
@@ -54,31 +54,33 @@ function Search(props) {
 					<input 
 						className={styles.searchInput} 
 						type="text" 
-						placeholder="Search for Transcribed Episodes, All Episodes, or All Podcasts" 
+						placeholder="Search for your next great listen!" 
 						name="search" 
 						onChange={handleSearch}
 					/>
 				</div>
-				<div className={styles.checkboxes}>
-					<label>
-						<input 
-							type="checkbox" 
-							name="episodes" 
-							onChange={()=>handleCheckboxes('episodes')} 
-							checked={searchContext.searchType==="episodes"} 
-						/>
-						Show all episodes
-					</label>
-					<label>
-						<input 
-							type="checkbox" 
-							name="podcasts" 
-							onChange={()=>handleCheckboxes('podcasts')} 
-							checked={searchContext.searchType==="podcasts"} 
-						/>
-						Show all podcasts
-					</label>
-				</div>
+				{!searchContext.disableCheckbox &&
+					<div className={styles.checkboxes}>
+						<label>
+							<input 
+								type="checkbox" 
+								name="episodes" 
+								onChange={()=>handleCheckboxes('episodes')} 
+								checked={searchContext.searchType==="episodes"} 
+							/>
+							Show all episodes
+						</label>
+						<label>
+							<input 
+								type="checkbox" 
+								name="podcasts" 
+								onChange={()=>handleCheckboxes('podcasts')} 
+								checked={searchContext.searchType==="podcasts"} 
+							/>
+							Show all podcasts
+						</label>
+					</div>
+				}
 				<input type="submit" className={styles.searchEnter}/>
 			</form>
 		</div>
