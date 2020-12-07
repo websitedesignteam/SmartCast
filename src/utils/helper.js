@@ -1,13 +1,8 @@
-function isFormComplete(inputDict) {
+const isFormComplete = (inputDict) => {
     for (const key in inputDict) {
         if (!inputDict[key]) return false;
     }
     return true;
-}
-
-const isInArray = (array, str1, str2="") => {
-    const str = str1+str2;
-    return array.includes(str);
 }
 
 const isInFavoritePodcasts = (podcastID, favoritePodcasts) => {
@@ -35,7 +30,6 @@ const formatEpisodeLength = (episodeAudioLength) => {
 
 export { 
     isFormComplete,
-    isInArray,
     isInFavoritePodcasts,
     getNameInFavoritePodcasts,
     formatEpisodeLength,
@@ -43,7 +37,6 @@ export {
 
 export default  {
     isFormComplete,
-    isInArray,
     isInFavoritePodcasts,
     getNameInFavoritePodcasts,
     formatEpisodeLength,

@@ -7,6 +7,7 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.20.0",
+    "esm": "^3.2.25",
     "jest-junit": "^12.0.0",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
@@ -16,18 +17,81 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "react-star-ratings": "^2.3.0",
-    "sass-loader": "^10.0.3"
+    "sass-loader": "^10.0.3",
+    "ts-jest": "^26.4.4"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "test:ci": "react-scripts test --env=jsdom --testResultsProcessor ./node_modules/jest-junit",
-    "coverage": "react-scripts test --env=jsdom --watchAll=false --coverage",
+    "test": "jest",
+    "test:ci": "jest --env=jsdom --testResultsProcessor ./node_modules/jest-junit",
+    "coverage": "npm run test -- --coverage",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "jest": {
+    "globalSetup": "./jest-globals.js",
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!src/**/*.d.ts"
+    ],
+    "resolver": "jest-pnp-resolver",
+    "setupFiles": [
+      "react-app-polyfill/jsdom"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>src/setupTests.js"
+    ],
+    "testMatch": [
+      "<rootDir>/src/__tests__/**/*.{js,jsx,ts,tsx}",
+      "<rootDir>/src/**/?(*.)(spec|test).{js,jsx,ts,tsx}"
+    ],
+    "testURL": "http://localhost:3000/",
+    "transform": {
+      "^.+\\.(js|jsx|ts|tsx)$": "<rootDir>/node_modules/babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|ts|tsx)$",
+      "^.+\\.module\\.(css|sass|scss)$"
+    ],
+    "moduleNameMapper": {
+      "^react-native$": "react-native-web",
+      "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy",
+      "^.+\\.(css|less|scss)$": "identity-obj-proxy"
+    },
+    "moduleFileExtensions": [
+      "web.js",
+      "js",
+      "web.ts",
+      "ts",
+      "web.tsx",
+      "tsx",
+      "json",
+      "web.jsx",
+      "jsx",
+      "node"
+    ],
+    "moduleDirectories": [
+      ".",
+      "src",
+      "src/util",
+      "node_modules"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "statements": 0,
+        "branches": 0,
+        "functions": 0,
+        "lines": 0
+      }
+    },
+    "coverageReporters": [
+      "text-summary",
+      "html",
+      "json"
+    ]
   },
   "browserslist": {
     "production": [
@@ -42,6 +106,44 @@
     ]
   },
   "devDependencies": {
-    "jest-sonar-reporter": "^2.0.0"
-  }
+    "@babel/core": "^7.11.1",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.10.4",
+    "@babel/plugin-proposal-optional-chaining": "^7.11.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.12.1",
+    "@babel/preset-env": "^7.12.7",
+    "@babel/preset-react": "^7.12.7",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.1.0",
+    "babel-jest": "^23.6.0",
+    "babel-loader": "^8.1.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-react-app": "^7.0.1",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-15": "^1.4.2",
+    "enzyme-adapter-react-16": "^1.15.5",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^26.4.0",
+    "jest-pnp-resolver": "^1.2.2",
+    "jest-puppeteer": "^4.4.0",
+    "jest-resolve": "^26.4.0",
+    "jest-sonar-reporter": "^2.0.0",
+    "jest-watch-typeahead": "^0.6.0",
+    "react-test-renderer": "^17.0.1",
+    "test-jest": "^1.0.1",
+    "typescript": "^4.1.2"
+  },
+  "description": "Final Project for CS 47300 Website Design.",
+  "main": "jest-globals.js",
+  "module": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/websitedesignteam/SmartCast.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/websitedesignteam/SmartCast/issues"
+  },
+  "homepage": "https://github.com/websitedesignteam/SmartCast#readme"
 }

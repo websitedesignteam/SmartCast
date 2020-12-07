@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useHistory, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { 
@@ -21,7 +21,6 @@ function Episode({validateToken, ...props}) {
     //vars
     const { episodeID, podcastID } = useParams();
     const { access_token, ratings } = props.user;
-    const history = useHistory();
 
     //states
     const [isLoading, setIsLoading] = useState(false);

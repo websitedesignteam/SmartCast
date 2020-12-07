@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render the Navbar 1`] = `
+Array [
+  <div
+    className="navbarContainer"
+  >
+    <Link
+      className="appLink"
+      to="/"
+    >
+      <strong>
+        SmartCast
+      </strong>
+      <img
+        alt=""
+        src="undefined/assets/logo.png"
+      />
+    </Link>
+    <div
+      className="linksContainer"
+    >
+      <Link
+        className="link"
+        title="Go to Home"
+        to="/"
+      >
+        <img
+          alt=""
+          className="navIcon"
+          src="undefined/assets/nav/home.svg"
+        />
+      </Link>
+      <button
+        className="userAction"
+        onClick={[Function]}
+        title="Login"
+      >
+        <img
+          alt=""
+          className="navIcon"
+          src="undefined/assets/nav/login.svg"
+        />
+      </button>
+    </div>
+  </div>,
+]
+`;
