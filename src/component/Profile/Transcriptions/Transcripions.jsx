@@ -13,8 +13,10 @@ const Transcripions=(props)=> {
                      console.log(body)
               if (choice === 'accept'){
                      postTranscribeEpisode(body)
+                     window.location.reload()
               }else if (choice === 'deny'){
                      postTranscribeEpisode(body)
+                     window.location.reload()
               }
        }
 

@@ -35,9 +35,8 @@ const Settings=(props)=> {
               })
        }
 
-       const changeProfilePicture =(b64)=>{
-              let profilePicBody = {"access_token": user.access_token, "b64image": b64, "extension": ".png"}
-              console.log(profilePicBody)
+       const changeProfilePicture =(b64, type)=>{
+              let profilePicBody = {"access_token": user.access_token, "b64image": b64, "extension": type}
               updateProfilePicture(profilePicBody)
               .then((response)=>{
                      console.log(response)
