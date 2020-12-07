@@ -3,7 +3,7 @@ Final Project for CS 47300 Website Design.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-testing if git acccount works
+testing if git acccount works now
 
 ## Available Scripts
 
