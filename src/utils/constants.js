@@ -6,6 +6,7 @@ const errorTranscribe = "Sorry! We couldn't transcribe that episode.";
 const errorPodcast = "Sorry! We couldn't find that podcast.";
 const errorFavoritePodcast = "Please make sure the nickname doesn't match the podcast name!"
 const errorSessionExpired = "Your session has expired. Please login again.";
+const errorTooBusy = "We are experiencing a high amount of traffic. Thank you for your patience!";
 const podcastDisclaimer = "You might be wondering why we are doing this! We are a free service powered by Listen Notes with restrictions on what kind of data we can keep. We hope you can understand!"
 const podcastCommands = {
     "favorite":"add", 
@@ -31,6 +32,7 @@ export {
     searchTypes,
     errorSearch,
     errorSessionExpired,
+    errorTooBusy,
 };
 
 export default {
@@ -47,4 +49,5 @@ export default {
     searchTypes,
     errorSearch,
     errorSessionExpired,
+    errorTooBusy,
 };

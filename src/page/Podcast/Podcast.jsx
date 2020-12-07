@@ -4,7 +4,7 @@ import { getPodcast, postFavoritePodcast, getUser } from '../../utils/api';
 import { useIsActive, useOnClickOutside } from 'hooks';
 import styles from "./Podcast.module.scss";
 import { isInFavoritePodcasts, getNameInFavoritePodcasts } from "../../utils/helper";
-import { podcastCommands, podcastDisclaimer, errorFavoritePodcast } from "../../utils/constants"; 
+import { podcastCommands, podcastDisclaimer, errorFavoritePodcast, errorTooBusy } from "../../utils/constants"; 
 import { Modal, EpisodeCard, SectionContainer } from "../../component/Podcast";
 import { baseUrl, errorPodcast } from "../../utils/constants";
 
@@ -14,7 +14,9 @@ function Podcast({user, validateToken, setUser, ...props}) {
 	const { access_token, favoritePodcasts } = user;
 
 	//states
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
+	const [isLoadingFavorite, setIsLoadingFavorite] = useState(false);
+	
 	const [inputFavoritePodcast, setInputFavoritePodcast] = useState({podcastName: "", command: ""});
 	const [currentPodcast, setCurrentPodcast] = useState(null);
 	const [errorMessage, setErrorMessage] = useState(null);
@@ -40,8 +42,8 @@ function Podcast({user, validateToken, setUser, ...props}) {
 		const data = { podcastID, nextPage : episodePageList[currentEpisodePageIndex] }
 		getPodcast(data)
 		.then((response) => {
+			setIsLoading(false);
 			const podcastData = response.data.Data;
-			setCurrentPodcast(podcastData);
 			setEpisodePageList(episodePageList.concat([podcastData.nextPageNumber]));
 			const podcastCommand = isInFavoritePodcasts(podcastID, favoritePodcasts) ? "unfavorite" : "favorite";
 			const podcastNameInFavorites = getNameInFavoritePodcasts(podcastID, favoritePodcasts);
@@ -50,15 +52,20 @@ function Podcast({user, validateToken, setUser, ...props}) {
 				command: podcastCommands[podcastCommand],
 			});
 			(podcastCommand === "unfavorite") ? favoritePodcast.activate() : favoritePodcast.deactivate();
+			setCurrentPodcast(podcastData);
 		})
 		.catch((error) => {
 			console.log(error);
-			setErrorMessage(errorPodcast);
+			if (error?.data?.message === "Too Many Requests") {
+				alert(errorTooBusy);
+			} else {
+				setErrorMessage(errorPodcast);
+			}
 		});
 	};
 
 	const postFavoritePodcastAPI = () => {
-		setIsLoading(true);
+		setIsLoadingFavorite(true);
 		const data = {
 			access_token,
 			podcastID,
@@ -66,7 +73,7 @@ function Podcast({user, validateToken, setUser, ...props}) {
 		}
 		postFavoritePodcast(data)
 		.then((response) => {
-			setIsLoading(false);
+			setIsLoadingFavorite(false);
 			const podcastCommand = (inputFavoritePodcast.command === "favorite") ? "unfavorite" : "favorite";
 			setInputFavoritePodcast({
 				...inputFavoritePodcast,
@@ -77,7 +84,7 @@ function Podcast({user, validateToken, setUser, ...props}) {
 			inputModalState.deactivate();
 		})
 		.catch((error) => {
-			setIsLoading(false);
+			setIsLoadingFavorite(false);
 			if (error?.data?.Error) {
 				alert(error.data.Error);
 			} else {
@@ -96,7 +103,6 @@ function Podcast({user, validateToken, setUser, ...props}) {
             }
             localStorage.setItem("user", JSON.stringify(allUserData));
             setUser(allUserData);
-            // history.go(0);
         })
         .catch((error) => {
         	console.log(error);
@@ -153,10 +159,10 @@ function Podcast({user, validateToken, setUser, ...props}) {
 		getPodcastAPI();
 	}, [currentEpisodePageIndex]);
 
-	useEffect(()=> {
-        if (!isLoading || !access_token) return;
-        getUserAPI();
-	}, [isLoading])
+	useEffect(() => {
+        if (!isLoading) return;
+		getPodcastAPI();
+    }, [isLoading]);
 
 	return (
 		<>
@@ -165,7 +171,7 @@ function Podcast({user, validateToken, setUser, ...props}) {
 				<Modal 
 					input={inputFavoritePodcast.podcastName} 
 					onChangeInput={onChangeInput} 
-					isLoading={isLoading} 
+					isLoading={isLoadingFavorite} 
 					onSubmitFavorite={onSubmitFavorite}
 					errorInputMessage={errorInputMessage}
 					podcastDisclaimer={podcastDisclaimer}
@@ -185,14 +191,14 @@ function Podcast({user, validateToken, setUser, ...props}) {
 								onClick={favoritePodcast.isActive ? postFavoritePodcastAPI : onClickFavorite}
 								title={(!access_token) 
 									? "Sign in to add to your Favorites" 
-									: favoritePodcast.isActive 
+									: favoritePodcast.isActive
 									? "Remove from Favorites" 
 									: "Favorite Podcast"
 								}
-								disabled={!access_token || !!isLoading}
+								disabled={!access_token || !!isLoadingFavorite}
 							>
 								<img 
-									src={baseUrl + (favoritePodcast.isActive ? "/assets/button/heart-fill.svg" : "/assets/button/heart.svg")} 
+									src={baseUrl + ((favoritePodcast.isActive && inputFavoritePodcast["command"] === "unfavorite") ? "/assets/button/heart-fill.svg" : "/assets/button/heart.svg")} 
 									alt=""
 								/>
 							</button>

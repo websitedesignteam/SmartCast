@@ -19,7 +19,7 @@ import { withSearchContext } from "state/Search/withSearchContext";
 import AudioFooter from './component/AudioFooter/audioFooter';
 import { useIsActive, useOnClickOutside } from 'hooks';
 import { getUser, getTokenValidation, getNewToken } from "./utils/api";
-import { baseUrl, errorSessionExpired } from 'utils/constants';
+import { baseUrl, errorSessionExpired, errorTooBusy } from 'utils/constants';
 import { EpisodeCard } from 'component/Podcast';
 
 function App() {
@@ -71,7 +71,7 @@ function App() {
     const { access_token, refresh_token, username } = user;
     if (!!access_token && !!refresh_token && !!username) {
       getTokenValidation({access_token})
-        .catch(() => {
+        .catch((error) => {
           if (stayLoggedIn.isActive) {
             const data = {
               refresh_token,
@@ -94,10 +94,12 @@ function App() {
               stayLoggedIn.deactivate();
               localStorage.removeItem("user");
             })
-          } else {
+          } else if (error?.data?.message !== "Too Many Requests") {
             alert(errorSessionExpired);
             setUser({});
             localStorage.removeItem("user");
+          } else {
+            alert(errorTooBusy);
           }
         })
     }

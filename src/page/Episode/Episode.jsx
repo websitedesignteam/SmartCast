@@ -19,7 +19,8 @@ import {
     errorEpisode, 
     podcastCommands, 
     podcastDisclaimer, 
-    errorFavoritePodcast 
+    errorFavoritePodcast,
+    errorTooBusy,
 } from "../../utils/constants";
 import { 
     formatEpisodeLength, 
@@ -33,15 +34,17 @@ function Episode({validateToken, user, setUser, ...props}) {
     const { episodeID, podcastID } = useParams();
     const { access_token, ratings, favoritePodcasts } = user;
 
-    //states
-    const [isLoading, setIsLoading] = useState(false);
-    const [submittedReview, setSubmittedReview] = useState(false);
+    //loading states
+    const [isLoading, setIsLoading] = useState(true);
+    const [isLoadingTranscription, setIsLoadingTranscription] = useState(false);
+    const [isLoadingFavorite, setIsLoadingFavorite] = useState(false);
     const [isLoadingReview, setIsLoadingReview] = useState(false);
+
+    // util states
+    const [submittedReview, setSubmittedReview] = useState(false);
     const [currentEpisode, setCurrentEpisode] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
     const [editTranscription, setEditTranscription] = useState("");
-    const showDescription = useIsActive(true);
-    const showTranscription = useIsActive(true);
     const favoritePodcast = useIsActive();
     const inputModalState = useIsActive();
     const [inputFavoritePodcast, setInputFavoritePodcast] = useState({podcastName: "", command: ""});
@@ -60,6 +63,7 @@ function Episode({validateToken, user, setUser, ...props}) {
         const data = { episodeID, podcastID };
         getEpisode(data)
         .then((response) => {
+            setIsLoading(false);
             const episodeData = response.data.Data;
             const podcastCommand = isInFavoritePodcasts(podcastID, favoritePodcasts) ? "unfavorite" : "favorite";
             const podcastNameInFavorites = getNameInFavoritePodcasts(podcastID, favoritePodcasts);
@@ -71,16 +75,23 @@ function Episode({validateToken, user, setUser, ...props}) {
             if (episodeData?.transcribedStatus === "COMPLETED") {
                 setEditTranscription(episodeData.transcribedText);
             }
+            if (episodeData?.transcribedStatus === "IN PROGRESS" || episodeData?.transcribedStatus === "AWAITING TRANSCRIPTION APPROVAL") {
+                setIsLoadingTranscription(true);
+            }
             setCurrentEpisode(episodeData);
         })
         .catch((error) => {
             console.log(error);
-            setErrorMessage(errorEpisode);
+            if (!error?.data?.message === "Too Many Requests") {
+                setErrorMessage(errorEpisode);
+            } else {
+                alert(errorTooBusy)
+            }
         });
     };
 
     const postFavoritePodcastAPI = () => {
-		setIsLoading(true);
+		setIsLoadingFavorite(true);
 		const data = {
 			access_token,
 			podcastID,
@@ -88,7 +99,7 @@ function Episode({validateToken, user, setUser, ...props}) {
 		}
 		postFavoritePodcast(data)
 		.then((response) => {
-			setIsLoading(false);
+			setIsLoadingFavorite(false);
 			const podcastCommand = (inputFavoritePodcast.command === "favorite") ? "unfavorite" : "favorite";
 			setInputFavoritePodcast({
 				...inputFavoritePodcast,
@@ -99,7 +110,7 @@ function Episode({validateToken, user, setUser, ...props}) {
 			inputModalState.deactivate();
 		})
 		.catch((error) => {
-			setIsLoading(false);
+			setIsLoadingFavorite(false);
 			if (error?.data?.Error) {
 				alert(error.data.Error);
 			} else {
@@ -126,7 +137,7 @@ function Episode({validateToken, user, setUser, ...props}) {
             if (transcribedStatus === "AWAITING TRANSCRIPTION APPROVAL") {
                 setTimeout(getTranscribeUpdateAPI, 90000);
             } 
-            else if (transcribedStatus === "TRANSCRIBING") {
+            else if (transcribedStatus === "IN PROGRESS") {
                 setTimeout(getTranscribeUpdateAPI, 5000);
             } 
             else if (transcribedStatus === "COMPLETED") {
@@ -146,12 +157,14 @@ function Episode({validateToken, user, setUser, ...props}) {
         })
         .catch((error) => {
             console.log(error);
-            setErrorMessage(error.message);
+            if (error?.data?.message === "Too Many Requests") {
+                alert(errorTooBusy);
+            }
         });        
     }
 
     const requestTranscriptionAPI = () => {
-        setIsLoading(true);
+        setIsLoadingTranscription(true);
 
         const data = { 
             podcastID, 
@@ -162,19 +175,20 @@ function Episode({validateToken, user, setUser, ...props}) {
 
         postRequestTranscription(data)
         .then((response) => {
-            setIsLoading(false);
+            setIsLoadingTranscription(false);
             if (response.data.Success) {
                 setCurrentEpisode({
                     ...currentEpisode,
                     transcribedStatus : "AWAITING TRANSCRIPTION APPROVAL",
                 });
+                alert(response.data.Success);
             }
             else if (response?.data?.Error) {
                 alert(response.data.Error);
             }
         })
         .catch((error) => {
-            setIsLoading(false);
+            setIsLoadingTranscription(false);
             console.log(error);
             if (error?.data?.Error) {
                 alert(error.data.Error);
@@ -251,7 +265,6 @@ function Episode({validateToken, user, setUser, ...props}) {
             }
             localStorage.setItem("user", JSON.stringify(allUserData));
             setUser(allUserData);
-            // history.go(0);
         })
         .catch((error) => {
         	console.log(error);
@@ -313,8 +326,9 @@ function Episode({validateToken, user, setUser, ...props}) {
 
     //api call to get episode
     useEffect(() => {
-        getEpisodeAPI();
-    }, []);
+        if (!isLoading) return;
+         getEpisodeAPI();
+    }, [isLoading]);
 
 	useEffect(() => {
 		if (!!access_token) {
@@ -329,13 +343,12 @@ function Episode({validateToken, user, setUser, ...props}) {
 	}, [isLoading])
 
     useEffect(() => {
-        if (!isLoadingReview) return;
-        if (!!currentEpisode?.transcribedStatus && 
-            (currentEpisode?.transcribedStatus !== "NOT TRANSCRIBED" 
-            && currentEpisode?.transcribedStatus !== "COMPLETED")){ 
-            getTranscribeUpdateAPI();
-        }
-    }, [currentEpisode, isLoadingReview]);
+        if (!currentEpisode?.transcribedStatus || 
+            currentEpisode?.transcribedStatus === "NOT TRANSCRIBED" ||
+            currentEpisode?.transcribedStatus === "COMPLETED") return;
+
+        getTranscribeUpdateAPI();
+    }, [currentEpisode, isLoadingTranscription]);
 
     useEffect(()=> {
         if (!submittedReview || !access_token) return;
@@ -361,7 +374,7 @@ function Episode({validateToken, user, setUser, ...props}) {
 				<Modal 
 					input={inputFavoritePodcast.podcastName} 
 					onChangeInput={onChangeInput} 
-					isLoading={isLoading} 
+					isLoading={isLoadingFavorite} 
 					onSubmitFavorite={onSubmitFavorite}
 					errorInputMessage={errorInputMessage}
 					podcastDisclaimer={podcastDisclaimer}
@@ -379,7 +392,7 @@ function Episode({validateToken, user, setUser, ...props}) {
                                     <img src={baseUrl + "/assets/button/play.svg"} alt="play episode button" />
                                 </button>
                                 
-                                { (currentEpisode.transcribedStatus === "NOT TRANSCRIBED" && isLoading === false) && 
+                                { (currentEpisode.transcribedStatus === "NOT TRANSCRIBED") && 
                                 <button className={styles.episodeTranscribeButton} onClick={requestTranscriptionAPI} title="Request Episode Transcription"> 
                                     <img src={baseUrl + "/assets/button/transcribe.png"} alt="transcribe episode button" />
                                 </button>}
@@ -389,7 +402,7 @@ function Episode({validateToken, user, setUser, ...props}) {
                                     <img src={baseUrl + "/assets/button/wait.png"} alt="waiting for transcription approval" />
                                 </div>}
 
-                                { (currentEpisode.transcribedStatus === "TRANSCRIBING" || isLoading === true) && 
+                                { (currentEpisode.transcribedStatus === "IN PROGRESS") && 
                                 <div className="loaderSmall"></div>}
                             </div>
                         </div>
@@ -412,10 +425,10 @@ function Episode({validateToken, user, setUser, ...props}) {
                                         ? "Remove from Favorites" 
                                         : "Favorite Podcast"
                                     }
-                                    disabled={!access_token || !!isLoading}
+                                    disabled={!access_token || !!isLoadingFavorite}
                                 >
                                     <img 
-                                        src={baseUrl + (favoritePodcast.isActive ? "/assets/button/heart-fill.svg" : "/assets/button/heart.svg")} 
+                                        src={baseUrl + ((favoritePodcast.isActive || inputFavoritePodcast["command"] === "unfavorite") ? "/assets/button/heart-fill.svg" : "/assets/button/heart.svg")} 
                                         alt=""
                                     />
                                 </button>
@@ -432,19 +445,7 @@ function Episode({validateToken, user, setUser, ...props}) {
                         </SectionContainer>
 
                         <SectionContainer label="Description">
-                            {/* <div className={styles.dataTitle}>
-                                <button className={styles.showMore} onClick={()=> showDescription.toggle()}>
-									<img 
-										src={baseUrl + "/assets/button/show-more.png"} 
-										alt={showDescription.isActive ? "Hide Description" : "Show Description"}
-										className={showDescription.isActive && styles.rotate}  
-									/>
-								</button>
-                                <strong>Description</strong>
-                            </div> */}
-                            { showDescription.isActive &&
-                                <p dangerouslySetInnerHTML={{__html: currentEpisode.episodeDescription}}></p>
-                            }
+                            <p dangerouslySetInnerHTML={{__html: currentEpisode.episodeDescription}}></p>
                         </SectionContainer> 
                     
                         <SectionContainer label="Transcription">
@@ -477,8 +478,8 @@ function Episode({validateToken, user, setUser, ...props}) {
                                     </div>
                                 }
                             </div>
-                            { (showTranscription.isActive && !openEditor.isActive) && 
-                                <p className={styles.episodeTranscription} dangerouslySetInnerHTML={{__html: currentEpisode.transcribedText || "No Transcription Available Yet" }}></p>
+                            { (!openEditor.isActive) && 
+                                <p className={styles.episodeTranscription} dangerouslySetInnerHTML={{__html: currentEpisode.transcribedText || currentEpisode.transcribedStatus === "NOT ELIGIBLE FOR TRANSCRIPTION" ? "Not Eligible for Transcription" : "No Transcription Available Yet" }}></p>
                             }                       
 
                             { (openEditor.isActive && !!user.access_token) &&
