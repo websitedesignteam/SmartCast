@@ -126,7 +126,7 @@ def getEpisode(podcastID,episodeID):
             if count > 0:
                 average =  round(star/count,2)
             returnData["averageRating"] = average
-            returnData["totalReviews"] = count
+            returnData["totalReviews"] = int(count)
             
             
         except Exception as e:
