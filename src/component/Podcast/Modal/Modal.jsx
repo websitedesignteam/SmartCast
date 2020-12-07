@@ -1,7 +1,7 @@
 import React from 'react';
-import { Input } from "../../element"
+import { Input } from "../../../element"
 import styles from "./Modal.module.scss";
-import { baseUrl } from "../../utils/constants";
+import { baseUrl } from "../../../utils/constants";
 
 function Modal({
 	input, 

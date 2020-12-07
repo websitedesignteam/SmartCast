@@ -1,6 +1,6 @@
 const baseUrl = process.env.PUBLIC_URL;
 const errorDefault = "We're sorry, but something wrong happened! We are working to resolve the issue.";
-const errorSearch = "Sorry! We don't have any transcribed episodes related to your search. Try a different search term, or search with all episodes or podcasts instead!";
+const errorSearch = "Sorry! We don't have any results related to your search. Try a different search term, or search with all episodes or podcasts instead!";
 const errorEpisode = "Sorry! We couldn't find that episode.";
 const errorTranscribe = "Sorry! We couldn't transcribe that episode.";
 const errorPodcast = "Sorry! We couldn't find that podcast.";

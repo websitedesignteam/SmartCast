@@ -6,7 +6,7 @@ const API_KEY = process.env.REACT_APP_API_KEY;
 const PROXY_URL= 'https://young-lowlands-54841.herokuapp.com/';
 //create instance
 const AxiosInstance = axios.create({
-    baseURL: API_URL,  
+    baseURL: PROXY_URL + API_URL,  
     headers : {
         Accept: 'application/json',
         'Content-Type': 'application/json',

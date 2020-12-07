@@ -7,7 +7,7 @@
 	padding: 1.5rem;
 	&-input {
 		&--rating {
-
+			cursor: pointer;
 		}
 		&--text {
 			textarea {
@@ -21,6 +21,10 @@
 	}
 	&-bottom {
 		text-align: center;
+		display: inline-flex;
+		width: 100%;
+		justify-content: center;
+		margin-top: 0.5rem;
 		&--submit {
 			height: 2rem;
 			border-radius: 1.5rem;
@@ -37,4 +41,8 @@
 			}
 		}
 	}
+}
+
+.loaderTiny {
+
 }

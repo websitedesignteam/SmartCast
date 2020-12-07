@@ -27,11 +27,18 @@ const getNameInFavoritePodcasts = (podcastID, favoritePodcasts) => {
     }
 } 
 
+const formatEpisodeLength = (episodeAudioLength) => {
+    const episodeMin = Math.floor(episodeAudioLength/60);
+    const episodeSec = episodeAudioLength%60;
+    return `${episodeMin}:${episodeSec > 9 ? episodeSec : `0`+episodeSec}`;
+}
+
 export { 
     isFormComplete,
     isInArray,
     isInFavoritePodcasts,
     getNameInFavoritePodcasts,
+    formatEpisodeLength,
 };
 
 export default  {
@@ -39,4 +46,5 @@ export default  {
     isInArray,
     isInFavoritePodcasts,
     getNameInFavoritePodcasts,
+    formatEpisodeLength,
 };

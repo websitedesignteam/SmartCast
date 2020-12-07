@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams } from "react-router-dom";
-import { getPodcast, postFavoritePodcast } from '../../utils/api';
+import { getPodcast, postFavoritePodcast, getUser } from '../../utils/api';
 import { useIsActive, useOnClickOutside } from 'hooks';
 import styles from "./Podcast.module.scss";
 import { isInFavoritePodcasts, getNameInFavoritePodcasts } from "../../utils/helper";
 import { podcastCommands, podcastDisclaimer, errorFavoritePodcast } from "../../utils/constants"; 
-import Modal from "../../component/Podcast/Modal";
-
+import { Modal, EpisodeCard, SectionContainer } from "../../component/Podcast";
 import { baseUrl, errorPodcast } from "../../utils/constants";
 
-function Podcast({user, validateToken, ...props}) {
+function Podcast({user, validateToken, setUser, ...props}) {
 	//vars
 	const { podcastID } = useParams();
 	const { access_token, favoritePodcasts } = user;
@@ -70,6 +69,7 @@ function Podcast({user, validateToken, ...props}) {
 			setIsLoading(false);
 			const podcastCommand = (inputFavoritePodcast.command === "favorite") ? "unfavorite" : "favorite";
 			setInputFavoritePodcast({
+				...inputFavoritePodcast,
 				command: podcastCommands[podcastCommand]
 			})
 			alert(response.data.Data);
@@ -84,6 +84,23 @@ function Podcast({user, validateToken, ...props}) {
 				alert(error);
 			}
 		})
+	}
+
+	const getUserAPI = () => {
+		getUser({access_token})
+        .then((response) => {
+            const userData = response.data;
+            const allUserData = { 
+                ...user,
+                ...userData, 
+            }
+            localStorage.setItem("user", JSON.stringify(allUserData));
+            setUser(allUserData);
+            // history.go(0);
+        })
+        .catch((error) => {
+        	console.log(error);
+        });
 	}
 
 	//util functions
@@ -128,12 +145,18 @@ function Podcast({user, validateToken, ...props}) {
 	useEffect(() => {
 		if (!!access_token) {
 			validateToken();
+			getUserAPI();
 		}
 	}, [access_token]);
 
 	useEffect(() => {
 		getPodcastAPI();
 	}, [currentEpisodePageIndex]);
+
+	useEffect(()=> {
+        if (!isLoading || !access_token) return;
+        getUserAPI();
+	}, [isLoading])
 
 	return (
 		<>
@@ -177,29 +200,29 @@ function Podcast({user, validateToken, ...props}) {
 					</div>
 
 					<div className={styles.desktopRight}>
-						<div className={styles.podcastPodcastPublisher}>
-							<div className={styles.subHeader}>
-								<strong>Publisher</strong>
-							</div>
+						<SectionContainer label="Publisher">
 							{currentPodcast.podcastPublisher}
-						</div> 
+						</SectionContainer> 
 						<div className={styles.podcastDescription}>
-							<div className={styles.subHeader}>
-								<button className={styles.showMore} onClick={()=> showDescription.toggle()}>
-									<img 
-										src={baseUrl + "/assets/button/show-more.png"} 
-										alt={showDescription.isActive ? "Hide Description" : "Show Description"}
-										className={showDescription.isActive && styles.rotate} 
-									/>
-								</button>
-								<strong>Description</strong> 
-							</div>
-							{ showDescription.isActive && 
-							<p dangerouslySetInnerHTML={{__html: currentPodcast.podcastDescription}} /> }
+							<SectionContainer label="Description">
+								{/* <div className={styles.subHeader}>
+									<button className={styles.showMore} onClick={()=> showDescription.toggle()}>
+										<img 
+											src={baseUrl + "/assets/button/show-more.png"} 
+											alt={showDescription.isActive ? "Hide Description" : "Show Description"}
+											className={showDescription.isActive && styles.rotate} 
+										/>
+									</button>
+									<strong>Description</strong> 
+								</div> */}
+								{ showDescription.isActive && 
+								<p dangerouslySetInnerHTML={{__html: currentPodcast.podcastDescription}} /> }
+							</SectionContainer>
 						</div> 
 						
 						<div className={styles.podcastEpisodes}>
-							<div className={styles.subHeader}>
+							<SectionContainer label="Episodes">
+							{/* <div className={styles.subHeader}>
 								<button className={styles.showMore} onClick={()=> showEpisodes.toggle()}>
 									<img 
 										src={baseUrl + "/assets/button/show-more.png"} 
@@ -208,13 +231,15 @@ function Podcast({user, validateToken, ...props}) {
 									/>
 								</button>
 								<strong>Episodes</strong> 
-							</div>
+							</div> */}
 							{ showEpisodes.isActive && 
 							<>
 								<ul className={styles.episodeList}>
 								{ currentPodcast.episodes.map((episode, index) => 
 									<li key={index} className={styles.episodeLink}>
-										<Link to={`/podcast/${podcastID}/episode/${episode.episodeID}`}>{episode.episodeTitle}</Link>
+										<Link to={`/podcast/${podcastID}/episode/${episode.episodeID}`}>
+											<EpisodeCard episode={episode} />
+										</Link>
 									</li> 
 								)}
 								</ul> 
@@ -226,6 +251,7 @@ function Podcast({user, validateToken, ...props}) {
 									<button onClick={gotoNextPage}><img src={baseUrl + "/assets/button/page-next.png"} alt="Next Page" title="Go to next page"/></button>}
 								</div>
 							</>}
+							</SectionContainer>
 						</div>
 					</div>
 				</>

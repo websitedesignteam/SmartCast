@@ -20,6 +20,7 @@ import AudioFooter from './component/AudioFooter/audioFooter';
 import { useIsActive, useOnClickOutside } from 'hooks';
 import { getUser, getTokenValidation, getNewToken } from "./utils/api";
 import { baseUrl, errorSessionExpired } from 'utils/constants';
+import { EpisodeCard } from 'component/Podcast';
 
 function App() {
   //global app states
@@ -105,14 +106,14 @@ function App() {
   //modal
   const openAuthModal = () => {
     authModalState.activate();
-    document.body.style.position = 'fixed';
-    document.body.style.overflowY = "scroll";
+    // document.body.style.position = 'fixed';
+    // document.body.style.overflowY = "scroll";
   }
 
   const closeAuthModal = () => {
     authModalState.deactivate();
-    document.body.style.position = 'static';
-    document.body.style.overflowY = 'auto';
+    // document.body.style.position = 'static';
+    // document.body.style.overflowY = 'auto';
   }
 
   //refs
@@ -206,7 +207,7 @@ function App() {
               render={routeProps =>
               <>
                 <Search {...routeProps} />
-                <Episode {...routeProps} openAudioPlayer={openAudioPlayer} user={user} validateToken={validateToken} />
+                <Episode {...routeProps} setUser={setUser} openAudioPlayer={openAudioPlayer} user={user} validateToken={validateToken} />
               </>
             }/> 
 
@@ -214,9 +215,10 @@ function App() {
               render={routeProps =>
               <>
               <Search {...routeProps} />
-              <Podcast {...routeProps} user={user} validateToken={validateToken} />
+              <Podcast {...routeProps} user={user} validateToken={validateToken} setUser={setUser} />
               </>
             }/> 
+            <Route exact path="/episodeBox" component={EpisodeCard} />
           </Switch>
       </div>
       <div className={audio.audioUrl ? "App-footer-audio" : "App-footer"}>

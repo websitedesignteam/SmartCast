@@ -1,4 +1,4 @@
-@import "../../styles/variables";
+@import "../../../styles/variables";
 
 .modalContainer {
     width: 15rem;
@@ -12,13 +12,6 @@
     background-color: $light-gray;
     box-shadow: $box-shadow;
     border-radius: 1rem;
-    // @media (orientation: landscape) {
-    //     position: relative;
-    //     left: 0;
-    //     top: 1.5rem; 
-    //     transform: none;
-    //     margin: 0 auto;
-    // }
     animation-name: expandUp;
     -webkit-animation-name: expandUp;	
   

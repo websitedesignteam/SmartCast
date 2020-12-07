@@ -3,31 +3,31 @@
 const { getAPI, postAPI, putAPI, PROXY_URL, API_URL } = require("./axios");
 
 //auth
-const postLogin = (data) => postAPI(`/login`, data);
+const postLogin = (data) => postAPI(`/login`, data); //CORS
 const postSignup = (data) => postAPI(`/signup`, data);
 const postConfirmSignup = (data) => postAPI(`/confirmsignup`, data);
 const postForgotPassword = (data) => postAPI(`/forgotpassword`, data);
 const postConfirmPasswordReset = (data) => postAPI(`/confirmpasswordreset`, data);
-const getUser = (data) => postAPI(`/getuser`, data);
+const getUser = (data) => postAPI(`/getuser`, data); //CORS
 const getTokenValidation = (data) => postAPI(`/checktokenvalidity`, data);
 const getNewToken = (data) => postAPI(`/refreshtoken`, data);
 
 //landing
-const getallCategories = () => getAPI(PROXY_URL+API_URL+`/getallcategories`); //CORS
+const getallCategories = () => getAPI(`/getallcategories`); //CORS
 const getLatestComments = () => getAPI(`/getlatestcomments`);
-const getallTagsofACategory = (data) => postAPI(PROXY_URL+API_URL+'/getalltagsofacategory', data); //CORS
-const getallEpisodesofATag = (data) => postAPI(PROXY_URL+API_URL+'/getallepisodesofatag', data); //CORS
+const getallTagsofACategory = (data) => postAPI('/getalltagsofacategory', data); //CORS
+const getallEpisodesofATag = (data) => postAPI('/getallepisodesofatag', data); //CORS
 
 //podcast results (search, genre)
 const getGenrePodcasts = (data) => postAPI(`/getallpodcastsofgenre`, data);
 
 //search
 const searchEpisodes = (data) => postAPI(`/searchepisodes`, data); 
-const searchPodcasts = (data) => postAPI(PROXY_URL+API_URL+`/searchpodcasts`, data); //CORS
-const searchTags = (data) =>postAPI(PROXY_URL+API_URL+`/searchbytags`, data); //CORS
+const searchPodcasts = (data) => postAPI(`/searchpodcasts`, data); //CORS
+const searchTags = (data) =>postAPI(`/searchbytags`, data); //CORS
 
 //podcast
-const getPodcast = (data) => postAPI(`/getallepisodes`, data);
+const getPodcast = (data) => postAPI(`/getallepisodes`, data); //CORS
 const postFavoritePodcast = (data) => postAPI(`/favoriteapodcast`, data);
 const getAllReviews = (data) => postAPI(`/getallreviews`, data);
 

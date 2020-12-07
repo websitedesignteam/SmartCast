@@ -29,6 +29,7 @@ div.dataTitle, .dataTitleTranscription {
 div.episodeTitle {
 	font-size: 1.25rem;
 	margin-bottom: 0.5rem;
+	font-weight: 700;
 }
 
 .link {
@@ -127,17 +128,25 @@ div.error {
 	}
 }
 
+.editTranscriptionButtons {
+	position: relative;
+	padding-top: 0.2rem;
+}
+
 button.editTranscription {
-	font: bold 1rem Cairo, sans-serif;
+	font: bold 0.8rem Cairo, sans-serif;
 	border: none;
 	border-radius: 0.2rem;
-	display: inline-flexbox;
-	margin-left: 0.5rem;
+	display: flex;
+	align-items: center;
 	img {
-		width: 1.1rem;
-		height: 1.1rem;
-		margin: 0 0 -0.15rem 0.2rem;
+		width: 0.8rem;
+		height: 0.9rem;
 		padding: 0;
+		margin-left: 0.2rem;
+	}
+	img.disabled {
+		filter: opacity(50%);
 	}
 }
 
@@ -169,8 +178,8 @@ button.editTranscription {
 	@media screen and (min-width: 568px) {
 		display: flex;
 		align-items: stretch;
-		margin-bottom: 1.5rem;
 	}
+	margin-bottom: 1.5rem;
 }
 
 .desktopLeft {
@@ -196,5 +205,14 @@ button.editTranscription {
 .desktopRight, .desktopLeft {
 	@media screen and (min-width: 568px) {
 	}
+}
+
+.error {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    background-color: $light-gray;
+    font-weight: 700;
 }
 

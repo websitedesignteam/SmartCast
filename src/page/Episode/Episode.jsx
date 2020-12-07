@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { 
@@ -8,19 +8,24 @@ import {
     postRequestTranscription, 
     postEditTranscription, 
     putSubmitReview,
+    getUser
 } from '../../utils/api';
 import { useIsActive } from '../../hooks';
 import { Review, ReviewFeed } from "../../component/Episode"
+import { SectionContainer } from "../../component/Podcast"
 import { baseUrl, errorEpisode } from "../../utils/constants";
+import { formatEpisodeLength } from "../../utils/helper";
 import styles from "./Episode.module.scss";
 
 function Episode({validateToken, ...props}) {
     //vars
     const { episodeID, podcastID } = useParams();
     const { access_token, ratings } = props.user;
+    const history = useHistory();
 
     //states
     const [isLoading, setIsLoading] = useState(false);
+    const [submittedReview, setSubmittedReview] = useState(false);
     const [isLoadingReview, setIsLoadingReview] = useState(false);
     const [currentEpisode, setCurrentEpisode] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
@@ -155,6 +160,7 @@ function Episode({validateToken, ...props}) {
 
     const putSubmitReviewAPI = (userReview) => {
         setIsLoadingReview(true);
+        setSubmittedReview(true);
         const data = {
             ...userReview,
             access_token,
@@ -182,12 +188,6 @@ function Episode({validateToken, ...props}) {
     }
 
     //utils 
-    const formatEpisodeLength = (episodeAudioLength) => {
-        const episodeMin = Math.floor(episodeAudioLength/60);
-        const episodeSec = episodeAudioLength%60;
-        return `${episodeMin}:${episodeSec > 9 ? episodeSec : `0`+episodeSec}`;
-    }
-
     const openTranscription = () => {
        openEditor.activate();
     }
@@ -239,6 +239,23 @@ function Episode({validateToken, ...props}) {
         }
     }, [currentEpisode]);
 
+    useEffect(()=> {
+        if (!submittedReview) return;
+        getUser({access_token})
+        .then((response) => {
+            const userData = response.data;
+            const allUserData = { 
+                ...props.user,
+                ...userData, 
+            }
+            localStorage.setItem("user", JSON.stringify(allUserData));
+            props.setUser(allUserData);
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    }, [submittedReview])
+
     return (
         <div className={styles.episodeContainer}>
             { (currentEpisode && !errorMessage) 
@@ -271,27 +288,24 @@ function Episode({validateToken, ...props}) {
                     
                     <div className={styles.desktopRight}>
                         <div className={styles.episodeTitle}>
-                            <strong>{currentEpisode.episodeTitle}</strong>
+                            {currentEpisode.episodeTitle}
                         </div> 
 
-                        <div className={styles.dataSection}>
-                            <div className={styles.dataTitle}><strong>Podcast</strong></div>
+                        <SectionContainer label="Podcast">
                             <Link to={`/podcast/${currentEpisode.podcastID}`} className={styles.link}>{currentEpisode.podcastTitle}</Link>
-                        </div>
+                        </SectionContainer>
 
                         { currentEpisode.podcastPublisher &&
-                        <div className={styles.dataSection}>
-                            <div className={styles.dataTitle}><strong>Publisher</strong></div>
+                        <SectionContainer label="Publisher">
                             {currentEpisode.podcastPublisher}
-                        </div>}
+                        </SectionContainer>}
 
-                        <div className={styles.dataSection}>
-                            <div className={styles.dataTitle}><strong>Length</strong></div>
+                        <SectionContainer label="Length">
                             {formatEpisodeLength(currentEpisode.episodeAudioLength)}
-                        </div>
+                        </SectionContainer>
 
-                        <div className={styles.dataSection}>
-                            <div className={styles.dataTitle}>
+                        <SectionContainer label="Description">
+                            {/* <div className={styles.dataTitle}>
                                 <button className={styles.showMore} onClick={()=> showDescription.toggle()}>
 									<img 
 										src={baseUrl + "/assets/button/show-more.png"} 
@@ -300,15 +314,15 @@ function Episode({validateToken, ...props}) {
 									/>
 								</button>
                                 <strong>Description</strong>
-                            </div>
+                            </div> */}
                             { showDescription.isActive &&
                                 <p dangerouslySetInnerHTML={{__html: currentEpisode.episodeDescription}}></p>
                             }
-                        </div> 
+                        </SectionContainer> 
                     
-                        <div className={styles.dataSection}>
+                        <SectionContainer label="Transcription">
                             <div className={styles.dataTitleTranscription}>
-                                <div className={styles.dataTitleLeft}>
+                                {/* <div className={styles.dataTitleLeft}>
                                 <button className={styles.showMore} onClick={()=> showTranscription.toggle()}>
 									<img 
 										src={baseUrl + "/assets/button/show-more.png"} 
@@ -317,7 +331,8 @@ function Episode({validateToken, ...props}) {
 									/>
 								</button>
                                 <strong>Transcription</strong>
-                                </div>
+                                </div> */}
+                                <div className={styles.dataTitleLeft} />
                                 {(!!currentEpisode.transcribedText) && 
                                 <div className={styles.dataTitleRight}>
                                     <div className={styles.editTranscriptionButtons}>
@@ -340,7 +355,7 @@ function Episode({validateToken, ...props}) {
                                             : "Edit Episode Transcription"}
                                     >
                                         Edit 
-                                        <img src={baseUrl + "/assets/button/edit.svg"} alt=""/>
+                                        <img className={(!props.user.access_token || currentEpisode.transcribedStatus === "EDIT IN PROGRESS") && styles.disabled} src={baseUrl + "/assets/button/edit.svg"} alt=""/>
                                     </button> 
                                     }
                                     </div>
@@ -356,11 +371,11 @@ function Episode({validateToken, ...props}) {
                                 value={editTranscription}
                                 onChange={onChangeEditTranscription} /> 
                             }
-                        </div>
+                        </SectionContainer>
                     </div>
                 </div>
                 
-                {(!!access_token && ratings.includes(podcastID+episodeID)) &&
+                {(!!access_token && !ratings.includes(String(podcastID+episodeID))) &&
                     <Review submitReview={putSubmitReviewAPI} isLoadingReview={isLoadingReview} />
                 }   
                 <ReviewFeed podcastID={podcastID} episodeID={episodeID} />
