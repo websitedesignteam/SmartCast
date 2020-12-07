@@ -190,10 +190,10 @@ function Podcast({user, validateToken, setUser, ...props}) {
 								className={styles.podcastFavorite} 
 								onClick={favoritePodcast.isActive ? postFavoritePodcastAPI : onClickFavorite}
 								title={(!access_token) 
-									? "Sign in to add to your Favorites" 
+									? "Login to add to your Favorites" 
 									: favoritePodcast.isActive
 									? "Remove from Favorites" 
-									: "add Podcast"
+									: "Add to Favorites"
 								}
 								disabled={!access_token || !!isLoadingFavorite}
 							>

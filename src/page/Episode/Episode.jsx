@@ -40,6 +40,7 @@ function Episode({validateToken, user, setUser, ...props}) {
     const [isLoadingReview, setIsLoadingReview] = useState(false);
 
     // util states
+    const [submittedTranscription, setSubmittedTranscription] = useState(false);
     const [submittedReview, setSubmittedReview] = useState(false);
     const [currentEpisode, setCurrentEpisode] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
@@ -211,6 +212,7 @@ function Episode({validateToken, user, setUser, ...props}) {
         postEditTranscription(data)
         .then((response) => {
             if (response?.data?.Success) {
+                setSubmittedTranscription(true);
                 alert(response.data.Success);
             }
             else if (response?.data?.Error) {
@@ -419,10 +421,10 @@ function Episode({validateToken, user, setUser, ...props}) {
                                     className={styles.podcastFavorite} 
                                     onClick={favoritePodcast.isActive ? postFavoritePodcastAPI : onClickFavorite}
                                     title={(!access_token) 
-                                        ? "Sign in to add to your Favorites" 
+                                        ? "Login to add to your Favorites" 
                                         : favoritePodcast.isActive 
                                         ? "Remove from Favorites" 
-                                        : "add Podcast"
+                                        : "Add to Favorites"
                                     }
                                     disabled={!access_token || !!isLoadingFavorite}
                                 >
@@ -463,7 +465,7 @@ function Episode({validateToken, user, setUser, ...props}) {
                                     : <button 
                                         className={styles.editTranscription} 
                                         onClick={openTranscription} 
-                                        disabled={!user.access_token || currentEpisode.transcribedStatus === "EDIT IN PROGRESS"} 
+                                        disabled={!user.access_token || currentEpisode.transcribedStatus === "EDIT IN PROGRESS" || !!submittedReview} 
                                         title={(!user.access_token) 
                                             ? "Login to Edit Transcription" 
                                             : (currentEpisode.transcribedStatus === "EDIT IN PROGRESS") 
@@ -478,7 +480,13 @@ function Episode({validateToken, user, setUser, ...props}) {
                                 }
                             </div>
                             { (!openEditor.isActive) && 
-                                <p className={styles.episodeTranscription} dangerouslySetInnerHTML={{__html: currentEpisode.transcribedText ?? (currentEpisode.transcribedStatus === "NOT ELIGIBLE FOR TRANSCRIPTION" ? currentEpisode.transcribedText : "No Transcription Available Yet") }}></p>
+                                <p 
+                                    className={styles.episodeTranscription} 
+                                    dangerouslySetInnerHTML={{__html: currentEpisode.transcribedText 
+                                        || (currentEpisode.transcribedStatus === "NOT ELIGIBLE FOR TRANSCRIPTION" 
+                                        ? "Not Eligible for Transcription" 
+                                        : "No Transcription Available Yet") 
+                                    }}></p>
                             }                      
 
                             { (openEditor.isActive && !!user.access_token) &&
