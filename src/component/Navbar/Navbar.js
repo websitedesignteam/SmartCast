@@ -21,7 +21,7 @@ function Navbar({openAuthModal, logoutUser, user}) {
 
   	return ( 
 		<div className={styles.navbarContainer}>
-			<Link className={styles.appLink} to='/'>
+			<Link className={styles.appLink} to='/home'>
 				<strong>SmartCast</strong>
 				<img src={baseUrl+"/assets/logo.png"} alt="" />
 			</Link>

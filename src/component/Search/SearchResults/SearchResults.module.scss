@@ -28,6 +28,7 @@
 
 .resultsPill{
        cursor: pointer;
+       margin-bottom: 5px;
 }
 
 .upperPart{
@@ -35,6 +36,10 @@
        padding:5px;
        display: flex;
        flex-direction: row;
+}
+
+.lowerPart{
+       padding: 5px 10px 5px 10px;
 }
 
 .border{

@@ -149,14 +149,8 @@ function App() {
           }
 
           <Switch>
-          <Route exact path="/welcome"
+          <Route exact path="/home"
               render={routeProps =>
-              <>
-              <Landing {...routeProps}/>
-              </>
-            }/>
-
-            <Route exact path="/" render={routeProps => 
               <>
               <Navbar logoutUser={logoutUser} openAuthModal={openAuthModal} user={user}/>
         
@@ -164,6 +158,17 @@ function App() {
             <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
                 <Search {...routeProps} /> 
                 <Home {...routeProps} />
+              </>
+            }/>
+
+            <Route exact path="/" render={routeProps => 
+              <>
+                <Redirect {...routeProps} to="/welcome" /> 
+              </>
+            } />
+            <Route exact path="/welcome" render={routeProps => 
+              <> 
+                <Landing {...routeProps}/>
               </>
             } />
 

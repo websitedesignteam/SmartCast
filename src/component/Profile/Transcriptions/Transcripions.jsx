@@ -10,12 +10,14 @@ const Transcripions=(props)=> {
                             "podcastID": props.podcastID,
                             "decision": choice,
                             "access_token": props.access_token}
+                     console.log(body)
               if (choice === 'accept'){
                      postTranscribeEpisode(body)
               }else if (choice === 'deny'){
                      postTranscribeEpisode(body)
               }
        }
+
        return (
               <div className={styles.transcriptionsContainer}>
                     <div className={styles.contentContainer}>

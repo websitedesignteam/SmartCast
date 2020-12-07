@@ -1,9 +1,9 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import styles from '../Settings/Settings.module.scss'
 import SectionContainer from '../../SectionContainer/SectionContainer'
 import ChangePassModal from '../Settings/ChangePassModal/ChangePassModal'
 import ProfilePicture from '../../ProfilePicture/ProfilePicture'
-import { emailPassword, updateBio, updateProfilePicture } from '../../../../utils/api'
+import { updateBio, updateProfilePicture, getUser } from '../../../../utils/api'
 
 
 const Settings=(props)=> {
@@ -12,9 +12,8 @@ const Settings=(props)=> {
        const [updatedBio, setUpdatedBio] = useState('')
        const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user')) || {});
        const [message, setMessage]= useState('')
+       const [userData, setUserData] = useState([{}])
        const forgotPassword=()=>{
-              let body = {"email":props.email}
-              emailPassword(body)
               setIsModalOpen(true)
        }
 
@@ -53,6 +52,17 @@ const Settings=(props)=> {
               setMessage(message)
        }
 
+       useEffect(()=>{
+              let body = {"access_token": user.access_token}
+              getUser(body)
+              .then((response)=>{
+                     setUserData(response.data)
+              })
+              .catch((error)=>{
+                     console.log(error)
+              })
+       }, [])
+
        if (isModalOpen === false){
               if(message != ''){
                      return (
@@ -80,7 +90,7 @@ const Settings=(props)=> {
                                    </SectionContainer>
                                    <SectionContainer label="Change Password">
                                           <div className={styles.changePasswordContainer}>
-                                                 <p  onClick={()=>forgotPassword()} className={styles.changePassText}>Click here to change your password.</p>
+                                                 <p  onClick={()=>forgotPassword(props.email)} className={styles.changePassText}>Click here to change your password.</p>
                                           </div>
                                    </SectionContainer>
                             </div>
@@ -139,7 +149,7 @@ const Settings=(props)=> {
                             <SectionContainer label="Change Password">
                                    <div className={styles.changePasswordContainer}>
                                           <p className={styles.changePassText}>Click here to change your password.</p>
-                                          <ChangePassModal closeModal={()=> closeModal()}/>
+                                          <ChangePassModal email={userData.email} closeModal={()=> closeModal()}/>
                                    </div>
                             </SectionContainer>
                      </div>
