@@ -12,6 +12,7 @@ def getEpisode(podcastID,episodeID):
     parameter = json.loads(parameter)
     
     API_KEY = parameter["API_KEY"]
+    GETALLREVIEWS_LAMBDA = parameter["GETALLREVIEWS_LAMBDA"]
     print("API_KEY = ", API_KEY)
     dynamoDB = boto3.resource('dynamodb')
     table = dynamoDB.Table("PodcastTable_DEV")
@@ -54,6 +55,56 @@ def getEpisode(podcastID,episodeID):
         returnData["podcastPublisher"] = listenNotesData["podcast"]["publisher"]
         returnData["podcastTitle"] = listenNotesData["podcast"]["title"]
         data = data["Data"]
+        
+        
+        lambdaClient = boto3.client('lambda')
+        
+        event = {
+            "body":{
+                "podcastID" : returnData["podcastID"],
+                "episodeID" : returnData["episodeID"]
+            }
+        }
+        
+        event["body"] = json.dumps(event["body"])
+        lambdaResponse = lambdaClient.invoke(
+            FunctionName = GETALLREVIEWS_LAMBDA,
+            Payload = json.dumps(event)
+            )
+        
+        responsePayload = lambdaResponse["Payload"].read()
+        responsePayload = json.loads(responsePayload)
+        print("responsepayload:",responsePayload)
+        
+        if "body" not in responsePayload:
+            return {
+                'statusCode': 500,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Credentials': True,
+                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+                },
+                'body': json.dumps(responsePayload)
+            }
+        
+        responsePayload = responsePayload["body"]
+        reviewData = json.loads(responsePayload)
+        print("reviewData:",reviewData)
+        reviewData = reviewData["Data"]
+        star = 0
+        count = 0
+        
+        for reviewData in reviewData:
+            star += float(reviewData["rating"])
+            count += 1.
+        
+        average = 0
+        if count > 0:
+            average =  round(star/count,2)
+        returnData["averageRating"] = average
+        returnData["totalReviews"] = int(count)
         
         print("Data -->", data)
         if len(data) == 0:
