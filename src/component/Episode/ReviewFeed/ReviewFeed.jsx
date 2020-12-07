@@ -3,7 +3,7 @@
 
 import React, {useState, useEffect} from 'react';
 import { getAllReviews } from "../../../utils/api";
-import SectionContainer from '../../Profile/SectionContainer/SectionContainer'
+import SectionContainer from '../../Podcast/SectionContainer/SectionContainer'
 import LiveFeedPill from "./LiveFeedPill/LiveFeedPill";
 import styles from './ReviewFeed.module.scss'
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
@@ -11,7 +11,7 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 const ReviewFeed=({podcastID, episodeID, ...props})=> {
 
 const [commentData, setCommentData] = useState([])
-const [loading, setIsLoading] = useState(false)
+const [isLoading, setIsLoading] = useState(false)
 
 	const getAllReviewsAPI = () => {
 		setIsLoading(true);
@@ -35,10 +35,16 @@ const [loading, setIsLoading] = useState(false)
 	}, [podcastID, episodeID])
 
 	return (
-		<div className={styles.sectionWrapper}>
-		<SectionContainer label="Most Recent Comments">
-			{commentData.map((comment, index)=><div ><LiveFeedPill profilePicture={comment.profilePicture} name={comment.name} comment={comment.review} rating={comment.rating} commentAge={comment.commentAge}/></div>)}
-		</SectionContainer>
+		<div className={styles.reviewFeed}>
+			<div className={styles.sectionWrapper}>
+				<SectionContainer label="Reviews">
+					{commentData.length === 0 && !isLoading && "No Reviews Yet"}
+					{commentData.map((comment, index) =>
+					<div >
+						<LiveFeedPill profilePicture={comment.profilePicture} name={comment.name} comment={comment.review} rating={comment.rating} commentAge={comment.commentAge}/>
+					</div>)}
+				</SectionContainer>
+			</div>
 		</div>
 	)
 }

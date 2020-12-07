@@ -54,7 +54,7 @@ function Search(props) {
 					<input 
 						className={styles.searchInput} 
 						type="text" 
-						placeholder="Search for Podcasts" 
+						placeholder="Search for Transcribed Episodes, All Episodes, or All Podcasts" 
 						name="search" 
 						onChange={handleSearch}
 					/>
@@ -67,7 +67,7 @@ function Search(props) {
 							onChange={()=>handleCheckboxes('episodes')} 
 							checked={searchContext.searchType==="episodes"} 
 						/>
-						Include all episodes
+						Show all episodes
 					</label>
 					<label>
 						<input 
@@ -76,7 +76,7 @@ function Search(props) {
 							onChange={()=>handleCheckboxes('podcasts')} 
 							checked={searchContext.searchType==="podcasts"} 
 						/>
-						Include all podcasts
+						Show all podcasts
 					</label>
 				</div>
 				<input type="submit" className={styles.searchEnter}/>
