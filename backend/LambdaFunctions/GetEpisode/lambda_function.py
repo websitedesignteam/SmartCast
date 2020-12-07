@@ -10,6 +10,8 @@ def getEpisode(podcastID,episodeID):
     dynamoDB = boto3.resource('dynamodb')
     table = dynamoDB.Table(tableName)
     
+    
+    
     try:
         response = table.get_item(
             Key = {
@@ -46,6 +48,105 @@ def getEpisode(podcastID,episodeID):
         returnData["podcastID"] = podcastID
         returnData["podcastPublisher"] = listenNotesData["podcast"]["publisher"]
         returnData["podcastTitle"] = listenNotesData["podcast"]["title"]
+        
+    
+    
+        #----------------------------------------Retrieve the parameters from SSM store----------------------------------------#
+        
+        try:
+            store = boto3.client('ssm')
+            env = store.get_parameter(Name = "/smartcast/env", WithDecryption = True)
+            env = json.loads(env["Parameter"]["Value"])
+            
+            GETALLREVIEWS_LAMBDA = env["GETALLREVIEWS_LAMBDA"]
+        
+        
+        except Exception as e:
+            print("Exception : ", e)
+            body = {
+                "Error": "Could not retrieve the parameters from SSM store"
+            }
+            return {
+                'statusCode': 400,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Credentials': True,
+                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+                },
+                'body': json.dumps(body)
+            }
+        #----------------------------------------Get Review Data----------------------------------------#
+        try:
+            lambdaClient = boto3.client('lambda')
+            
+            event = {
+                "body":{
+                    "podcastID" : returnData["podcastID"],
+                    "episodeID" : returnData["episodeID"]
+                }
+            }
+            
+            event["body"] = json.dumps(event["body"])
+            response = lambdaClient.invoke(
+                FunctionName = GETALLREVIEWS_LAMBDA,
+                Payload = json.dumps(event)
+                )
+            
+            responsePayload = response["Payload"].read()
+            responsePayload = json.loads(responsePayload)
+            print("responsepayload:",responsePayload)
+            
+            if "body" not in responsePayload:
+                return {
+                    'statusCode': 500,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Credentials': True,
+                        'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+                    },
+                    'body': json.dumps(responsePayload)
+                }
+            
+            responsePayload = responsePayload["body"]
+            reviewData = json.loads(responsePayload)
+            print("reviewData:",reviewData)
+            reviewData = reviewData["Data"]
+            star = 0
+            count = 0
+            
+            for reviewData in reviewData:
+                star += float(reviewData["rating"])
+                count += 1.
+            
+            average = 0
+            if count > 0:
+                average =  round(star/count,2)
+            returnData["averageRating"] = average
+            returnData["totalReviews"] = count
+            
+            
+        except Exception as e:
+            print("Exception : ", e)
+            body = {
+                "Error": "Something we weren't able to get your episode data. Please try again"
+            }
+            print(str(e))
+            return {
+                'statusCode': 500,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Headers': 'Content-Type,Origin,X-Amz-Date,Authorization,X-Api-Key,x-requested-with,Access-Control-Allow-Origin,Access-Control-Request-Method,Access-Control-Request-Headers',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Credentials': True,
+                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS'
+                },
+                'body': json.dumps(body)
+            }
+        
         data = data["Data"]
         if len(data) == 0:
             returnData["transcribedStatus"] = "NOT TRANSCRIBED"
