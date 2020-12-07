@@ -70,7 +70,7 @@ function SearchPage(props) {
 	if (isLoading === false){
 		if ((searchType === 'episodes' || searchType === 'tags') && episodes.length > 1){
 			return( 
-				<div>
+				<div className={styles.container}>
 					<h4>{searchType === 'tags' && "Transcribed "}
 						Episode Results for: "{searchTerm}"</h4>
 					<div className={styles.cardContainer}>{episodes.map((episode)=>{
@@ -107,7 +107,7 @@ function SearchPage(props) {
 					}
 				</div>)
 		} else if (searchType === 'podcasts' && podcasts.length > 1){
-			return( <div>
+			return( <div className={styles.container}>
 				<h4>Podcast Results for: "{searchTerm}"</h4>
 				<div>{podcasts.map((podcast)=>{
 					return (
