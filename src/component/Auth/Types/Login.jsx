@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import AuthInput from '../AuthInput/AuthInput';
+import Input from '../../../element/Input/Input';
 import { useHistory, useParams } from "react-router-dom";
 import { postLogin } from '../../../utils/api';
 import { isFormComplete } from '../../../utils/helper';
 import { errorDefault } from "../../../utils/constants";
 import styles from "../Auth.module.scss";
 
-function Login({loginUser, onClickForgotPassword}) {
+function Login({loginUser, onClickForgotPassword, stayLoggedIn}) {
     //vars
     const history = useHistory();
     const { authType } = useParams();
@@ -39,6 +39,10 @@ function Login({loginUser, onClickForgotPassword}) {
         });
     }
 
+    const handleCheckbox = () => {
+        stayLoggedIn.toggle();
+    }
+
     return (
         <form id="login-form" onSubmit={handleSubmit} className="container">
             <div className={styles.formContainer}>
@@ -48,7 +52,7 @@ function Login({loginUser, onClickForgotPassword}) {
                     <div className={styles.error}>Please fill in all fields</div> } */}
                 { (errorMessage) && <div className={styles.error}>{errorMessage}</div> }     
                 
-                <AuthInput 
+                <Input 
                     id="login-email" 
                     name="email" 
                     value={input.email} 
@@ -57,7 +61,7 @@ function Login({loginUser, onClickForgotPassword}) {
                     type="email" 
                     onChangeInput={onChangeInput} 
                 />
-                <AuthInput 
+                <Input 
                     id="login-password" 
                     name="password" 
                     value={input.password} 
@@ -66,6 +70,15 @@ function Login({loginUser, onClickForgotPassword}) {
                     type="password" 
                     onChangeInput={onChangeInput} 
                 />
+                <label>
+                    <input 
+                        type="checkbox" 
+                        name="stay-logged-in" 
+                        onChange={handleCheckbox} 
+                        checked={stayLoggedIn.isActive}
+                    />
+                    Stay logged in
+                </label>
 
                 <button className={styles.forgotPassword} onClick={onClickForgotPassword}>Forgot password?</button>
                 

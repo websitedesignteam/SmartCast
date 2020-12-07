@@ -6,11 +6,11 @@ const TagPill=(props)=> {
               return (
                      <div className={styles.pillContainerResult}>
                             <div className={styles.contentContainerResult}>
-                                   <div className={styles.label}>
+                                   <div className={styles.labelCount}>
                                           {props.label}
                                    </div>
                                    <div className={styles.countResult}>
-                                          Ep Count: {props.count}
+                                          Episodes: {props.count}
                                    </div>
                             </div>
                      </div>
@@ -27,13 +27,10 @@ const TagPill=(props)=> {
               )
        } if (props.podcastTitle){
               return (
-                     <div className={styles.pillContainerResult}>
+                     <div className={styles.pillContainerResultCard}>
                             <div className={styles.contentContainerResult}>
                                    <div className={styles.label}>
                                           Podcast: {props.podcastTitle}
-                                   </div>
-                                   <div className={styles.countResult}>
-                                          Episode: {props.label}
                                    </div>
                             </div>
                      </div>

@@ -56,3 +56,38 @@
 		-webkit-box-orient: vertical;
 	}
 }
+
+.rating {
+	white-space: nowrap;
+}
+
+// .EpisodeContainer{
+// 	animation-name: slideRight;
+// 	-webkit-animation-name: slideRight;	
+
+// 	animation-duration: 1.3s;	
+// 	-webkit-animation-duration: 1.3s;
+
+// 	animation-timing-function: ease-in;
+// 	-webkit-animation-timing-function: ease-in;		
+
+// 	visibility: visible !important;	
+// }
+
+// @keyframes slideRight {
+// 	0% {
+// 		transform: translateX(-90%);
+// 	}		
+// 	100% {
+// 		transform: translateX(0%);
+// 	}		
+// }
+
+// @-webkit-keyframes slideRight {
+// 	0% {
+// 		-webkit-transform: translateX(-90%);
+// 	}	
+// 	100% {
+// 		-webkit-transform: translateX(0%);
+// 	}
+// }

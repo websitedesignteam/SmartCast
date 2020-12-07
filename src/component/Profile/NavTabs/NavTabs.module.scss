@@ -4,9 +4,10 @@
        min-width: 250px;
        min-height: 80vh;
        padding-top: 25px;
-       -webkit-box-shadow: 16px -1px 14px -14px rgba(0,0,0,0.15);
-       -moz-box-shadow: 16px -1px 14px -14px rgba(0,0,0,0.15);
-       box-shadow: 16px -1px 14px -14px rgba(0,0,0,0.15);
+       -webkit-box-shadow: 20px 1px 8px -19px rgba(0,0,0,0.11);
+       -moz-box-shadow: 20px 1px 8px -19px rgba(0,0,0,0.11);
+       box-shadow: 20px 1px 8px -19px rgba(0,0,0,0.11);
+       margin-left: -25px;
 }
 
 .navButtons{
@@ -31,4 +32,22 @@
        flex-direction: column;
        justify-content: center;
        align-items: center;
+}
+
+.profilePic{
+       border-radius: 50%;
+       width: 100px;
+       height: 100px;
+}
+
+.profileButton{
+       margin: 5px 0px 5px 0px;
+}
+
+.settingsButton{
+       margin: 5px 0px 5px 0px;
+}
+
+.moderatorDashboardButton{
+       margin: 5px 0px 5px 0px;
 }

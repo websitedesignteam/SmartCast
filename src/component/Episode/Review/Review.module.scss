@@ -1,0 +1,48 @@
+@import "../../../styles/variables";
+
+.form {
+	border-radius: 1rem;
+	box-shadow: $box-shadow;
+	background-color: $light-gray;
+	padding: 1.5rem;
+	&-input {
+		&--rating {
+			cursor: pointer;
+		}
+		&--text {
+			textarea {
+				font-family: 'Cairo';
+				width: 100%;
+				-webkit-box-sizing: border-box; 
+				-moz-box-sizing: border-box;    
+				box-sizing: border-box; 
+			}
+		}
+	}
+	&-bottom {
+		text-align: center;
+		display: inline-flex;
+		width: 100%;
+		justify-content: center;
+		margin-top: 0.5rem;
+		&--submit {
+			height: 2rem;
+			border-radius: 1.5rem;
+			font-size: 1rem;
+			font-family: 'Cairo';
+			padding: 0 1rem;
+			background-color: $blue;
+			&:hover:not([disabled]) {
+				background-color: $blue-bright;
+				outline: none;
+			}
+			&:focus {
+				outline: $dark-gray;
+			}
+		}
+	}
+}
+
+.loaderTiny {
+
+}

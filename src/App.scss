@@ -8,7 +8,8 @@
 }
 
 .App-content {
-  padding: 1.5rem;
+//   padding: 1.5rem;
+  min-height: 100vh;
 }
 
 .App-blur {
@@ -20,12 +21,12 @@
   backdrop-filter: blur(0.1rem);
   padding: 0;
   min-width: 100vw;
-  @media (orientation: landscape) {
-    min-height: 170vh;
-  }
-  @media screen and (min-width: 400px) and (orientation: landscape) {
-    min-height: 80vh;
-  }
+  // @media (orientation: landscape) {
+  //   min-height: 170vh;
+  // }
+  // @media screen and (min-width: 400px) and (orientation: landscape) {
+  //   min-height: 80vh;
+  // }
 }
 
 .App-background {
@@ -49,28 +50,44 @@
 
 .App-modal {
   position: absolute;
+  left: -50%; 
+  right: -50%;
   width: 15rem;
   @media screen and (min-width: 400px) {
       min-width: 20rem;
   }
   display: flex;
   flex-direction: column;
-  position: absolute;
-  left: 50%;
-  top: 50%; 
-  transform: translate(-50%, -50%);
-  margin: 0;
+  margin: 0 auto;
   padding: 1.5rem;
   background-color: $light-gray;
   box-shadow: $box-shadow;
   border-radius: 1rem;
-  z-index: 2;
-  @media (orientation: landscape) {
-    margin-top: 8rem;
-  }
-  @media screen and (min-height: 420px) and (orientation: landscape) {
-    margin-top: 0;
-  }
+  z-index: 3;
+
+  animation-name: expandUp;
+  -webkit-animation-name: expandUp;	
+
+  animation-duration: 1s;	
+  -webkit-animation-duration: 1s;
+
+  animation-timing-function: ease;	
+  -webkit-animation-timing-function: ease;		
+
+  visibility: visible !important;	
+}
+
+.App-footer-audio, .App-footer {
+  text-align: center;
+  padding-bottom: 1.5rem;
+}
+
+.App-footer-audio {
+  padding-bottom: 7rem;
+}
+
+.listenNotesLogo {
+  max-width: 15rem;
 }
 
 .logo {
@@ -99,7 +116,6 @@ a {
 
 button {
   font-family: 'Cairo';
-  cursor: pointer;
   background-color: $medium-gray;
 }
 
@@ -112,9 +128,11 @@ p {
 }
 
 button:hover:not([disabled]) {
-	background-color: $gray;
+  background-color: $gray;
+  cursor: pointer;
 }
 
+//loaders
 .loader, .loaderSmall, .loaderTiny {
   border-radius: 100%;
   animation: spin 1.8s linear infinite;
@@ -145,4 +163,34 @@ button:hover:not([disabled]) {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+@keyframes expandUp {
+  0% {
+      transform: translateY(100%) scale(0.6) scaleY(0.5);
+  }
+  60%{
+      transform: translateY(-7%) scaleY(1.12);
+  }
+  75%{
+      transform: translateY(3%);
+  }	
+  100% {
+      transform: translateY(0%) scale(1) scaleY(1);
+  }	
+}
+
+@-webkit-keyframes expandUp {
+  0% {
+      -webkit-transform: translateY(100%) scale(0.6) scaleY(0.5);
+  }
+  60%{
+      -webkit-transform: translateY(-7%) scaleY(1.12);
+  }
+  75%{
+      -webkit-transform: translateY(3%);
+  }	
+  100% {
+      -webkit-transform: translateY(0%) scale(1) scaleY(1);
+  }	
 }

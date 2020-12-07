@@ -1,7 +1,7 @@
 import React from 'react';
-import styles from "./AuthInput.module.scss";
+import styles from "./Input.module.scss";
 
-function AuthInput(props) {
+function Input(props) {
     function onChange(event) {
         props.onChangeInput(event);
     }
@@ -14,10 +14,10 @@ function AuthInput(props) {
     );
 }
 
-AuthInput.defaultProps = {
+Input.defaultProps = {
     label:"Input",
     type:"text", 
     placeholder:"Enter Input", 
 }
 
-export default AuthInput;
+export default Input;

@@ -8,6 +8,7 @@
        line-height: 2px;
        font-size: 14px;
        padding: 5px;
+       margin: 5px;
 }
 
 .modal{
@@ -29,6 +30,8 @@
 .textContainer{
        margin-bottom: 0;
        min-width: 150px;
+       display: flex;
+       align-items: center;
 }
 
 .iconContainer{

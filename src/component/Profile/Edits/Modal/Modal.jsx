@@ -6,10 +6,8 @@ const Modal=(props)=> {
               props.exitModal()
        }
 
-       const handleAccept=()=>{
-              exitModal()
-       }
-       const handleReject=()=>{
+       const handleChoice=(choice)=>{
+              props.handleChoice(choice)
               exitModal()
        }
 
@@ -21,17 +19,16 @@ const Modal=(props)=> {
                             </div>
                             <div className={styles.editsContainer}>
                                    <div className={styles.beforeContainer}>
-                                   before
+                                          {props.beforeText}
                                    </div>
-                                   <div className={styles.afterContainer}>
-                                   after
+                                   <div dangerouslySetInnerHTML={{__html: props.afterText}} className={styles.afterContainer}>
                                    </div>
                             </div>
                             <div className={styles.buttons}>
-                                   <div className={styles.acceptContainer} onClick={()=> handleAccept()}>
+                                   <div className={styles.acceptContainer} onClick={()=> handleChoice('accept')}>
                                           Accept ✓
                                    </div>
-                                   <div className={styles.rejectContainer} onClick={()=> handleReject()}>
+                                   <div className={styles.rejectContainer} onClick={()=> handleChoice('reject')}>
                                           Reject 𐄂
                                    </div>
                             </div>

@@ -1,33 +1,45 @@
 .pillContainer{
-       display: inline-block;
-       padding: 5px;
-       border-radius: 15px;
-       margin: 5px;
+       white-space: nowrap;
+       display: flex;
+       padding: 0.3rem 0.6rem;
+       border-radius: 0.8rem;
+       margin: 0.3rem;
        color: white;
        font-weight: 10;
        opacity: .8;
        background-image: linear-gradient(to right, #857fef 0%, #7a50db 120%, #eefa08 100%);
        -webkit-box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.45);
        -moz-box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.45);
-       box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.45);
+       box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.45); 
 }
 
 .pillContainer:hover{
        background-image: linear-gradient(to right, #857fef 0%, #7a50db 120%, #eefa08 100%);
        font-weight: bold;
-       padding: 7px;
-       transition: .2s;
+       padding: 0.4rem 0.7rem;
+       transition: .5s;
+       cursor: pointer;
+       margin-top: 0.2rem;
 }
 
 .contentContainer{
        display: flex;
        flex-direction: row;
-       margin-bottom: 0;
+       margin-bottom: 0;     
 }
 
 .label{
        display: inline-block;
        margin-bottom: 0;
+       cursor: pointer;
+       font-size: 16px;
+}
+.labelCount{
+       display: inline-block;
+       margin-bottom: 0;
+       cursor: pointer;
+       font-size: 14px;
+       font-weight: 500;
 }
 
 .count{
@@ -36,16 +48,20 @@
 }
 
 .pillContainerResult{
-       display: inline-block;
-       padding: 5px;
+       display: flex;
+       flex-direction: column;
        border: 2px solid rgb(116, 156, 227);
-       border-radius: 15px;
-       font-size: 18px;
-       margin: 5px;
+       border-radius: 0.8rem;
+       font-size: 1.1rem;
+       margin: 0.25rem;
+       cursor: pointer;
+       padding: 0.2rem;
+       background: #ffffff36;
        /* -webkit-box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.45);
        -moz-box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.45);
        box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.45); */
 }
+
 .contentContainerResult{
        display: flex;
        flex-direction: column;
@@ -53,8 +69,12 @@
        line-height: 18px;
 }
 
-.countResult{
-       display: inline-block;
+.label, .countResult{
+       display: flex;
        margin-bottom: 0;
+}
+
+.countResult {
        font-size: 12px;
+       color: rgba(0, 0, 0, 0.609);
 }

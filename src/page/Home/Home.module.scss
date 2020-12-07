@@ -1,0 +1,68 @@
+@import "../../styles/variables";
+
+.homeContainer {
+	display: flex;
+	flex-direction: column;
+	overflow-y: auto;
+	-ms-overflow-style: none;
+       scrollbar-width: none;
+       width: calc(100% + 3rem);
+       margin-left: -1.5rem;
+}
+
+.genreSection{
+       display: flex;
+       flex-direction: column;
+       max-height: 40vh;
+       width: 100%;
+       overflow: scroll;
+       background: url('../../watermarkSuperLight.svg');
+       background-position: center;
+       background-size: cover;
+       background-repeat: no-repeat;
+       -webkit-box-shadow: inset 0px 2px 5px -2px rgba(0,0,0,0.75);
+       -moz-box-shadow: inset 0px 2px 5px -2px rgba(0,0,0,0.75);
+       box-shadow: inset 0px 2px 5px -2px rgba(0,0,0,0.75);
+}
+
+.thumbnailContainer{
+       display: flex;
+       overflow-x: auto;
+       flex-direction: row;
+       width: auto;
+       margin: 0 auto;
+       padding: 0.5rem;
+       justify-content: center;
+       margin-bottom: 5px;
+
+}
+
+.thumbnailContainer::-webkit-scrollbar {
+	width: 20px;
+	background-color: transparent;
+	&-thumb {
+		background-color: $medium-gray;
+		border-radius: 20px;
+		border: 6px solid transparent;
+		background-clip: content-box;
+	}
+	&-thumb:hover {
+		background-color: $gray;
+	}
+}
+
+.tags{
+       display: flex;
+       flex-direction: row;
+       justify-content: center;
+       flex-wrap: wrap;
+       margin: 0px 25px 25px 25px;
+
+}
+
+.skew{
+       display: flex;
+       justify-content: center;
+       margin-top: 15px;
+       color: grey;
+}
