@@ -1,0 +1,60 @@
+.background{
+       width: 100vw;
+       height: 100vh;
+       background-image: url('../../watermarkLarge1.svg');
+       display: flex;
+       justify-content: center;
+       align-items: center;
+}
+
+.textContainer{
+       display: flex;
+       flex-direction: column;
+       justify-content: center;
+       margin: 0px 30px 0px 50px;
+}
+
+.imageContainer{
+       // position: absolute;
+       // right: 0;
+       // top: 10%;
+}
+
+#image{
+       width: 750px;
+}
+
+.headerText{
+       font-size: 45px;
+       font-weight: 600;
+}
+
+#description{
+       font-size: 20px;
+}
+.contentContainer{
+       display: flex;
+       flex-direction: row;
+       align-content: center;
+       justify-content: center;
+}
+
+#getStartedButton{
+              display: inline-block;
+              width: 100px;
+              margin-left: 5px;
+              margin-top: 15px;
+              text-decoration: none;
+              text-align: center;
+              color: white;
+              border-radius: 10px;
+              cursor: pointer;
+              font-size: 18px;
+              opacity: .8;
+              box-shadow: 0 4px 6px rgba(50,50,93,.11), 0 1px 3px rgba(0,0,0,.08);
+              background-image: linear-gradient(to right, #895cf2 0%, #6aaae1 100%, #bcd9ef 200%);
+           &:hover {
+                  opacity: 1;
+             background-position: right center;
+           }  
+}
