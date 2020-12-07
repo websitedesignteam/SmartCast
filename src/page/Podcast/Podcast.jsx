@@ -198,7 +198,7 @@ function Podcast({user, validateToken, setUser, ...props}) {
 								disabled={!access_token || !!isLoadingFavorite}
 							>
 								<img 
-									src={baseUrl + ((favoritePodcast.isActive && inputFavoritePodcast["command"] === "unfavorite") ? "/assets/button/heart-fill.svg" : "/assets/button/heart.svg")} 
+									src={baseUrl + ((favoritePodcast.isActive && inputFavoritePodcast["command"] === "remove") ? "/assets/button/heart-fill.svg" : "/assets/button/heart.svg")} 
 									alt=""
 								/>
 							</button>

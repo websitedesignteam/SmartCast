@@ -23,7 +23,7 @@ const [isLoading, setIsLoading] = useState(false)
 		.then((response)=>{
 			setIsLoading(false)
 			setCommentData(response.data.Data);
-			setTimeout(getAllReviewsAPI, 90000);
+			setTimeout(getAllReviewsAPI, 40000);
 		})
 		.catch((error)=>{
 			console.log(error)

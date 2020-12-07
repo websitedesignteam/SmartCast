@@ -403,7 +403,7 @@ function Episode({validateToken, user, setUser, ...props}) {
                                 </div>}
 
                                 { (currentEpisode.transcribedStatus === "IN PROGRESS") && 
-                                <div className="loaderSmall"></div>}
+                                <div className="loaderSmall">loading...</div>}
                             </div>
                         </div>
                     </div>
@@ -479,8 +479,8 @@ function Episode({validateToken, user, setUser, ...props}) {
                                 }
                             </div>
                             { (!openEditor.isActive) && 
-                                <p className={styles.episodeTranscription} dangerouslySetInnerHTML={{__html: currentEpisode.transcribedText || currentEpisode.transcribedStatus === "NOT ELIGIBLE FOR TRANSCRIPTION" ? "Not Eligible for Transcription" : "No Transcription Available Yet" }}></p>
-                            }                       
+                                <p className={styles.episodeTranscription} dangerouslySetInnerHTML={{__html: currentEpisode.transcribedText ?? (currentEpisode.transcribedStatus === "NOT ELIGIBLE FOR TRANSCRIPTION" ? currentEpisode.transcribedText : "No Transcription Available Yet") }}></p>
+                            }                      
 
                             { (openEditor.isActive && !!user.access_token) &&
                             <div className = {styles.transcriptionEditor}>
