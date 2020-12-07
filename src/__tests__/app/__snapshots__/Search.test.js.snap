@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should render the Search 1`] = `
+Array [
+  <Context.Provider
+    value={
+      Object {
+        "searchInput": "",
+        "searchType": "tags",
+        "setSearchInput": [Function],
+        "setSearchType": [Function],
+      }
+    }
+  >
+    <Search />
+  </Context.Provider>,
+]
+`;
