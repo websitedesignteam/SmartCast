@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from '../ResultsPill/ResultsPill.module.scss'
+import StarRatings from 'react-star-ratings'
 const ResultsPill=(props)=> {
        
        if (props.count){
@@ -38,6 +39,9 @@ const ResultsPill=(props)=> {
                                           </div>
                                           <div className={styles.countResult}>
                                                  Episode: {props.label}
+                                          </div>
+                                          <div className={styles.countResult}>
+                                                <StarRatings rating={props.avgRating} starRatedColor="gold" starDimension="16px" starSpacing=".5px" /> ({props.totalReviews} Total reviews)
                                           </div>
                                    </div>
                             </div>
