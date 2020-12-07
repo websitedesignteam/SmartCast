@@ -53,6 +53,9 @@ const postEditTranscription = (data) => postAPI(`/edittranscription`, data);
 //review
 const putSubmitReview = (data) => putAPI(`/submitreview`, data);
 
+//landing page
+const getSiteStats = (data) => getAPI('/getsitestats', data);
+
 export { 
     getallCategories,
     getallEpisodesofATag,
@@ -88,5 +91,6 @@ export {
     updateProfilePicture,
     getAllUsers,
     changeStatus,
-    approveEdits
+    approveEdits,
+    getSiteStats
 }

@@ -1,8 +1,7 @@
 import React, {useEffect, useState}from 'react'
 import { baseUrl } from 'utils/constants';
 import styles from '../ChangePassModal/ChangePassModal.module.scss'
-import {changePassword} from '../../../../../utils/api'
-import {getUser} from '../../../../../utils/api'
+import {changePassword, emailPassword, getUser} from '../../../../../utils/api'
 import {useHistory} from 'react-router-dom'
 
 function ChangePassModal(props) {
@@ -11,6 +10,7 @@ function ChangePassModal(props) {
        const [confirmPassInput, setConfirmPassInput]=useState('')
        const [errorMessage, setErrorMessage]= useState('')
        const [codeInput, setCodeInput]=useState('')
+       const [errorResponse, setErrorResponse]=useState('')
        const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user')) || {});
        const [userData, setUserData] = useState({})
        let history = useHistory();
@@ -19,15 +19,27 @@ function ChangePassModal(props) {
               props.closeModal()
        }
 
+       const sendCode =(email)=>{
+              console.log(props.email)
+              let body={"email": email}
+              console.log(body)
+              emailPassword(body)
+              .then((response)=>{
+                     console.log(response.data)
+              })
+              .catch((error)=>{
+                     setErrorMessage(error.response)
+              })
+       }
+
        const validateForm = (passInput, confirmPassInput, codeInput)=>{
               if ( codeInput == '' || confirmPassInput == '' || passInput == ''){
-                     console.log('yes')
                      setErrorMessage('Please fill in all required fields.')
-                     console.log(passInput, confirmPassInput, codeInput)
+              }else{
                      if (passInput !== confirmPassInput){
                             setErrorMessage('Passwords must match.')
                      }else{
-                            // setErrorMessage('')
+                            setErrorMessage('')
                             changePass()
                      }
               }
@@ -41,13 +53,15 @@ function ChangePassModal(props) {
               changePassword(body)
               .then((response)=>{
                     console.log(response)
+                    window.location.reload()
               })
               .catch((error)=>{
-                     console.log(error)
+                     setErrorResponse(error.response.data.Error)
               })
        }
 
        useEffect(()=>{
+              sendCode(props.email)
               let body = {"access_token": user.access_token}
               getUser(body)
               .then((response)=>{
@@ -88,6 +102,7 @@ function ChangePassModal(props) {
                                                         </div>
                                                         <div>
                                                                {errorMessage?<div>{errorMessage}</div>:null}
+                                                               {errorResponse?<div>{errorResponse}</div>:null}
                                                         </div>
                                                         <div className={styles.buttonContainer}>
                                                                <div onClick={()=>validateForm(passInput, confirmPassInput, codeInput)}className={styles.submitButton}>

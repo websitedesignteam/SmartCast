@@ -71,7 +71,7 @@ const SpecialUserPanel=(props)=> {
                                    </div>
                                    </div>
                                    <div className={styles.bottomSection}>
-                                   {transcriptionRequests.map((transcriptionRequest, index)=>{return <Transcriptions key={index} time={transcriptionRequest.episodeLength} episodeID={transcriptionRequest.episodeID} podcastID={transcriptionRequest.podcastID} access_token={user.access_token}/>})}
+                                   {Object.keys(transcriptionRequests[0]).length !== 0 ? transcriptionRequests.map((transcriptionRequest, index)=>{return <Transcriptions key={index} time={transcriptionRequest.episodeLength} episodeID={transcriptionRequest.episodeID} podcastID={transcriptionRequest.podcastID} access_token={user.access_token}/>}):<div>No Transcription Requests</div>}
                                    </div>
                             </div>
                      )
@@ -91,7 +91,7 @@ const SpecialUserPanel=(props)=> {
                                    </div>
                                    </div>
                                    <div className={styles.bottomSection}>
-                                   {transcriptionEdits.map((edit, index)=>{return <Edits key={index} podcastID={edit.podcastID} episodeID={edit.episodeID} beforeText={edit.transcribedText} afterText={edit.requestedEdit}/>})}
+                                   {Object.keys(transcriptionEdits[0]).length !== 0 ? transcriptionEdits.map((edit, index)=>{return <Edits key={index} podcastID={edit.podcastID} episodeID={edit.episodeID} beforeText={edit.transcribedText} afterText={edit.requestedEdit}/>}): <div>No Transcription Edits</div>}
                                    </div>
                             </div>
                      )
@@ -129,7 +129,7 @@ const SpecialUserPanel=(props)=> {
                                    </div>
                                    </div>
                                    <div className={styles.bottomSection}>
-                                   {transcriptionRequests.map((transcriptionRequest, index)=>{return <Transcriptions key={index} time={transcriptionRequest.episodeLength} episodeID={transcriptionRequest.episodeID} podcastID={transcriptionRequest.podcastID} access_token={user.access_token}/>})}
+                                   {transcriptionRequests? transcriptionRequests.map((transcriptionRequest, index)=>{return <Transcriptions key={index} time={transcriptionRequest.episodeLength} episodeID={transcriptionRequest.episodeID} podcastID={transcriptionRequest.podcastID} access_token={user.access_token}/>}): null}
                                    </div>
                             </div>
                      )

@@ -13,9 +13,9 @@
 .genreSection{
        display: flex;
        flex-direction: column;
-       min-height: 40vh;
+       max-height: 40vh;
        width: 100%;
-       overflow: hidden;
+       overflow: scroll;
        background: url('../../watermarkSuperLight.svg');
        background-position: center;
        background-size: cover;
@@ -33,6 +33,7 @@
        margin: 0 auto;
        padding: 0.5rem;
        justify-content: center;
+       margin-bottom: 5px;
 
 }
 
@@ -55,10 +56,13 @@
        flex-direction: row;
        justify-content: center;
        flex-wrap: wrap;
+       margin: 0px 25px 25px 25px;
+
 }
 
 .skew{
        display: flex;
        justify-content: center;
        margin-top: 15px;
+       color: grey;
 }

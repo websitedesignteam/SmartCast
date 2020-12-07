@@ -6,6 +6,7 @@ import Search from './component/Search/Search';
 import Podcast from './page/Podcast/Podcast';
 import Episode from './page/Episode/Episode';
 import Home from './page/Home/Home';
+import Landing from './page/Landing/Landing'
 import Genres from './page/Genres/Genres';
 import SearchPage from './page/Search/SearchPage';
 import UserProfile from './page/Profile/UserProfile'
@@ -139,11 +140,6 @@ function App() {
   return (
     <div className="App">
       <Router>
-        <Navbar logoutUser={logoutUser} openAuthModal={openAuthModal} user={user}/>
-        
-        {audio.audioUrl && 
-            <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
-
         <div className="App-content" ref={appRef}>  
           {(authModalState.isActive && !user.access_token) && 
             <>
@@ -155,16 +151,36 @@ function App() {
           }
 
           <Switch>
-            <Route exact path="/" render={routeProps => 
+          <Route exact path="/home"
+              render={routeProps =>
               <>
+              <Navbar logoutUser={logoutUser} openAuthModal={openAuthModal} user={user}/>
+        
+        {audio.audioUrl && 
+            <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
                 <Search {...routeProps} /> 
                 <Home {...routeProps} />
+              </>
+            }/>
+
+            <Route exact path="/" render={routeProps => 
+              <>
+                <Redirect {...routeProps} to="/welcome" /> 
+              </>
+            } />
+            <Route exact path="/welcome" render={routeProps => 
+              <> 
+                <Landing {...routeProps}/>
               </>
             } />
 
             <Route exact path="/auth/:authType"
               render={routeProps =>
               <>
+              <Navbar logoutUser={logoutUser} openAuthModal={openAuthModal} user={user}/>
+        
+        {audio.audioUrl && 
+            <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
                 {!!user.access_token 
                 ? <Redirect {...routeProps} to="/" /> 
                 :<div className="App-background">
@@ -176,6 +192,10 @@ function App() {
             <Route exact path="/profile" 
              render={routeProps =>
               <>
+              <Navbar logoutUser={logoutUser} openAuthModal={openAuthModal} user={user}/>
+        
+        {audio.audioUrl && 
+            <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
               {!user.access_token ? <Redirect {...routeProps} to="/" /> : <UserProfile {...routeProps} />}
               </>
              }
@@ -184,6 +204,10 @@ function App() {
             <Route exact path="/genres"
               render={routeProps =>
               <>
+              <Navbar logoutUser={logoutUser} openAuthModal={openAuthModal} user={user}/>
+        
+        {audio.audioUrl && 
+            <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
                 <Search {...routeProps} />
                 <Genres {...routeProps} />
               </>
@@ -192,6 +216,10 @@ function App() {
             <Route exact path="/genres/:genreName2/:genreName" component={Genres}
               render={routeProps =>
               <>
+              <Navbar logoutUser={logoutUser} openAuthModal={openAuthModal} user={user}/>
+        
+        {audio.audioUrl && 
+            <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
               <Search {...routeProps} />
               <Genres {...routeProps} />
               </>
@@ -200,6 +228,10 @@ function App() {
             <Route exact path="/search/results/:searchTerm/:searchType"
               render={routeProps =>
               <>
+              <Navbar logoutUser={logoutUser} openAuthModal={openAuthModal} user={user}/>
+        
+        {audio.audioUrl && 
+            <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
               <Search {...routeProps}/>
               <SearchPage {...routeProps}/>
               </>
@@ -208,6 +240,10 @@ function App() {
             <Route exact path="/podcast/:podcastID/episode/:episodeID" 
               render={routeProps =>
               <>
+              <Navbar logoutUser={logoutUser} openAuthModal={openAuthModal} user={user}/>
+        
+        {audio.audioUrl && 
+            <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
                 <Search {...routeProps} />
                 <Episode {...routeProps} setUser={setUser} openAudioPlayer={openAudioPlayer} user={user} validateToken={validateToken} />
               </>
@@ -216,6 +252,10 @@ function App() {
             <Route exact path="/podcast/:podcastID"
               render={routeProps =>
               <>
+              <Navbar logoutUser={logoutUser} openAuthModal={openAuthModal} user={user}/>
+        
+        {audio.audioUrl && 
+            <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
               <Search {...routeProps} />
               <Podcast {...routeProps} user={user} validateToken={validateToken} setUser={setUser} />
               </>
