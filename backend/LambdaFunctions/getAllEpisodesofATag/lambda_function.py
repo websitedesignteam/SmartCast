@@ -50,6 +50,7 @@ def lambda_handler(event, context):
         
         if ("tag" in body):
             tag = str(body["tag"])
+            tag = tag.lower()
             
         data = getAllEpisodesofATag(ML_Tag_Search_Table, tag)
         
