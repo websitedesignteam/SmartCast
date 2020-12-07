@@ -9,9 +9,10 @@ import {baseUrl, errorSearch} from "../../utils/constants";
 function SearchPage(props) {
 	const { searchTerm, searchType } = useParams();
 
-	const [episodes, setEpisodes] = useState([])
-	const [podcasts, setPodcasts] = useState([])
-	const [isLoading, setIsLoading] = useState(false)
+	const [episodes, setEpisodes] = useState([]);
+	const [podcasts, setPodcasts] = useState([]);
+	const [isLoading, setIsLoading] = useState(false);
+	const [podcastPage, setPodcastPage] = useState(1);
 
 	useEffect(() => {
 		setIsLoading(true);
@@ -46,37 +47,55 @@ function SearchPage(props) {
 				console.log(error);
 			});
 		}
-	}, [searchTerm, searchType])
+	}, [searchTerm, searchType, podcastPage])
+
+	const onClickLastPage = () => {
+		(podcastPage > 1) && setPodcastPage(podcastPage-1);
+	}
+
+	const onClickNextPage = () => {
+		setPodcastPage(podcastPage+1);
+		setIsLoading(true);
+	}
 
 	if (isLoading === false){
 		if ((searchType === 'episodes' || searchType === 'tags') && episodes.length > 1){
-			return( <div>
-				<h4>{searchType === 'tags' && "Transcribed"}
-					Episode Results for: "{searchTerm}"</h4>
-				<div className={styles.cardContainer}>{episodes.map((episode)=>{
-					return (
-						(searchType === 'tags') 
-						? <Link to={{
-							pathname: `/podcast/${episode.podcastID}/episode/${episode.episodeID}`,
-							episode,
-							}} 
-							className={styles.link}
-						>
-							<EpisodeContainer 
-								episodeTitle={episode.episodeTitle}
-								episodeDescription={episode.episodeDescription}
-								imgSrc={episode.episodeImage}
-							/>
-						</Link> 
-						: <Link to={`/podcast/${episode.podcastID}/episode/${episode.episodeID}`} className={styles.link}>
-							<EpisodeContainer 
-								episodeTitle={episode.episodeTitle}
-								episodeDescription={episode.episodeDescription}
-								imgSrc={episode.episodeImage}
-							/>
-						</Link> 
-					)
-				})}</div>
+			return( 
+				<div>
+					<h4>{searchType === 'tags' && "Transcribed"}
+						Episode Results for: "{searchTerm}"</h4>
+					<div className={styles.cardContainer}>{episodes.map((episode)=>{
+						return (
+							(searchType === 'tags') 
+							? <Link to={{
+								pathname: `/podcast/${episode.podcastID}/episode/${episode.episodeID}`,
+								episode,
+								}} 
+								className={styles.link}
+							>
+								<EpisodeContainer 
+									episodeTitle={episode.episodeTitle}
+									episodeDescription={episode.episodeDescription}
+									imgSrc={episode.episodeImage}
+								/>
+							</Link> 
+							: <Link to={`/podcast/${episode.podcastID}/episode/${episode.episodeID}`} className={styles.link}>
+								<EpisodeContainer 
+									episodeTitle={episode.episodeTitle}
+									episodeDescription={episode.episodeDescription}
+									imgSrc={episode.episodeImage}
+								/>
+							</Link> 
+						)
+					})}
+					</div>
+					{searchType === 'episodes' &&
+					<div className={styles.pageButtons}>
+					{ podcastPage > 1 &&
+						<button onClick={onClickLastPage}><img className={styles.lastPage} src={baseUrl + "/assets/button/page-back.png"} alt="Previous Page" title="Go to previous page"/></button>}
+						<button onClick={onClickNextPage}><img className={styles.nextPage} src={baseUrl + "/assets/button/page-next.png"} alt="Next Page" title="Go to next page"/></button>
+					</div>
+					}
 				</div>)
 		} else if (searchType === 'podcasts' && podcasts.length > 1){
 			return( <div>
@@ -93,6 +112,11 @@ function SearchPage(props) {
 						</Link>
 					)
 				})}</div>
+				<div className={styles.pageButtons}>
+				{ podcastPage > 1 &&
+					<button onClick={onClickLastPage}><img className={styles.lastPage} src={baseUrl + "/assets/button/page-back.png"} alt="Previous Page" title="Go to previous page"/></button>}
+					<button onClick={onClickNextPage}><img className={styles.nextPage} src={baseUrl + "/assets/button/page-next.png"} alt="Next Page" title="Go to next page"/></button>
+				</div>
 			</div>)
 
 		} else {
