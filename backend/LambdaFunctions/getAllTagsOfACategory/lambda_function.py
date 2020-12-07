@@ -30,7 +30,7 @@ def getAllTagsOfACategory(ML_Category_Table, ML_Tag_Search_Table, category):
                     episodes = item2["episodes"]
     
                     tagObject = {}
-                    tagObject["tag"] = tag
+                    tagObject["tag"] = tag.title()
                     tagObject["image"] = ""
                     tagObject["episodeCount"] = len(episodes)
                     returnList.append(tagObject)
