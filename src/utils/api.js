@@ -39,9 +39,12 @@ const emailPassword = (data) => postAPI(`/forgotpassword`, data)
 const favoriteAPodcast = (data) => postAPI(`/favoriteapodcast`, data)
 const updateBio = (data)=> putAPI(`/updatebio`, data)
 const updateProfilePicture = (data)=> putAPI(`/updateprofilepicture`, data)
+const getAllUsers = (data) => postAPI(`/getallusers`, data)
+const changeStatus = (data) => postAPI(`/changestatus`, data)
+const approveEdits = (data) => postAPI( `/approveedits`, data)
 
 //episode
-const getEpisode = (data) => postAPI(`/getepisode`, data);
+const getEpisode = (data) => postAPI('/getepisode', data);
 const postTranscribeEpisode = (data) => postAPI(`/posttranscribeepisode`, data);
 const getTranscribeUpdate = (data) => postAPI(`/gettranscribeupdate`, data);
 const postRequestTranscription = (data) => postAPI(`/requesttranscription`, data);
@@ -82,5 +85,8 @@ export {
     emailPassword,
     favoriteAPodcast,
     updateBio,
-    updateProfilePicture
+    updateProfilePicture,
+    getAllUsers,
+    changeStatus,
+    approveEdits
 }

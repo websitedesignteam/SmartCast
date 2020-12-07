@@ -15,6 +15,10 @@ function SearchResults(props) {
        const sendToEpisode = (podcastID, episodeID) =>{
               history.push(`/podcast/${podcastID}/episode/${episodeID}`)
        }
+       const sendToPodcast = (podcastID) =>{
+              history.push(`/podcast/${podcastID}`)
+       }
+
 
        return (
               <div className={styles.container}>
@@ -22,7 +26,7 @@ function SearchResults(props) {
                             <div className={styles.innerContainer}>
                                    <div className={styles.upperPart}>
                                           <div>
-                                          Results: ({episodeData.length})
+                                          Podcast Results: ({episodeData.length})
                                           </div>
                                           <div className={styles.closeButton} onClick={()=>closeModal()}>
                                           X

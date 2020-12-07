@@ -20,7 +20,6 @@
 .thumbnailWrapper{
        display: inline-block;
        text-align: center;
-       min-width: 100px;
 }
 
 .fancyBottom{
@@ -32,8 +31,40 @@
 }
 
 .content{
+       display: flex;
+       flex-direction: row;
        border-bottom: none;
        -webkit-box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.25);
        -moz-box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.25);
        box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.25);
+}
+
+.podcastName{
+       cursor: pointer;
+       margin-left: 5px;
+}
+
+.removeButton{
+       cursor: pointer;
+       margin-left: 25px;
+       display: flex;
+       align-items: center;
+       padding: 0px 5px 0px 5px;
+
+}
+
+#trashCan{
+       width: 20px;
+       height: 20px;
+       color: red;
+       opacity: .3;
+}
+
+#trashCan:hover{
+       opacity: 1;
+       color: darkred;
+}
+
+.trashCanContainer{
+       display: flex;
 }

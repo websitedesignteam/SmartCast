@@ -239,7 +239,7 @@ function Episode({validateToken, ...props}) {
     }, [currentEpisode]);
 
     useEffect(()=> {
-        if (!submittedReview) return;
+        if (!submittedReview || !access_token) return;
         getUser({access_token})
         .then((response) => {
             const userData = response.data;
@@ -253,7 +253,7 @@ function Episode({validateToken, ...props}) {
         .catch((error) => {
             console.log(error);
         });
-    }, [submittedReview])
+    }, [submittedReview, access_token])
 
     return (
         <div className={styles.episodeContainer}>

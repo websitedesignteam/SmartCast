@@ -31,3 +31,11 @@
        page-break-inside: avoid; /* Firefox */
             break-inside: avoid; /* IE 10+ */
 }
+
+.specialDutiesContainer{
+       display: flex;
+       flex-direction: column;
+       justify-content: center;
+       margin-left: 200px;
+       margin-top:15px;
+}

@@ -12,17 +12,18 @@ const ProfilePicture=(props)=> {
               reader.readAsDataURL(file)
               reader.onload = () =>{
                      var base64= reader.result.replace(/^data:image.+;base64,/, '')
+                     console.log(base64)
                      setB64(base64);
                      props.grabB64(base64)
               }
        };
 
        const handleChoice =(e)=>{
-              if (e.target.files[0].type != 'image/png' || 'image/jpg'){
-                     props.updateError('Please upload either a .png or .jpg!')
-              }else{
+              if (e.target.files[0].type === 'image/png' || 'image/jpg'){
                      imgToB64(e.target.files[0])
                      props.updateError('')
+              }else{
+                     props.updateError('Please upload either .png or .jpg!')
               }
        }
       

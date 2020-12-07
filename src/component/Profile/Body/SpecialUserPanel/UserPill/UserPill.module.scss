@@ -1,0 +1,50 @@
+.container{
+       display: inline-flex;
+       flex-direction: row;
+       border: 1px solid rgba(211, 211, 211, 0.29);
+       border-radius: 5px;
+       margin: 5px;
+       -webkit-box-shadow: 5px 5px 6px -4px rgba(0,0,0,0.1); 
+       box-shadow: 5px 5px 6px -4px rgba(0,0,0,0.1);
+}
+
+.profilePicture{
+       width: 50px;
+       height:50px;
+       border-radius: 50%;
+}
+
+.rightSide{
+       display: inline-flex;
+       flex-direction: column;
+       padding: 15px;
+       width: 250px;
+}
+
+.leftSide{
+       display: flex;
+       flex-direction: column;
+       justify-content: center;
+       align-items: center;
+       padding: 0px 25px 0px 25px;
+       min-width: 75px;
+}
+
+.button{
+       border: 1px solid lightgreen;
+       padding: 0px 5px 0px 5px;
+       align-self: flex-end;
+       font-size: 12px;
+       cursor: pointer;
+
+}
+
+.infoContainer{
+       line-height: 20px;
+       text-align: left;
+       margin-bottom:10px;
+}
+
+#transcriptionsEdited{
+       font-size:14px;
+}

@@ -6,4 +6,7 @@
 
 .moderatorDuties{
        margin-left: 15px;
+       width: 100%;
+       display: flex;
+
 }

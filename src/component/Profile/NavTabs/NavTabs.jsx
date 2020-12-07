@@ -10,7 +10,7 @@ const NavTabs=(props)=> {
 
        // const [userStatus, setUserStatus] = useState(props.userStatus)
 
-       if (props.userStatus === 'admin'){
+       if (props.userStatus === 'admin' || 'moderator'){
               return (
               <div className={styles.container}>
                      <div className={styles.avatarContainer}>
