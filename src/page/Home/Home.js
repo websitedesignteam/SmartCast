@@ -97,6 +97,7 @@ function Home(props) {
                           <div className={styles.genreSection}>
                                  <div className={styles.subGenre}>
                                         <div className={styles.skew}>
+                                               Choose from our categories below:
                                         </div>
                                         <div className={styles.thumbnailContainer}>
                                           {categories.map((category, index)=><div key={category} onClick={() => getTags(category)}><TagPill key={category} label={category}/></div>)}
