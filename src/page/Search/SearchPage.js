@@ -105,6 +105,11 @@ function SearchPage(props) {
 						<button onClick={onClickNextPage}><img className={styles.nextPage} src={baseUrl + "/assets/button/page-next.png"} alt="Next Page" title="Go to next page"/></button>
 					</div>
 					}
+					{!!searchContext.disableCheckbox && 
+						<button className={styles.errorShowMore} onClick={onClickShowMore}>
+							Not satisfied with the results? Click here to show more results
+						</button>
+					}
 				</div>)
 		} else if (searchType === 'podcasts' && podcasts.length > 1){
 			return( <div className={styles.container}>
@@ -126,6 +131,11 @@ function SearchPage(props) {
 					<button onClick={onClickLastPage}><img className={styles.lastPage} src={baseUrl + "/assets/button/page-back.png"} alt="Previous Page" title="Go to previous page"/></button>}
 					<button onClick={onClickNextPage}><img className={styles.nextPage} src={baseUrl + "/assets/button/page-next.png"} alt="Next Page" title="Go to next page"/></button>
 				</div>
+				{!!searchContext.disableCheckbox && 
+						<button className={styles.errorShowMore} onClick={onClickShowMore}>
+							Not satisfied with the results? Click here to show more results
+						</button>
+				}
 			</div>)
 
 		} else {

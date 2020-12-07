@@ -403,7 +403,7 @@ function Episode({validateToken, user, setUser, ...props}) {
                                 </div>}
 
                                 { (currentEpisode.transcribedStatus === "IN PROGRESS") && 
-                                <div className="loaderSmall">loading...</div>}
+                                <div className="loaderSmall"></div>}
                             </div>
                         </div>
                     </div>

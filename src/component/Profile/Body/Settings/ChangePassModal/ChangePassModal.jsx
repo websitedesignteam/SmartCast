@@ -90,11 +90,11 @@ function ChangePassModal(props) {
                                                  <div className={styles.form}>
                                                         <div className={styles.containers}>
                                                                <label>New Password:</label>
-                                                               <input onChange={(e)=>setPassInput(e.target.value)}></input>
+                                                               <input onChange={(e)=>setPassInput(e.target.value)} type="password"></input>
                                                         </div>
                                                         <div className={styles.containers}>
                                                                <label>Confirm Password:</label>
-                                                               <input onChange={(e)=>setConfirmPassInput(e.target.value)}></input>
+                                                               <input onChange={(e)=>setConfirmPassInput(e.target.value)} type="password"></input>
                                                         </div>
                                                         <div className={styles.containers}>
                                                                <label>Code:</label>
