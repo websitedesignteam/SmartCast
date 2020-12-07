@@ -21,7 +21,7 @@ function EpisodeCard({episode, ...props}) {
                 </div>
                 <div className={styles["episode-rating"]}>
                     <StarRatings rating={episode.averageRating} starRatedColor="gold" starDimension="16px" starSpacing=".5px" />
-                    ({episode.totalReviews})
+                    ({episode.totalReviews ?? 0})
                 </div>
             </div>
         </div>

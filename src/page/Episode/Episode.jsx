@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams } from "react-router-dom";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -8,19 +8,30 @@ import {
     postRequestTranscription, 
     postEditTranscription, 
     putSubmitReview,
-    getUser
+    getUser,
+    postFavoritePodcast,
 } from '../../utils/api';
-import { useIsActive } from '../../hooks';
+import { useIsActive, useOnClickOutside } from '../../hooks';
 import { Review, ReviewFeed } from "../../component/Episode"
-import { SectionContainer } from "../../component/Podcast"
-import { baseUrl, errorEpisode } from "../../utils/constants";
-import { formatEpisodeLength } from "../../utils/helper";
+import { Modal, SectionContainer } from "../../component/Podcast"
+import { 
+    baseUrl, 
+    errorEpisode, 
+    podcastCommands, 
+    podcastDisclaimer, 
+    errorFavoritePodcast 
+} from "../../utils/constants";
+import { 
+    formatEpisodeLength, 
+    isInFavoritePodcasts, 
+    getNameInFavoritePodcasts 
+} from "../../utils/helper";
 import styles from "./Episode.module.scss";
 
-function Episode({validateToken, ...props}) {
+function Episode({validateToken, user, setUser, ...props}) {
     //vars
     const { episodeID, podcastID } = useParams();
-    const { access_token, ratings } = props.user;
+    const { access_token, ratings, favoritePodcasts } = user;
 
     //states
     const [isLoading, setIsLoading] = useState(false);
@@ -31,9 +42,18 @@ function Episode({validateToken, ...props}) {
     const [editTranscription, setEditTranscription] = useState("");
     const showDescription = useIsActive(true);
     const showTranscription = useIsActive(true);
-
-    //util states 
+    const favoritePodcast = useIsActive();
+    const inputModalState = useIsActive();
+    const [inputFavoritePodcast, setInputFavoritePodcast] = useState({podcastName: "", command: ""});
+    const [errorInputMessage, setErrorInputMessage] = useState("");
     const openEditor = useIsActive();
+
+    	//refs
+	const inputModalRef = useRef();
+	useOnClickOutside(inputModalRef, () => {
+		inputModalState.deactivate();
+		setErrorInputMessage("");
+	});
 
     //api calls
     const getEpisodeAPI = () => {
@@ -41,7 +61,13 @@ function Episode({validateToken, ...props}) {
         getEpisode(data)
         .then((response) => {
             const episodeData = response.data.Data;
-        
+            const podcastCommand = isInFavoritePodcasts(podcastID, favoritePodcasts) ? "unfavorite" : "favorite";
+            const podcastNameInFavorites = getNameInFavoritePodcasts(podcastID, favoritePodcasts);
+			setInputFavoritePodcast({
+				podcastName: podcastNameInFavorites ?? episodeData.podcastTitle,
+				command: podcastCommands[podcastCommand],
+            });
+            (podcastCommand === "unfavorite") ? favoritePodcast.activate() : favoritePodcast.deactivate();
             if (episodeData?.transcribedStatus === "COMPLETED") {
                 setEditTranscription(episodeData.transcribedText);
             }
@@ -52,6 +78,35 @@ function Episode({validateToken, ...props}) {
             setErrorMessage(errorEpisode);
         });
     };
+
+    const postFavoritePodcastAPI = () => {
+		setIsLoading(true);
+		const data = {
+			access_token,
+			podcastID,
+			...inputFavoritePodcast,
+		}
+		postFavoritePodcast(data)
+		.then((response) => {
+			setIsLoading(false);
+			const podcastCommand = (inputFavoritePodcast.command === "favorite") ? "unfavorite" : "favorite";
+			setInputFavoritePodcast({
+				...inputFavoritePodcast,
+				command: podcastCommands[podcastCommand]
+			})
+			alert(response.data.Data);
+			favoritePodcast.toggle();
+			inputModalState.deactivate();
+		})
+		.catch((error) => {
+			setIsLoading(false);
+			if (error?.data?.Error) {
+				alert(error.data.Error);
+			} else {
+				alert(error);
+			}
+		})
+	}
 
     const getTranscribeUpdateAPI = () => {
         const data = { episodeID, podcastID }
@@ -186,6 +241,23 @@ function Episode({validateToken, ...props}) {
         });
     }
 
+    const getUserAPI = () => {
+		getUser({access_token})
+        .then((response) => {
+            const userData = response.data;
+            const allUserData = { 
+                ...user,
+                ...userData, 
+            }
+            localStorage.setItem("user", JSON.stringify(allUserData));
+            setUser(allUserData);
+            // history.go(0);
+        })
+        .catch((error) => {
+        	console.log(error);
+        });
+	}
+
     //utils 
     const openTranscription = () => {
        openEditor.activate();
@@ -219,24 +291,51 @@ function Episode({validateToken, ...props}) {
         props.openAudioPlayer(audio);
     }
 
+    const onClickFavorite = () => {
+		inputModalState.activate();
+	}
+
+    const onSubmitFavorite = () => {
+		if (currentEpisode.podcastTitle !== inputFavoritePodcast.podcastName) {
+			postFavoritePodcastAPI();
+		}
+		else {
+			setErrorInputMessage(errorFavoritePodcast);
+		}
+    }
+    
+    function onChangeInput(event) {
+        setInputFavoritePodcast({
+			...inputFavoritePodcast, 
+			podcastName: event.target.value
+		});
+    }
+
     //api call to get episode
     useEffect(() => {
         getEpisodeAPI();
     }, []);
 
-    useEffect(() => {
+	useEffect(() => {
 		if (!!access_token) {
 			validateToken();
+			getUserAPI();
 		}
-	}, [access_token]);
+    }, [access_token]);
+    
+    useEffect(()=> {
+        if (!isLoading || !access_token) return;
+        getUserAPI();
+	}, [isLoading])
 
     useEffect(() => {
+        if (!isLoadingReview) return;
         if (!!currentEpisode?.transcribedStatus && 
             (currentEpisode?.transcribedStatus !== "NOT TRANSCRIBED" 
             && currentEpisode?.transcribedStatus !== "COMPLETED")){ 
             getTranscribeUpdateAPI();
         }
-    }, [currentEpisode]);
+    }, [currentEpisode, isLoadingReview]);
 
     useEffect(()=> {
         if (!submittedReview || !access_token) return;
@@ -244,7 +343,7 @@ function Episode({validateToken, ...props}) {
         .then((response) => {
             const userData = response.data;
             const allUserData = { 
-                ...props.user,
+                ...user,
                 ...userData, 
             }
             localStorage.setItem("user", JSON.stringify(allUserData));
@@ -257,6 +356,17 @@ function Episode({validateToken, ...props}) {
 
     return (
         <div className={styles.episodeContainer}>
+            {(inputModalState.isActive) && 
+			<div className={styles.podcastModal} ref={inputModalRef}>
+				<Modal 
+					input={inputFavoritePodcast.podcastName} 
+					onChangeInput={onChangeInput} 
+					isLoading={isLoading} 
+					onSubmitFavorite={onSubmitFavorite}
+					errorInputMessage={errorInputMessage}
+					podcastDisclaimer={podcastDisclaimer}
+				/>
+			</div>}
             { (currentEpisode && !errorMessage) 
             ? <> 
                 <div className={styles.desktopTop}>
@@ -291,7 +401,25 @@ function Episode({validateToken, ...props}) {
                         </div> 
 
                         <SectionContainer label="Podcast">
-                            <Link to={`/podcast/${currentEpisode.podcastID}`} className={styles.link}>{currentEpisode.podcastTitle}</Link>
+                            <div className={styles.podcastTitle}>
+                                <Link to={`/podcast/${currentEpisode.podcastID}`} className={styles.link}>{currentEpisode.podcastTitle}</Link>
+                                <button 
+                                    className={styles.podcastFavorite} 
+                                    onClick={favoritePodcast.isActive ? postFavoritePodcastAPI : onClickFavorite}
+                                    title={(!access_token) 
+                                        ? "Sign in to add to your Favorites" 
+                                        : favoritePodcast.isActive 
+                                        ? "Remove from Favorites" 
+                                        : "Favorite Podcast"
+                                    }
+                                    disabled={!access_token || !!isLoading}
+                                >
+                                    <img 
+                                        src={baseUrl + (favoritePodcast.isActive ? "/assets/button/heart-fill.svg" : "/assets/button/heart.svg")} 
+                                        alt=""
+                                    />
+                                </button>
+                            </div>
                         </SectionContainer>
 
                         { currentEpisode.podcastPublisher &&
@@ -321,21 +449,10 @@ function Episode({validateToken, ...props}) {
                     
                         <SectionContainer label="Transcription">
                             <div className={styles.dataTitleTranscription}>
-                                {/* <div className={styles.dataTitleLeft}>
-                                <button className={styles.showMore} onClick={()=> showTranscription.toggle()}>
-									<img 
-										src={baseUrl + "/assets/button/show-more.png"} 
-										alt={showTranscription.isActive ? "Hide Transcription" : "Show Transcription"}
-										className={showTranscription.isActive && styles.rotate}  
-									/>
-								</button>
-                                <strong>Transcription</strong>
-                                </div> */}
-                                <div className={styles.dataTitleLeft} />
+                                <div className={styles.dataTitleRight} />
                                 {(!!currentEpisode.transcribedText) && 
-                                <div className={styles.dataTitleRight}>
                                     <div className={styles.editTranscriptionButtons}>
-                                    {(!!currentEpisode.transcribedText && openEditor.isActive && !!props.user.access_token)
+                                    {(!!currentEpisode.transcribedText && openEditor.isActive && !!user.access_token)
                                     ? <>
                                         <button className={styles.editTranscription} onClick={closeTranscription} title="Close Editor and Remove Changes">Cancel</button> 
                                         <button className={styles.editTranscription} onClick={saveTranscription} title="Save Your Current Changes on This Page">Save <img src={baseUrl + "/assets/button/save.svg"} alt=""/></button> 
@@ -346,29 +463,31 @@ function Episode({validateToken, ...props}) {
                                     : <button 
                                         className={styles.editTranscription} 
                                         onClick={openTranscription} 
-                                        disabled={!props.user.access_token || currentEpisode.transcribedStatus === "EDIT IN PROGRESS"} 
-                                        title={(!props.user.access_token) 
+                                        disabled={!user.access_token || currentEpisode.transcribedStatus === "EDIT IN PROGRESS"} 
+                                        title={(!user.access_token) 
                                             ? "Login to Edit Transcription" 
                                             : (currentEpisode.transcribedStatus === "EDIT IN PROGRESS") 
                                             ? "Transcription Edit in Progress Already"
                                             : "Edit Episode Transcription"}
                                     >
                                         Edit 
-                                        <img className={(!props.user.access_token || currentEpisode.transcribedStatus === "EDIT IN PROGRESS") && styles.disabled} src={baseUrl + "/assets/button/edit.svg"} alt=""/>
+                                        <img className={(!user.access_token || currentEpisode.transcribedStatus === "EDIT IN PROGRESS") && styles.disabled} src={baseUrl + "/assets/button/edit.svg"} alt=""/>
                                     </button> 
                                     }
                                     </div>
-                                </div>}
+                                }
                             </div>
                             { (showTranscription.isActive && !openEditor.isActive) && 
                                 <p className={styles.episodeTranscription} dangerouslySetInnerHTML={{__html: currentEpisode.transcribedText || "No Transcription Available Yet" }}></p>
                             }                       
 
-                            { (openEditor.isActive && !!props.user.access_token) &&
+                            { (openEditor.isActive && !!user.access_token) &&
+                            <div className = {styles.transcriptionEditor}>
                             <ReactQuill 
                                 name="editTranscription"
                                 value={editTranscription}
                                 onChange={onChangeEditTranscription} /> 
+                            </div>
                             }
                         </SectionContainer>
                     </div>

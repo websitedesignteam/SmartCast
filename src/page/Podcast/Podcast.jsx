@@ -49,7 +49,7 @@ function Podcast({user, validateToken, setUser, ...props}) {
 				podcastName: podcastNameInFavorites ?? podcastData.podcastTitle,
 				command: podcastCommands[podcastCommand],
 			});
-			(podcastCommand === "unfavorite") && favoritePodcast.activate();
+			(podcastCommand === "unfavorite") ? favoritePodcast.activate() : favoritePodcast.deactivate();
 		})
 		.catch((error) => {
 			console.log(error);
