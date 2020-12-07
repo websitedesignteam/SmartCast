@@ -33,7 +33,7 @@ function SearchResults(props) {
                                           </div>
                                    </div>
                                    <div className={styles.lowerPart}>
-                                          {episodeData.map((episode, index)=><div className={styles.resultsPill}onClick={()=>sendToPodcast(episode.podcastID)}><ResultsPill podcastTitle={episode.podcastTitle} label={episode.episodeTitle} episodeThumbnail={episode.episodeThumbnail}/></div>)}
+                                          {episodeData.map((episode, index)=><div className={styles.resultsPill}onClick={()=>sendToEpisode(episode.podcastID, episode.episodeID)}><ResultsPill podcastTitle={episode.podcastTitle} label={episode.episodeTitle} episodeThumbnail={episode.episodeThumbnail}/></div>)}
                                    </div>
                             </div>
                      </div>

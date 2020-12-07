@@ -7,8 +7,8 @@ function FavoritesThumbnail(props) {
        return (
               <div className={styles.thumbnailWrapper}>
                     <div className={styles.content}>
-                           <p>{props.podcastName}</p>
-                           <p onClick={props.unFavoritePodcast}>
+                           <p className={styles.podcastName} onClick={props.sendToPodcast}>{props.podcastName}</p>
+                           <p className={styles.removeButton} onClick={props.unFavoritePodcast}>
                                   X
                            </p>
                     </div>

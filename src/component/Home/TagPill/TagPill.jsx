@@ -6,10 +6,11 @@ const TagPill=(props)=> {
               return (
                      <div className={styles.pillContainerResult}>
                             <div className={styles.contentContainerResult}>
-                                   <div className={styles.label}>
+                                   <div className={styles.labelCount}>
                                           {props.label}
                                    </div>
                                    <div className={styles.countResult}>
+                                          Episodes: {props.count}
                                    </div>
                             </div>
                      </div>

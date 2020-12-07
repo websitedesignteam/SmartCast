@@ -1,0 +1,34 @@
+.topSection{
+       display: flex;
+       flex-direction: row;
+       border-bottom: 1px solid lightgray;
+       padding: 10px;
+       justify-content: center;
+}
+
+.buttons{
+       padding-left: 10px;
+       padding-right: 10px;
+       cursor: pointer;
+}
+
+.buttons:hover{
+       padding-left: 12px;
+       padding-right: 12px;
+       font-weight: bold;
+       color: purple;
+
+}
+
+.bottomSection{
+       display: flex;
+       flex-direction: column;
+       align-items: center;
+       margin-top:15px;
+}
+
+.wrapper{
+       display: flex;
+       flex-direction: column;
+       width: 550px;
+}

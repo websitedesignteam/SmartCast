@@ -19,9 +19,6 @@ const Transcripions=(props)=> {
        return (
               <div className={styles.transcriptionsContainer}>
                     <div className={styles.contentContainer}>
-                            <div className={styles.leftContent}>
-                                   <img className={styles.icon}src={window.location.origin + '/assets/temporaryIcons/sportsPodcastImg.png'}/>
-                           </div>
                            <div className={styles.middleContent}>
                                    <span>Transcription Time: {props.time}</span>
                            </div>

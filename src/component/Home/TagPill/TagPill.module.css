@@ -32,6 +32,14 @@
        display: inline-block;
        margin-bottom: 0;
        cursor: pointer;
+       font-size: 16px;
+}
+.labelCount{
+       display: inline-block;
+       margin-bottom: 0;
+       cursor: pointer;
+       font-size: 14px;
+       font-weight: 500;
 }
 
 .count{
@@ -47,7 +55,7 @@
        font-size: 1.1rem;
        margin: 0.25rem;
        cursor: pointer;
-       padding: 0.5rem;
+       padding: 0.2rem;
        /* -webkit-box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.45);
        -moz-box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.45);
        box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.45); */
@@ -58,7 +66,6 @@
        flex-direction: column;
        margin-bottom: 0;
        line-height: 18px;
-       text-align: center;
 }
 
 .label, .countResult{
@@ -68,4 +75,5 @@
 
 .countResult {
        font-size: 12px;
+       color: rgba(0, 0, 0, 0.609);
 }

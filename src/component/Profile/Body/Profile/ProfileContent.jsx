@@ -21,6 +21,7 @@ function ProfileContent(props) {
               favoriteAPodcast(favoriteBody)
               .then((response)=>{
                      console.log(response)
+                     window.location.reload()
               })
               .catch((error)=>{
                      console.log(error)
@@ -48,7 +49,7 @@ function ProfileContent(props) {
                             </SectionContainer>
                             <SectionContainer label='My Favorites'>
                                    <div className={styles.disclaimerContainer}>
-                                          {favorites.map((favorite, index)=><div onClick={()=>sendToPodcastPage(favorite.podcastID)}> <FavoritesThumbnail unFavoritePodcast={()=>unFavorite(favorite.podcastID, favorite.podcastName)}podcastName={favorite.podcastName}/></div>)}
+                                          {favorites.map((favorite, index)=><div className={styles.favoritesContainer}> <FavoritesThumbnail unFavoritePodcast={()=>unFavorite(favorite.podcastID, favorite.podcastName)} podcastName={favorite.podcastName} sendToPodcast={()=>sendToPodcastPage(favorite.podcastID)}/></div>)}
                                    </div>
                             </SectionContainer>
                      </div>

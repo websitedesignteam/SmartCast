@@ -3,18 +3,18 @@
 const { getAPI, postAPI, putAPI, PROXY_URL, API_URL } = require("./axios");
 
 //auth
-const postLogin = (data) => postAPI(`/login`, data);
+const postLogin = (data) => postAPI(PROXY_URL+API_URL+`/login`, data);
 const postSignup = (data) => postAPI(`/signup`, data);
 const postConfirmSignup = (data) => postAPI(`/confirmsignup`, data);
 const postForgotPassword = (data) => postAPI(`/forgotpassword`, data);
 const postConfirmPasswordReset = (data) => postAPI(`/confirmpasswordreset`, data);
-const getUser = (data) => postAPI(`/getuser`, data);
+const getUser = (data) => postAPI(PROXY_URL+API_URL+`/getuser`, data);
 const getTokenValidation = (data) => postAPI(`/checktokenvalidity`, data);
 const getNewToken = (data) => postAPI(`/refreshtoken`, data);
 
 //landing
 const getallCategories = () => getAPI(PROXY_URL+API_URL+`/getallcategories`); //CORS
-const getLatestComments = () => getAPI(`/getlatestcomments`);
+const getLatestComments = () => getAPI(PROXY_URL+API_URL+`/getlatestcomments`);
 const getallTagsofACategory = (data) => postAPI(PROXY_URL+API_URL+'/getalltagsofacategory', data); //CORS
 const getallEpisodesofATag = (data) => postAPI(PROXY_URL+API_URL+'/getallepisodesofatag', data); //CORS
 
@@ -32,13 +32,16 @@ const postFavoritePodcast = (data) => postAPI(`/favoriteapodcast`, data);
 const getAllReviews = (data) => postAPI(`/getallreviews`, data);
 
 //profile
-const getRequestedTranscriptions = (data) => postAPI(`/getrequestedtranscriptions`, data)
-const getRequestedEdits = (data) => postAPI(`/getrequestededits`, data)
+const getRequestedTranscriptions = (data) => postAPI(PROXY_URL+API_URL+`/getrequestedtranscriptions`, data)
+const getRequestedEdits = (data) => postAPI(PROXY_URL+API_URL+`/getrequestededits`, data)
 const changePassword = (data) => postAPI(`/confirmpasswordreset`, data)
 const emailPassword = (data) => postAPI(`/forgotpassword`, data)
-const favoriteAPodcast = (data) => postAPI(`/favoriteapodcast`, data)
+const favoriteAPodcast = (data) => postAPI(PROXY_URL+API_URL+`/favoriteapodcast`, data)
 const updateBio = (data)=> putAPI(`/updatebio`, data)
-const updateProfilePicture = (data)=> putAPI(`/updateprofilepicture`, data)
+const updateProfilePicture = (data)=> putAPI(PROXY_URL+API_URL+`/updateprofilepicture`, data)
+const getAllUsers = (data) => postAPI(PROXY_URL+API_URL+`/getallusers`, data)
+const changeStatus = (data) => postAPI(PROXY_URL+API_URL+`/changestatus`, data)
+const approveEdits = (data) => postAPI(PROXY_URL+API_URL+ `/approveedits`, data)
 
 //episode
 const getEpisode = (data) => postAPI(`/getepisode`, data);
@@ -82,5 +85,8 @@ export {
     emailPassword,
     favoriteAPodcast,
     updateBio,
-    updateProfilePicture
+    updateProfilePicture,
+    getAllUsers,
+    changeStatus,
+    approveEdits
 }
