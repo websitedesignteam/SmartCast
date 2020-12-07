@@ -209,41 +209,19 @@ def getBlackListIgnoreJson():
     # print(blackList)
     
     return blackList
+    
 
             
 
-def putEpisode(podcastID,episodeID, transcribedStatus = None,transcribedText = None,tags = None, genreIDs = None, visitedCount = None):
+def putEpisode(data):
     
     tableName = os.environ.get("TableName")
     dynamoDB = boto3.resource('dynamodb')
     table = dynamoDB.Table(tableName)
 
-    if transcribedStatus is None:
-        transcribedStatus = ""
-
-    if transcribedText is None:
-        transcribedText = ""
-    
-    if tags is None:
-        tags = []
-
-    if genreIDs is None:
-        genreIDs = []
-
-    if visitedCount is None:
-        visitedCount = 0
-
     try: 
         table.put_item(
-            Item={
-                'podcastID': podcastID,
-                'episodeID': episodeID,
-                'transcribedStatus': transcribedStatus,
-                'transcribedText': transcribedText,
-                'tags' : tags,
-                'genreIDs': genreIDs,
-                'visitedCount': visitedCount
-            }
+            Item=data
         )
         return 'Success'
         
@@ -426,12 +404,13 @@ def lambda_handler(event, context):
             
             genreIDs = data["genreIDs"]
             visitedCount = data["visitedCount"]
-            
+            data["transcribedStatus"] = "COMPLETED"
+            data["transcribedText"] = keyString
             
             print("Transcribed Text : ", transcribedText)
             
             #Update your entry
-            putEpisode(podcastID = podcastID, episodeID =episodeID, transcribedStatus = transcribedStatus, transcribedText = keyString, tags = tags, genreIDs = genreIDs, visitedCount = visitedCount)
+            putEpisode(data = data)
             
             #write the code to update all 3 databases once this transcription job is completed
             
