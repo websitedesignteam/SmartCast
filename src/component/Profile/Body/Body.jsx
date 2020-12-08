@@ -21,13 +21,13 @@ const Body=(props)=> {
 
        if (props.currentTab === 'Settings'){
               return (
-                     <div>
+                     <div className={styles.link}>
                             <Settings access_token={props.access_token} email={userData.email} bio={props.bio} profilePicture={props.profilePicUrl}/>   
                      </div>
               )
        }else if (props.currentTab === 'Moderator Dashboard'){
               return (
-                     <div>
+                     <div className={styles.link}>
                             <ModeratorDashboard />   
                      </div>
               )

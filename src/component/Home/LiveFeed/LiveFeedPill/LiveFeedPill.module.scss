@@ -6,16 +6,14 @@
        background-origin: border-box;
        background-clip: content-box, border-box;
        border-radius: 5px;
-       display: inline-flex;
+       display: flex;
        flex-direction: row;
-
        padding: 2px;
        margin: 5px;
        align-items:center;
        cursor: pointer;
        -webkit-box-shadow: 5px 5px 5px -2px rgba(0,0,0,0.3); 
        box-shadow: 5px 5px 5px -5px rgba(0,0,0,0.2);
-       // width: 100%;
 }
 
 .container:hover{
@@ -23,19 +21,28 @@
        padding: 2.5px;
 }
 
-.profilePictureContainer{
-       display: flex;
+.profilePic{
+	width:100%;
+	height:100%;
+	border-radius: 50%;
+       object-fit: cover; 
 }
 
+.profilePictureContainer {
+       height: 3rem;
+	width: 3rem;
+	background-color: #bbb;
+	border-radius: 50%;
+       margin: 0.5rem 0rem 0.5rem 0.5rem;
+       overflow: hidden;
+}
 
-.profilePicture {
-       height: 30px;
-       width: 30px;
-       background-color: #bbb;
-       border-radius: 50%;
-       display: inline-block;
-       margin-right: 5px;
-       margin: 5px;
+.content {
+	display: flex;
+	padding: 0.5rem;
+	align-content: flex-start;
+	width: 100%;
+	justify-content: space-between;
 }
 
 .name{
@@ -54,7 +61,6 @@
        max-width: 50%;
        max-height: 35px;
        overflow: hidden;
-       width: 350px;
 }
 
 .sectionWrapper{
@@ -67,6 +73,7 @@
        // margin-left: 15px;
        // margin-right: 15px;
        margin: 5px 15px 5px 15px;
+       white-space: nowrap;
 }
 
 .nameAgeContainer{
@@ -81,14 +88,6 @@
        margin-left: 5px;
        font-size: 12px;
        color: rgb(87, 87, 87);
-}
-
-.profilePic{
-       border-radius: 50%;
-       width: 35px;
-       height: 35px;
-       margin-left: 10px;
-       margin-right: 5px;
 }
 
 .loader{

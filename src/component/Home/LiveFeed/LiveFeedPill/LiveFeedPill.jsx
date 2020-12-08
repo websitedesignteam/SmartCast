@@ -12,9 +12,10 @@ const LiveFeedPill=(props)=> {
                      <div className={styles.profilePictureContainer}>
                             <img className={styles.profilePic} src={props.profilePicture}/>
                      </div>
+                     <div className={styles.content}>
                      <div className={styles.nameAgeContainer}>
                             <div className={styles.name}>
-                                   {props.name}:
+                                   {props.name}
                             </div>
                             <div className={styles.age}>
                                    {props.commentAge}
@@ -23,11 +24,9 @@ const LiveFeedPill=(props)=> {
                      <div className={styles.comment}>
                             {props.comment}
                      </div>
-                     <div className={styles.tdc}>
-                            ...
-                     </div>
                      <div className={styles.rating}>
                             <StarRatings rating={props.rating} starRatedColor="gold" starDimension="16px" starSpacing=".5px"/>
+                     </div>
                      </div>
               </div>
        )
