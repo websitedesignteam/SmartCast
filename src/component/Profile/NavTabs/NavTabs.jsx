@@ -89,7 +89,7 @@ const NavTabs=(props)=> {
                      )
               }
        }else{
-              return (<div>Loading</div>)
+              return (null)
        }
 }
 
