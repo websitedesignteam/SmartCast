@@ -67,9 +67,10 @@ const NavTabs=(props)=> {
        )
 } else if (props.userStatus == 'standard') {
                      return( <div className={styles.container}>
-                            <div className={styles.avatarContainer}>
-                                   <div className={styles.avatar}>
-                                   </div>
+                     <div className={styles.avatarContainer}>
+                            <div>
+                                   <img className={styles.profilePic} src={props.profilePicUrl} />
+                            </div>
                                    <div>
                                           {props.name}
                                    </div>
