@@ -29,6 +29,7 @@ function Home(props) {
 			getallCategories()
 			.then((response) => {
                             setCategories(response.data.Data);
+                            setIsLoading(false)
 			})
 			.catch((error) => {
                             console.log(error);
