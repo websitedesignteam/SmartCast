@@ -26,7 +26,7 @@ function Navbar({openAuthModal, logoutUser, user}) {
 				<img src={baseUrl+"/assets/logo.png"} alt="" />
 			</Link>
 			<div className={styles.linksContainer}>
-				<Link className={styles.link} to='/' title="Go to Home">
+				<Link className={styles.link} to='/home' title="Go to Home">
 					<img className={styles.navIcon} src={baseUrl+"/assets/nav/home.svg"} alt="" />
 				</Link>
 				{ !!user.access_token && 
