@@ -82,10 +82,10 @@ function Episode({validateToken, user, getUserAPI, ...props}) {
         })
         .catch((error) => {
             console.log(error);
-            if (!error?.data?.message === "Too Many Requests") {
-                setErrorMessage(errorEpisode);
-            } else {
+            if (error?.data?.message === "Too Many Requests") {
                 alert(errorTooBusy)
+            } else {
+                setErrorMessage(errorEpisode);
             }
         });
     };
