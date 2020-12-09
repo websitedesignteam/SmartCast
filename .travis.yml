@@ -22,7 +22,7 @@ jobs:
           - node_modules
       script:
         - npm install
-        - npm test:ci
+        - npm run test:ci
     - stage: sonarcloud
       name: "SolarCloud Scan"
       addons:
