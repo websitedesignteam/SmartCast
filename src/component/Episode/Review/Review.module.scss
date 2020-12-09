@@ -11,7 +11,7 @@
 		}
 		&--text {
 			textarea {
-				font-family: 'Cairo';
+				font-family: 'Cairo', sans-serif;
 				width: 100%;
 				-webkit-box-sizing: border-box; 
 				-moz-box-sizing: border-box;    
@@ -29,7 +29,7 @@
 			height: 2rem;
 			border-radius: 1.5rem;
 			font-size: 1rem;
-			font-family: 'Cairo';
+			font-family: 'Cairo', sans-serif;
 			padding: 0 1rem;
 			background-color: $blue;
 			&:hover:not([disabled]) {

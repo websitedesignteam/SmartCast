@@ -38,15 +38,13 @@
        background-color: #bbb;
        border-radius: 50%;
        display: inline-block;
-       margin-right: 5px;
        margin: 5px;
        object-fit: contain;
 }
 
 .name{
        // margin-right: 5px;
-       margin: 5px;
-       margin-bottom: 0px;
+       margin: 5px 5px 0;
        font-size: 16px;
        font-weight: 500;
 }
