@@ -1,0 +1,41 @@
+.genresContainer{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-content: center;
+}
+
+.resultsContainer{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.link {
+	text-decoration: none;
+	color: black;
+}
+
+.pageButtons {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+	align-items: center;
+	justify-content: center;
+	button {
+		border-radius: 100%;
+		height: 2.5rem;
+		width: 2.5rem;
+		margin-right: 1rem;
+	}
+	img {
+		height: 1.5rem;
+		width: 1.5rem;
+	}
+	img.lastPage {
+		margin: 0 0 -0.3rem -0.1rem;
+	}
+	img.nextPage {
+		margin: 0 -0.1rem -0.3rem 0;
+	}
+}

@@ -1,18 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import styles from "./audioFooter.module.css";
+import React from 'react';
+import { Link } from "react-router-dom";
+import styles from "./audioFooter.module.scss";
 
-function AudioFooter({audioUrl, closeAudioPlayer}) {
+function AudioFooter({audio, closeAudioPlayer}) {
     const onClick = () => {
         closeAudioPlayer();
     }
+
     return (
-        <>
-        <button className={styles.closeAudioPlayer} onClick={onClick}>✖</button>
-        <audio controls preload="auto" className={styles.audio}>
-            <source src={audioUrl} type="audio/mpeg" />
-            Your browser does not support the audio tag.
-        </audio>
-        </>
+        <div className={styles.audioFooter}>
+            <div className={styles.audioHeader}>
+                <div className={styles.audioTitle}>
+                    <Link className={styles.link} to={`/podcast/${audio.podcastID}/episode/${audio.episodeID}`}>{audio.podcastTitle} - {audio.episodeTitle}</Link>
+                </div>
+                <button className={styles.closeAudioPlayer} onClick={onClick}>✖</button>
+            </div>
+            <audio controls autoplay="" preload="auto" name="media" className={styles.audio}>
+                <source src={audio.audioUrl} type="audio/mpeg" />
+                Your browser does not support the audio tag.
+            </audio>
+        </div>
     );
 }
 

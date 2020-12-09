@@ -1,0 +1,33 @@
+@import "../../styles/variables";
+
+.block {
+    display: flex;
+    flex-direction: column;  
+    margin-bottom: 1rem;
+    /* flex-wrap: nowrap; */
+}
+
+.item {
+    vertical-align: middle;
+}
+
+label.item {
+    font-size: 0.8rem;
+}
+
+input.item {
+    height: 1.7rem;
+    border-radius: 0.5rem;
+    border: 0;
+    background-color: $gray;
+    padding-left: 0.5rem;
+}
+
+input.item:focus {
+    outline: none;
+}
+
+div.loader {
+    height: 1rem;
+    width: 1rem;
+}

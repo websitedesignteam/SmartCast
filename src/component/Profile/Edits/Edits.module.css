@@ -1,0 +1,42 @@
+.editsContainer{
+       border-radius: 5px;
+       display: inline-block;
+       background-color: rgb(247, 248, 250);
+       -webkit-box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.35);
+       -moz-box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.35);
+       box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.35);
+       line-height: 2px;
+       font-size: 14px;
+       padding: 5px;
+       margin: 5px;
+}
+
+.modal{
+       position:absolute;
+}
+
+.expandIcon{
+       width: 20px;
+       height: 20px;
+       cursor: pointer;
+}
+
+.contentContainer{
+       display: flex;
+       flex-direction: row;
+       margin-bottom: 0;
+}
+
+.textContainer{
+       margin-bottom: 0;
+       min-width: 150px;
+       display: flex;
+       align-items: center;
+}
+
+.iconContainer{
+       margin-bottom: 0;
+       display: flex;
+       align-items: center;
+       opacity: .50;
+}

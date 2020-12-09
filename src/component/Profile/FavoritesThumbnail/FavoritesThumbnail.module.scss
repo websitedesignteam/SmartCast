@@ -1,0 +1,70 @@
+// .mainThumbnailContainer{
+//        display: inline-flex;
+//        border: 1px;
+//        justify-content: center;
+//        align-items: center;
+//        border-radius: 10px;
+//        width: auto;
+//        min-height: 120px;
+//        min-width: 100px;
+//        -webkit-box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.45);
+//        -moz-box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.45);
+//        box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.45);
+// }
+
+
+.thumbnailImg {
+       max-height: 5rem;
+}
+
+.thumbnailWrapper{
+       display: inline-block;
+       text-align: center;
+}
+
+.fancyBottom{
+       height: 5px;
+       background-image: linear-gradient(to right, #895cf2 0%, #ffabf4 200%, #895cf2 100%);
+       border-bottom-left-radius: 15px;
+       border-bottom-right-radius: 15px;
+
+}
+
+.content{
+       display: flex;
+       flex-direction: row;
+       border-bottom: none;
+       -webkit-box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.25);
+       -moz-box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.25);
+       box-shadow: 0px 2px 6px -2px rgba(0,0,0,0.25);
+}
+
+.podcastName{
+       cursor: pointer;
+       margin-left: 5px;
+}
+
+.removeButton{
+       cursor: pointer;
+       margin-left: 25px;
+       display: flex;
+       align-items: center;
+       padding: 0px 5px 0px 5px;
+
+}
+
+#trashCan{
+       width: 20px;
+       height: 20px;
+       color: red;
+       opacity: .3;
+}
+
+#trashCan:hover{
+       opacity: 1;
+       color: darkred;
+}
+
+.trashCanContainer{
+       display: flex;
+}

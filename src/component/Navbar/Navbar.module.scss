@@ -1,0 +1,85 @@
+@import "../../styles/variables";
+
+.navbarContainer{
+	background-image: linear-gradient(to right, $purple 0%, $pink 150%, $purple 100%);
+	-webkit-box-shadow: $box-shadow-nav;
+	-moz-box-shadow: $box-shadow-nav;
+	box-shadow: $box-shadow-nav;
+	display: flex;
+	height: 4rem;
+	padding: 0 1.5rem;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.linksContainer {
+
+}
+
+.link, .appLink {
+	text-decoration: none;
+	font-size: 1.2rem;
+	white-space: nowrap;
+}
+
+.appLink {
+	display: flex;
+	align-items: center;
+	background-color: $white;
+	border-radius: 0.2rem;
+	padding: 0 0.2rem;
+	height: 2rem;
+	overflow: hidden;
+	img {
+		height: 2rem;
+		width: 2rem;
+	}
+}
+
+.appLink, .link, .userAction {
+	box-shadow: $box-shadow-nav-link;
+}
+
+.link, .userAction {
+	margin-left: 1rem;
+	display: flex;
+	align-items: center;
+	img.navIcon {
+		width: 1.7rem;
+		height: 1.7rem;
+		margin-left: 0.2rem;
+	}
+	border-radius: 0.2rem;
+	background-color: $white;
+	height: 2rem;
+	width: 2rem;
+}
+
+.logoText{
+	color: white;
+	text-decoration: none;
+}
+
+.linksContainer{
+	display: flex;
+	flex-direction: row;
+	color: white;
+	margin: 0;
+	.link:last-child {
+		margin-right: 0;
+	}
+}
+
+.userAction {
+	font-size: 1.2rem;
+	margin: 0 0 0 1rem;
+	padding: 0;
+}
+
+.userAction:focus {
+	outline: 5px auto 
+}
+
+.link:hover {
+	background-color: $gray;
+}

@@ -1,0 +1,197 @@
+@import "styles/variables";
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.App-content {
+//   padding: 1.5rem;
+  min-height: 100vh;
+}
+
+.App-blur {
+  position: absolute;
+  top: 4rem;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  backdrop-filter: blur(0.1rem);
+  padding: 0;
+  min-width: 100vw;
+  // @media (orientation: landscape) {
+  //   min-height: 170vh;
+  // }
+  // @media screen and (min-width: 400px) and (orientation: landscape) {
+  //   min-height: 80vh;
+  // }
+}
+
+.App-background {
+  position: absolute;
+  top: 4rem;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  padding: 0;
+  min-width: 100vw;
+  background-image: url("/assets/background.png");
+  background-color: $light-gray;
+  min-height: 80vh;
+  @media (orientation: landscape) {
+    min-height: 170vh;
+  }
+  @media screen and (min-width: 400px) and (orientation: landscape) {
+    min-height: 80vh;
+  }
+}
+
+.App-modal {
+  position: absolute;
+  left: -50%; 
+  right: -50%;
+  width: 15rem;
+  top: 5rem;
+  @media screen and (min-width: 400px) {
+      min-width: 20rem;
+  }
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background-color: $light-gray;
+  box-shadow: $box-shadow;
+  border-radius: 1rem;
+  z-index: 3;
+
+  animation-name: expandUp;
+  -webkit-animation-name: expandUp;	
+
+  animation-duration: 1s;	
+  -webkit-animation-duration: 1s;
+
+  animation-timing-function: ease;	
+  -webkit-animation-timing-function: ease;		
+
+  visibility: visible !important;	
+}
+
+.App-footer-audio, .App-footer {
+  text-align: center;
+  padding-bottom: 1.5rem;
+}
+
+.App-footer-audio {
+  padding-bottom: 7rem;
+}
+
+.listenNotesLogo {
+  max-width: 15rem;
+}
+
+.logo {
+  width: 15rem;
+  height: 15rem;
+}
+
+@media screen and (min-width: 400px) {
+  .logo {
+    width: 10rem;
+    height: 10rem;
+    top: 0;
+    position: absolute;
+  }
+}
+
+body {
+  font-family: 'Cairo', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: black;
+}
+
+button {
+  font-family: 'Cairo', sans-serif;
+  background-color: $medium-gray;
+}
+
+input {
+  font-family: 'Cairo', sans-serif;
+}
+
+p {
+  margin: 0;
+}
+
+button:hover:not([disabled]) {
+  background-color: $gray;
+  cursor: pointer;
+}
+
+//loaders
+.loader, .loaderSmall, .loaderTiny {
+  border-radius: 100%;
+  animation: spin 1.8s linear infinite;
+}
+
+.loader {
+  border: 16px solid $light-gray;
+  border-top: 16px solid $blue;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+}
+
+.loaderSmall {
+  border: 16px solid $light-gray;
+  border-top: 16px solid $blue;
+	height: 3rem;
+	width: 3rem;
+}
+
+.loaderTiny {
+  border: 5px solid $gray;
+  border-top: 5px solid $blue;
+	height: 1rem;
+	width: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes expandUp {
+  0% {
+      transform: translateY(100%) scale(0.6) scaleY(0.5);
+  }
+  60%{
+      transform: translateY(-7%) scaleY(1.12);
+  }
+  75%{
+      transform: translateY(3%);
+  }	
+  100% {
+      transform: translateY(0%) scale(1) scaleY(1);
+  }	
+}
+
+@-webkit-keyframes expandUp {
+  0% {
+      -webkit-transform: translateY(100%) scale(0.6) scaleY(0.5);
+  }
+  60%{
+      -webkit-transform: translateY(-7%) scaleY(1.12);
+  }
+  75%{
+      -webkit-transform: translateY(3%);
+  }	
+  100% {
+      -webkit-transform: translateY(0%) scale(1) scaleY(1);
+  }	
+}

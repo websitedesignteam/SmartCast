@@ -1,0 +1,54 @@
+.container{
+       display:flex;
+       flex-direction: column;
+       min-width: 250px;
+       min-height: 80vh;
+       padding-top: 25px;
+       -webkit-box-shadow: 20px 1px 8px -19px rgba(0,0,0,0.11);
+       -moz-box-shadow: 20px 1px 8px -19px rgba(0,0,0,0.11);
+       box-shadow: 20px 1px 8px -19px rgba(0,0,0,0.11);
+       margin-left: -25px;
+}
+
+.navButtons{
+       display: flex;
+       flex-direction: column;
+       margin-top: 50px;
+       cursor: pointer;
+}
+.bio{
+       max-width: 200px;
+       text-align: center;
+}
+.avatar{
+       width: 75px;
+       height: 75px;
+       background-color: lightgrey;
+       border-radius: 50%;
+       display: inline-block;
+}
+
+.avatarContainer{
+       display: flex;
+       flex-direction: column;
+       justify-content: center;
+       align-items: center;
+}
+
+.profilePic{
+       border-radius: 50%;
+       width: 100px;
+       height: 100px;
+}
+
+.profileButton{
+       margin: 5px 0px 5px 0px;
+}
+
+.settingsButton{
+       margin: 5px 0px 5px 0px;
+}
+
+.moderatorDashboardButton{
+       margin: 5px 0px 5px 0px;
+}

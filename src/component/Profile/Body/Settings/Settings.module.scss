@@ -1,0 +1,87 @@
+.avatar{
+       width: 75px;
+       height: 75px;
+       background-color: lightgrey;
+       border-radius: 50%;
+       display: inline-block;
+}
+
+.avatarContainer{
+       display: contents;
+}
+
+.container{
+       margin-left: 25px;
+       display: flex;
+       flex-direction: column;
+}
+
+.formContainer{
+       margin-left: 15px;
+}
+
+.form{
+       display: flex;
+       flex-direction: column;
+}
+
+.bioInput{
+       min-width: 400px;
+       min-height: 50px;
+       // padding: 0px;
+       margin-left: 5px;
+       // margin-right: 15px;
+}
+
+.pass{
+       margin-left: 5px;
+}
+
+.labels{
+       padding: 5px;
+}
+
+.submit{
+       display: inline-block;
+       width: 100px;
+       margin-left: 5px;
+       margin-top: 15px;
+       text-decoration: none;
+       text-align: center;
+       color: white;
+       border-radius: 5px;
+       opacity: .5;
+       box-shadow: 0 4px 6px rgba(50,50,93,.11), 0 1px 3px rgba(0,0,0,.08);
+       background-image: linear-gradient(to right, #895cf2 0%, #6aaae1 100%, #bcd9ef 200%);
+    &:hover {
+           opacity: 1;
+      background-position: right center;
+    }  
+}
+
+.updateButtonContainer{
+       display: inline-block;
+       align-self: flex-end;
+       font-size: 14px;
+}
+
+.profilePic{
+       border-radius: 50%;
+       width: 70px;
+       height: 70px;
+       margin: 10px;
+}
+
+.topRow{
+       display: inline-flex;
+       flex-direction: row;
+}
+
+.editProfileContainer{
+       display: inline-flex;
+       flex-direction: row;
+       align-items: center;}
+
+.changePassText{
+       cursor: pointer;
+}
