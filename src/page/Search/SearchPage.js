@@ -13,24 +13,29 @@ function SearchPage(props) {
 	const [episodes, setEpisodes] = useState([]);
 	const [podcasts, setPodcasts] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
-	const [podcastPage, setPodcastPage] = useState(1);
+	const [podcastPage, setPodcastPage] = useState(0);
 
 	const history = useHistory();
 
 	useEffect(() => {
 		setIsLoading(true);
-		let body = {"searchString": searchTerm}
+		console.log(podcastPage);
+		let body = {
+			"searchString": searchTerm,
+			"currentPage": podcastPage
+		}
+		console.log(body);
 		if (searchType === 'episodes'){
-			searchEpisodes(body, 1) 
+			searchEpisodes(body) 
 			.then((response) => {
 				setIsLoading(false);
-				setEpisodes(response.data.Data.episodes)
+				setEpisodes(response.data.Data.episodes);
 			})
 			.catch((error) => {
 				console.log(error);
 			});
 		} else if (searchType === 'podcasts'){
-			searchPodcasts(body, 1) 
+			searchPodcasts(body) 
 			.then((response) => {
 				setIsLoading(false);
 				setPodcasts(response.data.Data.podcasts)
@@ -51,14 +56,13 @@ function SearchPage(props) {
 			});
 		}
 	}, [searchTerm, searchType, podcastPage])
-
+	
 	const onClickLastPage = () => {
-		(podcastPage > 1) && setPodcastPage(podcastPage-1);
+		(podcastPage > 9 && setPodcastPage(podcastPage-10));
 	}
 
 	const onClickNextPage = () => {
-		setPodcastPage(podcastPage+1);
-		setIsLoading(true);
+		setPodcastPage(podcastPage+10);
 	}
 
 	const onClickShowMore = () => {
