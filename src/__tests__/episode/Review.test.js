@@ -9,5 +9,5 @@ test("should render the Review", () => {
 
     }
     const component = shallow(<Review {...props} />);
-    // expect(component.getElements()).toMatchSnapshot();
+    expect(component.getElements()).toMatchSnapshot();
 });

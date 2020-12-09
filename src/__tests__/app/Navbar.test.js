@@ -14,5 +14,5 @@ test("should render the Navbar", () => {
         user: {}
     }
     const component = shallow(<Navbar {...props} />);
-    // expect(component.getElements()).toMatchSnapshot();
+    expect(component.getElements()).toMatchSnapshot();
 });

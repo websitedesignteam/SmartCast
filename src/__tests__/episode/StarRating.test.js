@@ -9,5 +9,5 @@ test("should render the StarRating", () => {
 
     }
     const component = shallow(<StarRating {...props} />);
-    // expect(component.getElements()).toMatchSnapshot();
+    expect(component.getElements()).toMatchSnapshot();
 });

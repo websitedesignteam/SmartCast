@@ -35,5 +35,5 @@ test("should render the Episode", () => {
     const component = shallow(
         <Episode {...props} match={match} />
     )
-    // expect(component.getElements()).toMatchSnapshot();
+    expect(component.getElements()).toMatchSnapshot();
 });

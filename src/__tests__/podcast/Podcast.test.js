@@ -33,5 +33,5 @@ test("should render the Podcast", () => {
     const component = shallow(
         <Podcast {...props} match={match} />
     )
-    // expect(component.getElements()).toMatchSnapshot();
+    expect(component.getElements()).toMatchSnapshot();
 });
