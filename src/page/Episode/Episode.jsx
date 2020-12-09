@@ -28,7 +28,7 @@ import {
 } from "../../utils/helper";
 import styles from "./Episode.module.scss";
 
-function Episode({validateToken, user, setUser, ...props}) {
+function Episode({validateToken, user, getUserAPI, ...props}) {
     //vars
     const { episodeID, podcastID } = useParams();
     const { access_token, ratings, favoritePodcasts } = user;
@@ -100,13 +100,13 @@ function Episode({validateToken, user, setUser, ...props}) {
 		postFavoritePodcast(data)
 		.then((response) => {
 			setIsLoadingFavorite(false);
-			const podcastCommand = (inputFavoritePodcast.command === "add") ? "remove" : "add";
+			const command = (inputFavoritePodcast.command === "add") ? "remove" : "add";
 			setInputFavoritePodcast({
 				...inputFavoritePodcast,
-				command: podcastCommand
+				command,
 			})
 			alert(response.data.Data);
-			favoritePodcast.toggle();
+			(command === "remove") ? favoritePodcast.activate() : favoritePodcast.deactivate();
 			inputModalState.deactivate();
 		})
 		.catch((error) => {
@@ -256,22 +256,6 @@ function Episode({validateToken, user, setUser, ...props}) {
         });
     }
 
-    const getUserAPI = () => {
-		getUser({access_token})
-        .then((response) => {
-            const userData = response.data;
-            const allUserData = { 
-                ...user,
-                ...userData, 
-            }
-            localStorage.setItem("user", JSON.stringify(allUserData));
-            setUser(allUserData);
-        })
-        .catch((error) => {
-        	console.log(error);
-        });
-	}
-
     //utils 
     const openTranscription = () => {
        openEditor.activate();
@@ -353,19 +337,7 @@ function Episode({validateToken, user, setUser, ...props}) {
 
     useEffect(()=> {
         if (!submittedReview || !access_token) return;
-        getUser({access_token})
-        .then((response) => {
-            const userData = response.data;
-            const allUserData = { 
-                ...user,
-                ...userData, 
-            }
-            localStorage.setItem("user", JSON.stringify(allUserData));
-            props.setUser(allUserData);
-        })
-        .catch((error) => {
-            console.log(error);
-        });
+        getUserAPI();
     }, [submittedReview, access_token])
 
     return (
@@ -465,7 +437,7 @@ function Episode({validateToken, user, setUser, ...props}) {
                                     : <button 
                                         className={styles.editTranscription} 
                                         onClick={openTranscription} 
-                                        disabled={!user.access_token || currentEpisode.transcribedStatus === "EDIT IN PROGRESS" || !!submittedReview} 
+                                        disabled={!user.access_token || currentEpisode.transcribedStatus === "EDIT IN PROGRESS" || !!submittedTranscription} 
                                         title={(!user.access_token) 
                                             ? "Login to Edit Transcription" 
                                             : (currentEpisode.transcribedStatus === "EDIT IN PROGRESS") 

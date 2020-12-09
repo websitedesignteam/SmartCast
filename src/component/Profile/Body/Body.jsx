@@ -3,37 +3,31 @@ import styles from '../Body/Body.module.scss'
 import Settings from '../Body/Settings/Settings'
 import ModeratorDashboard from '../ModeratorDuties'
 import ProfileContent from '../Body/Profile/ProfileContent'
-import {getUser} from '../../../utils/api'
-const Body=(props)=> {
-
-       const [userData, setUserData]=  useState({})
+const Body=({user, validateToken, getUserAPI, ...props})=> {
+       const { access_token } = user;
 
        useEffect(()=>{
-              let body = {"access_token": props.access_token}
-              getUser(body)
-              .then((response)=>{
-                     setUserData(response.data)
-              })
-              .catch((error)=>{
-                     console.log(error)
-              })
+		if (!!access_token) {
+			validateToken();
+			getUserAPI();
+		}
        }, [])
 
        if (props.currentTab === 'Settings'){
               return (
                      <div className={styles.link}>
-                            <Settings access_token={props.access_token} email={userData.email} bio={props.bio} profilePicture={props.profilePicUrl}/>   
+                            <Settings user={user} />   
                      </div>
               )
        }else if (props.currentTab === 'Moderator Dashboard'){
               return (
                      <div className={styles.link}>
-                            <ModeratorDashboard />   
+                            <ModeratorDashboard user={user} />   
                      </div>
               )
        }else if (props.currentTab === 'My Profile'){
               return(<div classname={styles.profileContent}>
-                            <ProfileContent name={props.name} dateJoined={props.dateJoined} bio={props.bio} userData={props.userData} />
+                            <ProfileContent user={user} />
                      </div>)
        }
 }

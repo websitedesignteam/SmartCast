@@ -2,7 +2,7 @@ import React, {props} from 'react'
 import {postTranscribeEpisode} from '../../../utils/api'
 import styles from '../../Profile/Transcriptions/Transcriptions.module.css'
 
-const Transcripions=(props)=> {
+const Transcriptions=(props)=> {
 
 
        const handleChoice =(choice)=>{
@@ -31,7 +31,7 @@ const Transcripions=(props)=> {
                                           ✓
                                   </div>
                                   <div className={styles.rejectContainer} onClick={()=>handleChoice('deny')}>
-                                         𐄂
+                                          X
                                    </div>
                            </div>
                     </div>
@@ -39,4 +39,4 @@ const Transcripions=(props)=> {
        )
 }
 
-export default Transcripions;
+export default Transcriptions;

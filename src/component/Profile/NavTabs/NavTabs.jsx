@@ -2,27 +2,21 @@ import React, {useState} from 'react'
 import NavButton from '../NavTabs/NavButton/NavButton'
 import styles from '../NavTabs/NavTabs.module.scss'
 
-const NavTabs=(props)=> {
+const NavTabs=({user, changeTab, ...props})=> {
 
-       const changeTab=(tab)=>{
-              props.changeTab(tab)
-       }
-
-       // const [userStatus, setUserStatus] = useState(props.userStatus)
-
-       if (props.userStatus){
-              if (props.userStatus == 'admin'){
+       if (user.status){
+              if (user.status === 'admin'){
                      return (
                      <div className={styles.container}>
                             <div className={styles.avatarContainer}>
                                    <div>
-                                          <img className={styles.profilePic} src={props.profilePicUrl} />
+                                          <img className={styles.profilePic} src={user.profilePicture} />
                                    </div>
                                    <div>
-                                          {props.name}
+                                          {user.name}
                                    </div>
                                    <div className={styles.bio}>
-                                          {props.bio}
+                                          {user.bio}
                                    </div>
                             </div>
                             <div className={styles.navButtons}>
@@ -38,18 +32,18 @@ const NavTabs=(props)=> {
                             </div>
                      </div>
               )
-       }else if (props.userStatus == 'moderator'){
+       }else if (user.status === 'moderator'){
               return (
               <div className={styles.container}>
                      <div className={styles.avatarContainer}>
                             <div>
-                                   <img className={styles.profilePic} src={props.profilePicUrl} />
+                                   <img className={styles.profilePic} src={user.profilePicture} />
                             </div>
                             <div>
-                                   {props.name}
+                                   {user.name}
                             </div>
                             <div className={styles.bio}>
-                                   {props.bio}
+                                   {user.bio}
                             </div>
                      </div>
                      <div className={styles.navButtons}>
@@ -65,17 +59,17 @@ const NavTabs=(props)=> {
                      </div>
               </div>
        )
-} else if (props.userStatus == 'standard') {
+} else if (user.status === 'standard') {
                      return( <div className={styles.container}>
                      <div className={styles.avatarContainer}>
                             <div>
-                                   <img className={styles.profilePic} src={props.profilePicUrl} />
+                                   <img className={styles.profilePic} src={user.profilePicture} />
                             </div>
                                    <div>
-                                          {props.name}
+                                          {user.name}
                                    </div>
                                    <div className={styles.bio}>
-                                          {props.bio}
+                                          {user.bio}
                                    </div>
                             </div>
                             <div className={styles.navButtons}>

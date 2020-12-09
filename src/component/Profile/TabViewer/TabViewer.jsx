@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import Transcriptions from '../Transcriptions/Transcripions'
+import Transcriptions from '../Transcriptions/Transcriptions'
 import Edits from '../Edits/Edits'
 import styles from '../TabViewer/TabViewer.module.css'
 import {getRequestedTranscriptions, getRequestedEdits} from '../../../utils/api'

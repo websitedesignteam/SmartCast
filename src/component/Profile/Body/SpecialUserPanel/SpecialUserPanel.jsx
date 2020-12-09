@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import {getRequestedTranscriptions, getRequestedEdits, getAllUsers, changeStatus} from '../../../../utils/api'
-import Transcriptions from '../../Transcriptions/Transcripions'
+import Transcriptions from '../../Transcriptions/Transcriptions'
 import Edits from '../../Edits/Edits'
 import UserPill from '../SpecialUserPanel/UserPill/UserPill'
 import Loader from 'react-loader-spinner'

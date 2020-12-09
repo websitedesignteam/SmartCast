@@ -44,7 +44,7 @@ function App() {
   }
 
   //auth
-  const getUserAPI = (currentUser) => {
+  const loginUser = (currentUser) => {
     if (!currentUser) currentUser = user;
     const { access_token } = currentUser;
     getUser({access_token})
@@ -68,6 +68,23 @@ function App() {
     localStorage.removeItem("user");
   }
 
+  const getUserAPI = () => {
+    const { access_token } = user;
+		getUser({ access_token })
+        .then((response) => {
+            const userData = response.data;
+            const allUserData = { 
+                ...user,
+                ...userData, 
+            }
+            localStorage.setItem("user", JSON.stringify(allUserData));
+            setUser(allUserData);
+        })
+        .catch((error) => {
+        	console.log(error);
+        });
+	}
+
   const validateToken = () => {
     const { access_token, refresh_token, username } = user;
     if (!!access_token && !!refresh_token && !!username) {
@@ -78,7 +95,6 @@ function App() {
               refresh_token,
               username,
             };
-
             //if user wants to stay logged in for 30 days
             getNewToken(data)
             .then((response) => {
@@ -133,6 +149,7 @@ function App() {
 
   useEffect(()=> {
     getAppHeight();
+    validateToken();
   }, [])
 
 
@@ -144,125 +161,72 @@ function App() {
           {(authModalState.isActive && !user.access_token) && 
             <>
             <div className="App-modal" ref={authModalRef}>
-              <Auth loginUser={getUserAPI} type="login" onSuccessVerification={closeAuthModal} stayLoggedIn={stayLoggedIn} /> 
+              <Auth loginUser={loginUser} type="login" onSuccessVerification={closeAuthModal} stayLoggedIn={stayLoggedIn} /> 
             </div>
             <div className="App-blur" style={{height: appHeight}} />
             </>
           }
 
+          <Navbar logoutUser={logoutUser} openAuthModal={openAuthModal} user={user}/>
+
+          {audio.audioUrl && 
+            <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
+
           <Switch>
-          <Route exact path="/home"
-              render={routeProps =>
-              <>
-              <Navbar logoutUser={logoutUser} openAuthModal={openAuthModal} user={user}/>
-        
-        {audio.audioUrl && 
-            <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
-                <Search {...routeProps} /> 
-                <Home {...routeProps} />
-              </>
-            }/>
+          <Route exact path="/home">
+                <Search  /> 
+                <Home user={user}  />
+          </Route>
 
-            <Route exact path="/" render={routeProps => 
-              <>
-                <Redirect {...routeProps} to="/welcome" /> 
-              </>
-            } />
-            <Route exact path="/welcome" render={routeProps => 
-              <> 
-                <Landing {...routeProps}/>
-              </>
-            } />
+            <Route exact path="/">
+                <Redirect  to="/welcome" /> 
+            </Route>
 
-            <Route exact path="/auth/:authType"
-              render={routeProps =>
-              <>
-              <Navbar logoutUser={logoutUser} openAuthModal={openAuthModal} user={user}/>
-        
-        {audio.audioUrl && 
-            <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
+            <Route exact path="/welcome">
+                <Landing />
+            </Route>
+
+            <Route exact path="/auth/:authType">
                 {!!user.access_token 
-                ? <Redirect {...routeProps} to="/" /> 
-                :<div className="App-background">
-                  <Auth {...routeProps} />
-                </div>}
-              </>
-              }/>
+                ? <Redirect  to="/home" /> 
+                : <div className="App-background">
+                    <Auth  />
+                  </div>}
+              </Route>
 
-            <Route exact path="/profile" 
-             render={routeProps =>
-              <>
-              <Navbar logoutUser={logoutUser} openAuthModal={openAuthModal} user={user}/>
-        
-        {audio.audioUrl && 
-            <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
-              {!user.access_token ? <Redirect {...routeProps} to="/" /> : <UserProfile {...routeProps} />}
-              </>
-             }
-            />
+            <Route exact path="/profile">
+              {!user.access_token 
+              ? <Redirect to="/home" /> 
+              : <UserProfile user={user} validateToken={validateToken} getUserAPI={getUserAPI} />} 
+            </Route>
 
-            <Route exact path="/genres"
-              render={routeProps =>
-              <>
-              <Navbar logoutUser={logoutUser} openAuthModal={openAuthModal} user={user}/>
-        
-        {audio.audioUrl && 
-            <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
-                <Search {...routeProps} />
-                <Genres {...routeProps} />
-              </>
-            }/>
+            <Route exact path="/genres">
+                <Search  />
+                <Genres  />
+              </Route>
 
-            <Route exact path="/genres/:genreName2/:genreName" component={Genres}
-              render={routeProps =>
-              <>
-              <Navbar logoutUser={logoutUser} openAuthModal={openAuthModal} user={user}/>
-        
-        {audio.audioUrl && 
-            <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
-              <Search {...routeProps} />
-              <Genres {...routeProps} />
-              </>
-            }/>
+            <Route exact path="/genres/:genreName2/:genreName" component={Genres}>
+              <Search  />
+              <Genres  />
+            </Route>
 
-            <Route exact path="/search/results/:searchTerm/:searchType"
-              render={routeProps =>
-              <>
-              <Navbar logoutUser={logoutUser} openAuthModal={openAuthModal} user={user}/>
-        
-        {audio.audioUrl && 
-            <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
-              <Search {...routeProps}/>
-              <SearchPage {...routeProps}/>
-              </>
-            }/>
+            <Route exact path="/search/results/:searchTerm/:searchType">
+              <Search />
+              <SearchPage />
+            </Route>
 
-            <Route exact path="/podcast/:podcastID/episode/:episodeID" 
-              render={routeProps =>
-              <>
-              <Navbar logoutUser={logoutUser} openAuthModal={openAuthModal} user={user}/>
-        
-        {audio.audioUrl && 
-            <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
-                <Search {...routeProps} />
-                <Episode {...routeProps} setUser={setUser} openAudioPlayer={openAudioPlayer} user={user} validateToken={validateToken} />
-              </>
-            }/> 
+            <Route exact path="/podcast/:podcastID/episode/:episodeID">
+                <Search />
+                <Episode  openAudioPlayer={openAudioPlayer} user={user} validateToken={validateToken} getUserAPI={getUserAPI} />
+            </Route>
 
-            <Route exact path="/podcast/:podcastID"
-              render={routeProps =>
-              <>
-              <Navbar logoutUser={logoutUser} openAuthModal={openAuthModal} user={user}/>
-        
-        {audio.audioUrl && 
-            <AudioFooter audio={audio} closeAudioPlayer={closeAudioPlayer} />}
-              <Search {...routeProps} />
-              <Podcast {...routeProps} user={user} validateToken={validateToken} setUser={setUser} />
-              </>
-            }/> 
-            <Route exact path="/episodeBox" component={EpisodeCard} />
+            <Route exact path="/podcast/:podcastID">
+              <Search  />
+              <Podcast  user={user} validateToken={validateToken} getUserAPI={getUserAPI} />
+            </Route>             
           </Switch>
       </div>
+
       <div className={audio.audioUrl ? "App-footer-audio" : "App-footer"}>
         <img className="listenNotesLogo" src={baseUrl+"/assets/listen-api-logo.png"} alt="This site is powered by Listen Notes" />
       </div>

@@ -11,10 +11,8 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import axios from 'axios';
 import Axios from 'axios';
 import {Link, useParams, useHistory} from 'react-router-dom'
-function Home(props) {
+function Home({user,props}) {
 
-       const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user')) || {});
-       const [userData, setUserData] = useState([{}])
        const [categories, setCategories] = useState([]);
        const [tags, setTags] = useState([]);
        const [podcastID, setPodcastID] = useState();
@@ -25,25 +23,25 @@ function Home(props) {
        let history = useHistory();
 
        useEffect(() => {
-                     setIsLoading(true)
-			getallCategories()
-			.then((response) => {
-                            setCategories(response.data.Data);
-                            setIsLoading(false)
-			})
-			.catch((error) => {
-                            console.log(error);
-                     });
-                     
-                     let body = {"access_token": user.access_token}
-                     getUser(body)
-                     .then((response)=>{
-                            setUserData(response.data)
-                            setIsLoading(false)
-                     })
-                     .catch((error)=>{
-                            console.log(error)
-                     })
+              setIsLoading(true)
+              getallCategories()
+              .then((response) => {
+                     setCategories(response.data.Data);
+                     setIsLoading(false)
+              })
+              .catch((error) => {
+                     console.log(error);
+              });
+              
+              // let body = {"access_token": user.access_token}
+              // getUser(body)
+              // .then((response)=>{
+              //        setuser(response.data)
+              //        setIsLoading(false)
+              // })
+              // .catch((error)=>{
+              //        console.log(error)
+              // })
        }, []) 
 
        const getTags=(category)=>{
@@ -111,7 +109,7 @@ function Home(props) {
                                         </div>
                                  </div>
                           </div>
-                          <LiveFeed profilePicture={userData.profilePicture} />
+                          <LiveFeed />
                      </div>
               );
 

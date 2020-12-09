@@ -42,7 +42,7 @@ const LiveFeed=(props)=> {
               return (
                      <div className={styles.sectionWrapper}>
                             <SectionContainer label="Most Recent Comments">
-                                   {loading? <div className={styles.loader}><Loader type="TailSpin" color="#00BFFF" height={30} width={30}/></div>: commentData.map((comment, index)=><div onClick={()=>goToEpisodePage(comment.podcastID, comment.episodeID)}><LiveFeedPill profilePicture={comment.profilePicture} name={comment.name} comment={comment.review} rating={comment.rating} commentAge={comment.commentAge}/></div>)}
+                                   {commentData.map((comment, index)=><div onClick={()=>goToEpisodePage(comment.podcastID, comment.episodeID)}><LiveFeedPill profilePicture={comment.profilePicture} name={comment.name} comment={comment.review} rating={comment.rating} commentAge={comment.commentAge}/></div>)}
                             </SectionContainer>
                      </div>
               )

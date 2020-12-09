@@ -8,7 +8,7 @@ import { podcastCommands, podcastDisclaimer, errorFavoritePodcast, errorTooBusy 
 import { Modal, EpisodeCard, SectionContainer } from "../../component/Podcast";
 import { baseUrl, errorPodcast } from "../../utils/constants";
 
-function Podcast({user, validateToken, setUser, ...props}) {
+function Podcast({user, validateToken, getUserAPI, ...props}) {
 	//vars
 	const { podcastID } = useParams();
 	const { access_token, favoritePodcasts } = user;
@@ -74,13 +74,13 @@ function Podcast({user, validateToken, setUser, ...props}) {
 		postFavoritePodcast(data)
 		.then((response) => {
 			setIsLoadingFavorite(false);
-			const podcastCommand = (inputFavoritePodcast.command === "add") ? "remove" : "add";
+			const command = (inputFavoritePodcast.command === "add") ? "remove" : "add";
 			setInputFavoritePodcast({
 				...inputFavoritePodcast,
-				command: podcastCommands[podcastCommand]
+				command,
 			})
 			alert(response.data.Data);
-			favoritePodcast.toggle();
+			(command === "remove") ? favoritePodcast.activate() : favoritePodcast.deactivate();
 			inputModalState.deactivate();
 		})
 		.catch((error) => {
@@ -91,22 +91,6 @@ function Podcast({user, validateToken, setUser, ...props}) {
 				alert(error);
 			}
 		})
-	}
-
-	const getUserAPI = () => {
-		getUser({access_token})
-        .then((response) => {
-            const userData = response.data;
-            const allUserData = { 
-                ...user,
-                ...userData, 
-            }
-            localStorage.setItem("user", JSON.stringify(allUserData));
-            setUser(allUserData);
-        })
-        .catch((error) => {
-        	console.log(error);
-        });
 	}
 
 	//util functions
