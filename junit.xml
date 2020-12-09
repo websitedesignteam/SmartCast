@@ -1,7 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="1" failures="0" errors="0" time="2.319">
-  <testsuite name="undefined" errors="0" failures="0" skipped="0" timestamp="2020-11-09T06:35:43" time="1.442" tests="1">
-    <testcase classname=" full app rendering/navigating" name=" full app rendering/navigating" time="0.061">
+<testsuites name="jest tests" tests="12" failures="2" errors="0" time="8">
+  <testsuite name="formatEpisodeLength" errors="0" failures="0" skipped="0" timestamp="2020-12-09T21:33:18" time="4.121" tests="1">
+    <testcase classname="formatEpisodeLength it should format a number time given in seconds to a string in standard minute:second format" name="formatEpisodeLength it should format a number time given in seconds to a string in standard minute:second format" time="0.004">
+    </testcase>
+  </testsuite>
+  <testsuite name="isInFavoritePodcasts" errors="0" failures="0" skipped="0" timestamp="2020-12-09T21:33:18" time="4.12" tests="1">
+    <testcase classname="isInFavoritePodcasts it should return true if the nested term is a value inside the array, otherwise return false" name="isInFavoritePodcasts it should return true if the nested term is a value inside the array, otherwise return false" time="0.005">
+    </testcase>
+  </testsuite>
+  <testsuite name="getNameInFavoritePodcasts" errors="0" failures="0" skipped="0" timestamp="2020-12-09T21:33:18" time="4.122" tests="1">
+    <testcase classname="getNameInFavoritePodcasts it should get the podcastName with the given podcastID inside of the array" name="getNameInFavoritePodcasts it should get the podcastName with the given podcastID inside of the array" time="0.006">
+    </testcase>
+  </testsuite>
+  <testsuite name="isFormComplete" errors="0" failures="0" skipped="0" timestamp="2020-12-09T21:33:18" time="4.125" tests="2">
+    <testcase classname="isFormComplete should return true if every key in object has a truthy value" name="isFormComplete should return true if every key in object has a truthy value" time="0.005">
+    </testcase>
+    <testcase classname="isFormComplete should return false if not every key has a truthy value" name="isFormComplete should return false if not every key has a truthy value" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="undefined" errors="0" failures="0" skipped="0" timestamp="2020-12-09T21:33:18" time="4.176" tests="1">
+    <testcase classname=" should render the StarRating" name=" should render the StarRating" time="0.008">
+    </testcase>
+  </testsuite>
+  <testsuite name="undefined" errors="0" failures="0" skipped="0" timestamp="2020-12-09T21:33:18" time="4.192" tests="1">
+    <testcase classname=" should render the Review" name=" should render the Review" time="0.013">
+    </testcase>
+  </testsuite>
+  <testsuite name="undefined" errors="0" failures="1" skipped="0" timestamp="2020-12-09T21:33:18" time="4.307" tests="1">
+    <testcase classname=" should render the Navbar" name=" should render the Navbar" time="0.015">
+      <failure>Error: expect(received).toMatchSnapshot()
+
+Snapshot name: `should render the Navbar 1`
+
+- Snapshot
++ Received
+
+@@ -2,11 +2,11 @@
+    &lt;div
+      className=&quot;navbarContainer&quot;
+    &gt;
+      &lt;ForwardRef
+        className=&quot;appLink&quot;
+-       to=&quot;/&quot;
++       to=&quot;/home&quot;
+      &gt;
+        &lt;strong&gt;
+          SmartCast
+        &lt;/strong&gt;
+        &lt;img
+@@ -18,11 +18,11 @@
+        className=&quot;linksContainer&quot;
+      &gt;
+        &lt;ForwardRef
+          className=&quot;link&quot;
+          title=&quot;Go to Home&quot;
+-         to=&quot;/&quot;
++         to=&quot;/home&quot;
+        &gt;
+          &lt;img
+            alt=&quot;&quot;
+            className=&quot;navIcon&quot;
+            src=&quot;undefined/assets/nav/home.svg&quot;
+    at Object.&lt;anonymous&gt; (C:\Users\flofo\Developer\Github\SmartCast\src\__tests__\app\Navbar.test.js:17:37)
+    at Object.asyncJestTest (C:\Users\flofo\Developer\Github\SmartCast\node_modules\jest-jasmine2\build\jasmineAsyncInstall.js:102:37)
+    at C:\Users\flofo\Developer\Github\SmartCast\node_modules\jest-jasmine2\build\queueRunner.js:43:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (C:\Users\flofo\Developer\Github\SmartCast\node_modules\jest-jasmine2\build\queueRunner.js:26:19)
+    at C:\Users\flofo\Developer\Github\SmartCast\node_modules\jest-jasmine2\build\queueRunner.js:73:41
+    at processTicksAndRejections (internal/process/task_queues.js:93:5)</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="undefined" errors="0" failures="1" skipped="0" timestamp="2020-12-09T21:33:18" time="4.324" tests="1">
+    <testcase classname=" should render the Search" name=" should render the Search" time="0.009">
+      <failure>Error: expect(received).toMatchSnapshot()
+
+Snapshot name: `should render the Search 1`
+
+- Snapshot
++ Received
+
+@@ -1,11 +1,13 @@
+  Array [
+    &lt;Context.Provider
+      value={
+        Object {
++         &quot;disableCheckbox&quot;: true,
+          &quot;searchInput&quot;: &quot;&quot;,
+          &quot;searchType&quot;: &quot;tags&quot;,
++         &quot;setDisableCheckbox&quot;: [Function],
+          &quot;setSearchInput&quot;: [Function],
+          &quot;setSearchType&quot;: [Function],
+        }
+      }
+    &gt;
+    at Object.&lt;anonymous&gt; (C:\Users\flofo\Developer\Github\SmartCast\src\__tests__\app\Search.test.js:18:43)
+    at Object.asyncJestTest (C:\Users\flofo\Developer\Github\SmartCast\node_modules\jest-jasmine2\build\jasmineAsyncInstall.js:102:37)
+    at C:\Users\flofo\Developer\Github\SmartCast\node_modules\jest-jasmine2\build\queueRunner.js:43:12
+    at new Promise (&lt;anonymous&gt;)
+    at mapper (C:\Users\flofo\Developer\Github\SmartCast\node_modules\jest-jasmine2\build\queueRunner.js:26:19)
+    at C:\Users\flofo\Developer\Github\SmartCast\node_modules\jest-jasmine2\build\queueRunner.js:73:41
+    at processTicksAndRejections (internal/process/task_queues.js:93:5)</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="undefined" errors="0" failures="0" skipped="0" timestamp="2020-12-09T21:33:18" time="4.845" tests="1">
+    <testcase classname=" should render the Podcast" name=" should render the Podcast" time="0.008">
+    </testcase>
+  </testsuite>
+  <testsuite name="undefined" errors="0" failures="0" skipped="0" timestamp="2020-12-09T21:33:18" time="5.036" tests="1">
+    <testcase classname=" should render the Episode" name=" should render the Episode" time="0.007">
+    </testcase>
+  </testsuite>
+  <testsuite name="undefined" errors="0" failures="0" skipped="0" timestamp="2020-12-09T21:33:18" time="6.029" tests="1">
+    <testcase classname=" should render the App" name=" should render the App" time="0.007">
     </testcase>
   </testsuite>
 </testsuites>
