@@ -1,5 +1,5 @@
 # SmartCast
-Deployed publicly on [SmartCast](smartcast.link) 
+Deployed publicly on [SmartCast](https://www.smartcast.link/) 
 
 ## Description
 SmartCast is a place for making podcasts accessible for everyone, including those who are hard of hearing. We provide podcast transcriptions by our moderator's approval. We aim to form a community for everyone to listen to (or read!) podcasts at their leisure and share their thoughts on them. Thank you for your support!  
