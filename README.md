@@ -5,12 +5,12 @@ Deployed publicly on [SmartCast](smartcast.link)
 SmartCast is a place for making podcasts accessible for everyone, including those who are hard of hearing. We provide podcast transcriptions by our moderator's approval. We aim to form a community for everyone to listen to (or read!) podcasts at their leisure and share their thoughts on them. Thank you for your support!  
 
 ## Frontend Setup
-To run this project locally
-> Clone repository
-> CD into repo
-> add .env file with content: REACT_APP_API_KEY = ''  //AWS API key. If you deserve the secret, we would have given it to you!
-> `npm install`
-> `npm start`
+To run this project locally <br>
+> * Clone repository <br>
+> * CD into repo <br>
+> * add .env file with content: REACT_APP_API_KEY = '' //AWS API key  <br> Hint: If you deserve the secret, we would have given it to you! <br>
+> * `npm install` <br>
+> * `npm start` <br>
 
 ## Default Project Settings
   
